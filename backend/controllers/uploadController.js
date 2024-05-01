@@ -51,14 +51,21 @@ const uploadController = async (req, res) => {
 
 const getListingsByDate = async (req, res) => {
     try {
-        // Extract date from request parameters
+        // Extract date and username from request parameters
         const { date } = req.params;
+        const { username } = req.query;
 
         // Parse date string into JavaScript Date object
         const searchDate = new Date(date);
 
-        // Get listings for the specified date
-        const listings = await Listing.find({ date: { $gte: searchDate, $lt: new Date(searchDate.getTime() + 24 * 60 * 60 * 1000) } });
+        // Get listings for the specified date and username
+        const listings = await Listing.find({ 
+            date: { 
+                $gte: searchDate, 
+                $lt: new Date(searchDate.getTime() + 24 * 60 * 60 * 1000) 
+            },
+            username: username // Add username as a condition
+        });
 
         // Send listings as response
         res.json(listings);
@@ -67,5 +74,6 @@ const getListingsByDate = async (req, res) => {
         return res.status(500).json({ error: 'Internal server error.' });
     }
 };
+
 
 module.exports = { uploadController, getListingsByDate };
