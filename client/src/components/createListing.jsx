@@ -3,7 +3,7 @@ import { Form } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import ImageUpload from './imageUpload';
-import { createListing } from '../store/appStore';
+import axios from 'axios';
 
 const CreateListingWithFileUpload = ({ selectedDate }) => {
   const [file, setFile] = useState(null);
@@ -16,24 +16,61 @@ const CreateListingWithFileUpload = ({ selectedDate }) => {
     title: '',
     description: '',
     location: '',
-    date: selectedDate, // Add selectedDate to the listing object
+    date: selectedDate,
   });
-
+  const createListing = async () => {
+    try {
+      if (!file) {
+        setErrorMsg('Please select a file to add.');
+        return;
+      }
+  
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('title', listing.title);
+      formData.append('description', listing.description);
+      formData.append('location', listing.location);
+      formData.append('date', listing.date); // Include the date field
+      formData.append('username', localStorage.getItem('username')); // Include the username from local storage
+  
+      await axios.post(`http://localhost:3001/api/v1/upload`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+  
+      // Reset form state and navigate to home page
+      setFile(null);
+      setPreviewSrc('');
+      setIsPreviewAvailable(false);
+      navigate('/');
+    } catch (error) {
+      throw error; // Throw the error for the caller to handle
+    }
+  };
+  
   const onDrop = (files) => {
     const [uploadedFile] = files;
     setFile(uploadedFile);
-
+  
     const fileReader = new FileReader();
     fileReader.onload = () => {
       setPreviewSrc(fileReader.result);
     };
     fileReader.readAsDataURL(uploadedFile);
-    setIsPreviewAvailable(uploadedFile.name.match(/\.(jpeg|jpg|png)$/));
+  
+    setIsPreviewAvailable(Boolean(uploadedFile.name.match(/\.(jpeg|jpg|png)$/)));
   };
-
-  const handleListingSubmit = (e) => {
+  
+  
+  const handleListingSubmit = async (e) => {
     e.preventDefault();
-    createListing(file, listing, setFile, setPreviewSrc, setIsPreviewAvailable, navigate, setErrorMsg);
+    try {
+      await createListing();
+    } catch (error) {
+      // Handle error
+      console.error('Error creating listing:', error);
+    }
   };
 
   const handleInputChange = (event) => {

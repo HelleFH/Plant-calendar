@@ -6,9 +6,17 @@
   padding: 0px;
   margin: 0px;
 }
+.dot {
+  background-color: #007bff; /* Change this to the desired color */
+  width: 8px; /* Adjust the size of the dot */
+  height: 8px;
+  border-radius: 50%; /* Make it circular */
+  display: inline-block;
+}
 
-
-
+.highlighted {
+  background-color: yellow;
+}
 body{
   font-family: "Poppins", sans-serif;
   height: 100vh;

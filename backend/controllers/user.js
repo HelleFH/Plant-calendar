@@ -1,6 +1,5 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
-
 const login = async (req, res) => {
   const { email, password } = req.body;
 
@@ -23,12 +22,13 @@ const login = async (req, res) => {
         }
       );
 
-      return res.status(200).json({ msg: "user logged in", token });
+      // Send username back in the response
+      return res.status(200).json({ msg: "user logged in", token, username: foundUser.name });
     } else {
       return res.status(400).json({ msg: "Bad password" });
     }
   } else {
-    return res.status(400).json({ msg: "Bad credentails" });
+    return res.status(400).json({ msg: "Bad credentials" });
   }
 };
 

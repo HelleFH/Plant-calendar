@@ -14,13 +14,11 @@ const Login = () => {
   const [ token, setToken ] = useState(JSON.parse(localStorage.getItem("auth")) || "");
   const navigate = useNavigate();
 
-
-
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
     let email = e.target.email.value;
     let password = e.target.password.value;
-
+  
     if (email.length > 0 && password.length > 0) {
       const formData = {
         email,
@@ -31,8 +29,10 @@ const Login = () => {
           "http://localhost:3001/api/v1/login",
           formData
         );
-        localStorage.setItem('auth', JSON.stringify(response.data.token));
-        toast.success("Login successfull");
+        const { token, username } = response.data;
+        localStorage.setItem('auth', JSON.stringify(token));
+        localStorage.setItem('username', JSON.stringify(username)); // Store username in local storage
+        toast.success("Login successful");
         navigate("/dashboard");
       } catch (err) {
         console.log(err);
@@ -42,14 +42,7 @@ const Login = () => {
       toast.error("Please fill all inputs");
     }
   };
-
-  useEffect(() => {
-    if(token !== ""){
-      toast.success("You already logged in");
-      navigate("/dashboard");
-    }
-  }, []);
-
+  
   return (
     <div className="login-main">
       <div className="login-left">

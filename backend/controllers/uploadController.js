@@ -1,0 +1,71 @@
+const { Listing } = require('../models/listingModel');
+const cloudinary = require('cloudinary').v2;
+const { generateDeletionToken } = require('../utils/tokenUtils');
+
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+const uploadController = async (req, res) => {
+    const { title, description, location, date, username } = req.body;
+
+    // Check if username existss
+    if (!username) {
+        return res.status(400).json({ error: 'Username is required.' });
+    }
+
+    // Check if date exists before accessing it
+    if (!date) {
+        return res.status(400).json({ error: 'Date is required.' });
+    }
+
+    const { buffer } = req.file; // Extract file buffer
+
+    // Upload file to Cloudinary directly from the buffer
+    const result = await cloudinary.uploader.upload_stream({ resource_type: 'auto' }, async (error, result) => {
+        if (error) {
+            console.error('Error while uploading to Cloudinary:', error);
+            return res.status(400).json({ error: 'Error while uploading listing data. Try again later.' });
+        }
+
+        const deletionToken = generateDeletionToken();
+
+        const listing = new Listing({
+            title,
+            description,
+            location,
+            date, // Include date when creating the new listing
+            cloudinaryUrl: result.secure_url,
+            cloudinaryPublicId: result.public_id,
+            cloudinaryDeleteToken: deletionToken,
+            username: username // Include the username retrieved from the request body
+        });
+
+        await listing.save();
+
+        res.json({ msg: 'Listing data uploaded successfully.' });
+    }).end(buffer);
+};
+
+const getListingsByDate = async (req, res) => {
+    try {
+        // Extract date from request parameters
+        const { date } = req.params;
+
+        // Parse date string into JavaScript Date object
+        const searchDate = new Date(date);
+
+        // Get listings for the specified date
+        const listings = await Listing.find({ date: { $gte: searchDate, $lt: new Date(searchDate.getTime() + 24 * 60 * 60 * 1000) } });
+
+        // Send listings as response
+        res.json(listings);
+    } catch (error) {
+        console.error('Error in getting listings by date:', error);
+        return res.status(500).json({ error: 'Internal server error.' });
+    }
+};
+
+module.exports = { uploadController, getListingsByDate };
