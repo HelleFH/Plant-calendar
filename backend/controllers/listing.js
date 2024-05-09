@@ -1,6 +1,6 @@
-// listingController.js
+// entryController.js
 
-const { Listing } = require('../models/listingModel');
+const { Entry } = require('../models/entryModel');
 const cloudinary = require('cloudinary').v2;
 const { generateDeletionToken } = require('../utils/tokenUtils');
 const handleFileUpload = async (file) => {
@@ -19,8 +19,10 @@ const handleFileUpload = async (file) => {
           'Authorization': `Bearer ${token}`
         },
         params: {
-          title: "Your Title",
-          description: "Your Description",
+          name: "Your Name",
+          notes: "Your Notes",
+          sunlight: "Sunlight",
+          watering: "Watering",
           location: "Your Location",
           date: new Date().toISOString(),
           username: username // Pass the username retrieved from local storage
@@ -34,5 +36,5 @@ const handleFileUpload = async (file) => {
   }
 };
 module.exports = {
-    createListing,
+    createEntry,
 };

@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { uploadController, getListingsByDate } = require('../controllers/uploadController');
+const { uploadController, getEntriesByDate } = require('../controllers/uploadController');
 const { login, register, dashboard, getAllUsers } = require("../controllers/user");
 const authMiddleware = require('../middleware/auth');
 const multer = require('multer');
@@ -41,7 +41,7 @@ router.post('/upload', upload.single('file'), async (req, res) => {
     }
 });
 
-// GET route for retrieving listings by date
-router.get('/listings/:date', getListingsByDate);
+// GET route for retrieving entries by date
+router.get('/entries/:date', getEntriesByDate);
 
 module.exports = router;

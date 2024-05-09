@@ -1,4 +1,4 @@
-const { Listing } = require('../models/listingModel');
+const { Entry } = require('../models/entryModel');
 const cloudinary = require('cloudinary').v2;
 const { generateDeletionToken } = require('../utils/tokenUtils');
 
@@ -9,7 +9,7 @@ cloudinary.config({
 });
 
 const uploadController = async (req, res) => {
-    const { title, description, location, date, username } = req.body;
+    const { name, notes, sunlight, watering, location, date, username } = req.body;
 
     // Check if username existss
     if (!username) {
@@ -27,29 +27,31 @@ const uploadController = async (req, res) => {
     const result = await cloudinary.uploader.upload_stream({ resource_type: 'auto' }, async (error, result) => {
         if (error) {
             console.error('Error while uploading to Cloudinary:', error);
-            return res.status(400).json({ error: 'Error while uploading listing data. Try again later.' });
+            return res.status(400).json({ error: 'Error while uploading entry data. Try again later.' });
         }
 
         const deletionToken = generateDeletionToken();
 
-        const listing = new Listing({
-            title,
-            description,
+        const entry = new Entry({
+            name,
+            notes,
+            sunlight,
+            watering,
             location,
-            date, // Include date when creating the new listing
+            date, // Include date when creating the new entry
             cloudinaryUrl: result.secure_url,
             cloudinaryPublicId: result.public_id,
             cloudinaryDeleteToken: deletionToken,
             username: username // Include the username retrieved from the request body
         });
 
-        await listing.save();
+        await entry.save();
 
-        res.json({ msg: 'Listing data uploaded successfully.' });
+        res.json({ msg: 'Entry data uploaded successfully.' });
     }).end(buffer);
 };
 
-const getListingsByDate = async (req, res) => {
+const getEntriesByDate = async (req, res) => {
     try {
         // Extract date and username from request parameters
         const { date } = req.params;
@@ -58,8 +60,8 @@ const getListingsByDate = async (req, res) => {
         // Parse date string into JavaScript Date object
         const searchDate = new Date(date);
 
-        // Get listings for the specified date and username
-        const listings = await Listing.find({ 
+        // Get entries for the specified date and username
+        const entries = await Entry.find({ 
             date: { 
                 $gte: searchDate, 
                 $lt: new Date(searchDate.getTime() + 24 * 60 * 60 * 1000) 
@@ -67,13 +69,13 @@ const getListingsByDate = async (req, res) => {
             username: username // Add username as a condition
         });
 
-        // Send listings as response
-        res.json(listings);
+        // Send entries as response
+        res.json(entries);
     } catch (error) {
-        console.error('Error in getting listings by date:', error);
+        console.error('Error in getting entries by date:', error);
         return res.status(500).json({ error: 'Internal server error.' });
     }
 };
 
 
-module.exports = { uploadController, getListingsByDate };
+module.exports = { uploadController, getEntriesByDate };

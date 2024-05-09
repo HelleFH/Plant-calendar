@@ -1,21 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
-import CreateListingWithFileUpload from '../components/createListing';
 import axios from 'axios';
+import CreateEntryWithFileUpload from '../components/createEntry';
 
-// Function to fetch listings by date and username
-const getListingsByDateAndUsername = async (date, username) => {
+// Function to fetch entries by date and username
+const getEntriesByDateAndUsername = async (date, username) => {
   try {
-    const response = await axios.get(`http://localhost:3001/api/v1/listings/${date}?username=${username}`);
+    const response = await axios.get(`http://localhost:3001/api/v1/entries/${date}?username=${username}`);
     return response.data;
   } catch (error) {
-    // Check if the error is a 404 Not Found error
     if (error.response && error.response.status === 404) {
-      // No listings found for the date and username, return an empty array
+      // No entries found for the date and username, return an empty array
       return [];
     } else {
-      // Other errors occurred, throw the error for the caller to handle
       throw error;
     }
   }
@@ -23,10 +21,11 @@ const getListingsByDateAndUsername = async (date, username) => {
 
 const CalendarComponent = () => {
   const [loggedIn, setLoggedIn] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [listings, setListings] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(null); // Initially no date is selected
+  const [entries, setEntries] = useState([]);
   const [error, setError] = useState(null);
   const [highlightedDates, setHighlightedDates] = useState([]);
+  const [showCreateForm, setShowCreateForm] = useState(false); // State to manage the visibility of the create form
 
   useEffect(() => {
     // Check if the user is logged in by verifying the presence of JWT token in local storage
@@ -39,13 +38,15 @@ const CalendarComponent = () => {
   }, []);
 
   useEffect(() => {
-    // Fetch listings for the current selected date when component mounts
-    fetchListings(selectedDate);
+    // Fetch entries for the current selected date when component mounts
+    if (selectedDate) {
+      fetchEntries(selectedDate);
+    }
   }, [selectedDate]);
 
   useEffect(() => {
-    // Fetch and save listing dates to local storage
-    const fetchAndSaveListingDates = async () => {
+    // Fetch and save entry dates to local storage
+    const fetchAndSaveEntryDates = async () => {
       try {
         const username = localStorage.getItem('username');
         if (!username) return; // If username is not available, return
@@ -63,8 +64,8 @@ const CalendarComponent = () => {
         const highlightedDates = [];
         for (const date of datesInRange) {
           const formattedDate = date.toISOString().split('T')[0];
-          const listingsData = await getListingsByDateAndUsername(formattedDate, username);
-          if (listingsData.length > 0) {
+          const entriesData = await getEntriesByDateAndUsername(formattedDate, username);
+          if (entriesData.length > 0) {
             highlightedDates.push(date.toDateString());
           }
         }
@@ -72,29 +73,39 @@ const CalendarComponent = () => {
         setHighlightedDates(highlightedDates);
         localStorage.setItem('highlightedDates', JSON.stringify(highlightedDates));
       } catch (error) {
-        console.error('Error occurred while fetching listings:', error);
-        setError('An error occurred while fetching listings.');
+        console.error('Error occurred while fetching entries:', error);
+        setError('An error occurred while fetching entries.');
       }
     };
 
-    fetchAndSaveListingDates();
+    if (selectedDate) {
+      fetchAndSaveEntryDates();
+    }
   }, [selectedDate]);
 
-  const fetchListings = async (date) => {
+  const fetchEntries = async (date) => {
     try {
-      // Call getListingsByDateAndUsername function to fetch listings for the selected date and username
+      console.log('Fetching entries for date:', date); // Add this line for debugging
+      // Call getEntriesByDateAndUsername function to fetch entries for the selected date and username
       const formattedDate = date.toISOString().split('T')[0];
       const username = localStorage.getItem('username');
-      const listingsData = await getListingsByDateAndUsername(formattedDate, username);
-      setListings(listingsData); // Update listings state with the fetched data
+      const entriesData = await getEntriesByDateAndUsername(formattedDate, username);
+      setEntries(entriesData); // Update entries state with the fetched data
     } catch (error) {
-      console.error('Error occurred while fetching listings:', error);
-      setError('An error occurred while fetching listings.');
+      console.error('Error occurred while fetching entries:', error);
+      setError('An error occurred while fetching entries.');
     }
   };
-
+  
+  console.log('Component rendered.'); // Add this line for debugging
+  
   const handleDateChange = (date) => {
-    setSelectedDate(date);
+    if (selectedDate && selectedDate.getTime() === date.getTime()) {
+      // If the same date is clicked again, deselect it
+      setSelectedDate(null);
+    } else {
+      setSelectedDate(date);
+    }
   };
   
   const tileClassName = ({ date }) => {
@@ -103,6 +114,10 @@ const CalendarComponent = () => {
   
     // Check if the formatted date exists in the highlightedDates array
     return highlightedDates.includes(formattedDate) ? 'highlighted' : null;
+  };
+
+  const handleAddEntryClick = () => {
+    setShowCreateForm(true);
   };
 
   return (
@@ -115,25 +130,40 @@ const CalendarComponent = () => {
             onChange={handleDateChange}
             tileClassName={tileClassName}
           />
-          <p>Selected Date: {selectedDate.toDateString()}</p>
-          {error && <p>Error: {error}</p>}
-          {/* Display listings here */}
-          <ul>
-            {listings.length > 0 ? (
-              listings.map((listing, index) => (
-                <li key={index}>{listing.title}</li>
-              ))
-            ) : (
-              <p>No listings found for the selected date.</p>
-            )}
-          </ul>
-          <CreateListingWithFileUpload selectedDate={selectedDate} />
+          {selectedDate && (
+            <>
+              <p>Selected Date: {selectedDate.toDateString()}</p>
+              {error && <p>Error: {error}</p>}
+              {/* Display entries here */}
+              {entries.length > 0 ? (
+              <ul>
+              {entries.map((entry, index) => (
+                <li key={index}>
+                  <p>Name: {entry.name}</p>
+                  <p>Notes: {entry.notes}</p>
+                  <p>Sunlight: {entry.sunlight}</p>
+                  <p>Watering: {entry.watering}</p>
+
+                  {entry.cloudinaryUrl && (
+                    <img src={entry.cloudinaryUrl} alt={entry.title} />
+                  )}
+                </li>
+              ))}
+            </ul>
+              ) : (
+                <p>No entries found for the selected date.</p>
+              )}
+              <button onClick={handleAddEntryClick}>Add Entry</button>
+              {showCreateForm && <CreateEntryWithFileUpload selectedDate={selectedDate} />}
+            </>
+          )}
         </div>
       ) : (
         <p>Please log in to view the calendar.</p>
       )}
     </div>
   );
+  
 };
 
 export default CalendarComponent;

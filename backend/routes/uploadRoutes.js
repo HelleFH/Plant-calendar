@@ -1,5 +1,5 @@
 const express = require('express');
-const { Listing } = require('../models/listingModel');
+const { Entry } = require('../models/entryModel');
 const multer = require('multer');
 const cloudinary = require('cloudinary').v2;
 const router = express.Router();
@@ -24,9 +24,9 @@ cloudinary.config({
 });
 const { generateDeletionToken } = require('../utils/tokenUtils'); 
 
-// Route to handle image upload and listing creation
+// Route to handle image upload and entry creation
 router.post('/upload', upload.single('file'), async (req, res) => {
-    const { title, description, location, date } = req.body; // Destructure from req.body, not req.file
+    const { name, notes, sunlight, watering, location, date } = req.body; // Destructure from req.body, not req.file
   
     // Check if date exists before accessing it
     if (!date) {
@@ -39,24 +39,26 @@ router.post('/upload', upload.single('file'), async (req, res) => {
     const result = await cloudinary.uploader.upload_stream({ resource_type: 'auto' }, async (error, result) => {
       if (error) {
         console.error('Error while uploading to Cloudinary:', error);
-        return res.status(400).json({ error: 'Error while uploading listing data. Try again later.' });
+        return res.status(400).json({ error: 'Error while uploading entry data. Try again later.' });
       }
   
       const deletionToken = generateDeletionToken();
   
-      const listing = new Listing({
-        title,
-        description,
+      const entry = new Entry({
+        name,
+        notes,
+        sunlight,
+        watering,
         location,
-        date, // Include date when creating the new listing
+        date, // Include date when creating the new entry
         cloudinaryUrl: result.secure_url,
         cloudinaryPublicId: result.public_id, 
         cloudinaryDeleteToken: deletionToken, 
       });
   
-      await listing.save();
+      await entry.save();
   
-      res.json({ msg: 'Listing data uploaded successfully.' });
+      res.json({ msg: 'Entry data uploaded successfully.' });
     }).end(buffer);
   });
   
