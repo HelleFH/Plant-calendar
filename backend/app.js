@@ -9,7 +9,18 @@ app.use(express.json());
 app.use(cors())
 app.use("/api/v1", mainRouter);
 
+
 const port = process.env.PORT || 3001;
+
+const corsOptions = {
+    origin: [' http://localhost:5173', 'https://react-listings-frontend.onrender.com'],
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+    optionsSuccessStatus: 204,
+  };
+
+  app.use(cors(corsOptions));
+
 
 const cloudinary = require('cloudinary').v2;
 

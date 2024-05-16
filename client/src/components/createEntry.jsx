@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { Form } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
-import ImageUpload from './imageUpload';
 import axios from 'axios';
 import SearchPlantAPI from './SearchPlantAPI'; // Import the SearchPlantAPI component
-import Modal from 'react-modal'; // Import Modal from react-modal
+import Modal from 'react-modal';
+import ImageUpload from './ImageUpload'; // Import Modal from react-modal
 
 // Set app element to prevent accessibility issue
 
@@ -20,7 +20,6 @@ const CreateEntryWithFileUpload = ({ selectedDate }) => {
   const [entry, setEntry] = useState({
     name: '',
     notes: '',
-    location: '',
     date: selectedDate,
     plantName: '', // Add plantName to entry state
     sunlight: '', // Add plantName to entry state
@@ -43,7 +42,6 @@ const CreateEntryWithFileUpload = ({ selectedDate }) => {
         formData.append('notes', entry.notes);
         formData.append('sunlight', entry.sunlight);
         formData.append('watering', entry.watering);
-        formData.append('location', entry.location);
         formData.append('date', entry.date); // Include the date field
         formData.append('username', localStorage.getItem('username')); // Include the username from local storage
     
@@ -87,6 +85,7 @@ const CreateEntryWithFileUpload = ({ selectedDate }) => {
     }
   };
 
+
   const handleInputChange = (event) => {
     setEntry({
       ...entry,
@@ -101,6 +100,12 @@ const CreateEntryWithFileUpload = ({ selectedDate }) => {
       sunlight: sunlight, // Save the selected plant sunlight in the entry
       watering: watering, // Save the selected plant watering in the entry
     });
+
+ 
+  };
+  const handleOpenModal = (e) => {
+    e.preventDefault(); // Prevent form submission
+    setShowModal(true); // Open the modal
   };
   return (
     <>
@@ -175,12 +180,12 @@ const CreateEntryWithFileUpload = ({ selectedDate }) => {
           </div>
           {/* Button to open the modal */}
           <div className='form-group'>
-            <button
-              className="mt-2 btn btn-primary"
-              onClick={() => setShowModal(true)}
-            >
-              Search Database
-            </button>
+          <button
+            className="mt-2 btn btn-primary"
+            onClick={handleOpenModal}
+          >
+            Search Database
+          </button>
           </div>
           <div className="form-group">
             <textarea
@@ -193,16 +198,7 @@ const CreateEntryWithFileUpload = ({ selectedDate }) => {
               style={{ height: '150px', verticalAlign: 'top' }}
             />
           </div>
-          <div className="form-group">
-            <input
-              type="text"
-              placeholder="Location"
-              name="location"
-              className="form-control"
-              value={entry.location}
-              onChange={handleInputChange}
-            />
-          </div>
+          
         </div>
         <div className='d-flex w-100 float-right justify-content-end gap-2'>
           <Link to="/" className="mt-4 mb-4 w-25 button button--blue">

@@ -26,7 +26,7 @@ const { generateDeletionToken } = require('../utils/tokenUtils');
 
 // Route to handle image upload and entry creation
 router.post('/upload', upload.single('file'), async (req, res) => {
-    const { name, notes, sunlight, watering, location, date } = req.body; // Destructure from req.body, not req.file
+    const { name, notes, sunlight, watering, date } = req.body; // Destructure from req.body, not req.file
   
     // Check if date exists before accessing it
     if (!date) {
@@ -49,7 +49,6 @@ router.post('/upload', upload.single('file'), async (req, res) => {
         notes,
         sunlight,
         watering,
-        location,
         date, // Include date when creating the new entry
         cloudinaryUrl: result.secure_url,
         cloudinaryPublicId: result.public_id, 

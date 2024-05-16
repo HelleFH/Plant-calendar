@@ -1,4 +1,4 @@
-const { Entry } = require('../models/entryModel');
+const { Entry } = require('../models/EntryModel');
 const cloudinary = require('cloudinary').v2;
 const { generateDeletionToken } = require('../utils/tokenUtils');
 
@@ -9,7 +9,7 @@ cloudinary.config({
 });
 
 const uploadController = async (req, res) => {
-    const { name, notes, sunlight, watering, location, date, username } = req.body;
+    const { name, notes, sunlight, watering, date, username } = req.body;
 
     // Check if username existss
     if (!username) {
@@ -37,7 +37,6 @@ const uploadController = async (req, res) => {
             notes,
             sunlight,
             watering,
-            location,
             date, // Include date when creating the new entry
             cloudinaryUrl: result.secure_url,
             cloudinaryPublicId: result.public_id,

@@ -1,6 +1,6 @@
 
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import { Dashboard, HomeLayout, Landing, Login, Logout, Register } from "./pages";
+import { Dashboard, HomeLayout, Landing, Login, Logout, Register} from "./pages";
 import CalendarComponent from "./pages/Calendar"
 import { ToastContainer, toast } from 'react-toastify';
 
@@ -32,7 +32,9 @@ const router = createBrowserRouter([
       {
         path: "logout",
         element: <Logout />,
-      }
+      },
+   
+
     ],
   },
 ]);

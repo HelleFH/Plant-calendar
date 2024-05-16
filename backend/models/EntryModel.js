@@ -5,8 +5,7 @@ const entrySchema = new mongoose.Schema({
     notes: { type: String, required: false },
     sunlight: { type: String, required: false },
     watering: { type: String, required: false },
-    location: { type: String, required: false },
-    cloudinaryUrl: { type: String },
+    cloudinaryUrl: { type: String, required:false, },
     cloudinaryPublicId: { type: String, required: false }, 
     cloudinaryDeleteToken: { type: String, required: false },
     date: { type: Date, required: true }, // Add date field
