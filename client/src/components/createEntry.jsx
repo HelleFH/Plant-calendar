@@ -56,7 +56,7 @@ const CreateEntryWithFileUpload = ({ selectedDate }) => {
       setFile(null);
       setPreviewSrc('');
       setIsPreviewAvailable(false);
-      navigate('/');
+      navigate('/calendar');
     } catch (error) {
       console.error('Error creating entry:', error);
     }
@@ -133,9 +133,9 @@ const CreateEntryWithFileUpload = ({ selectedDate }) => {
         <SearchPlantAPI onSelectPlant={() => {}} setShowModal={setShowModal} savePlantName={handleSavePlantName} />
       </Modal>
 
-      <Link to='/'>
+      <Link to='/calendar'>
         <button className='button mt-3 mb-3 btn btn-outline-warning float-right'>
-          Back to Entries
+          Back
         </button>
       </Link>
       <Form className="search-form" onSubmit={handleEntrySubmit} encType="multipart/form-data">
@@ -201,7 +201,7 @@ const CreateEntryWithFileUpload = ({ selectedDate }) => {
           
         </div>
         <div className='d-flex w-100 float-right justify-content-end gap-2'>
-          <Link to="/" className="mt-4 mb-4 w-25 button button--blue">
+          <Link to="/calendar" className="mt-4 mb-4 w-25 button button--blue">
             Cancel
           </Link>
           <button className="mt-4 mb-4 w-25 button button--orange" type="submit">

@@ -7,6 +7,8 @@ import getEntriesByDateAndUsername from '../components/GetEntriesByDateAndUserna
 import CalendarEntry from '../components/CalendarEntry';
 import DeleteConfirmationModal from '../components/DeleteConfirmationModal';
 import CreateEntryWithFileUpload from '../components/createEntry';
+import Slider from '../components/Slider';
+
 
 const CalendarComponent = () => {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -115,6 +117,8 @@ const CalendarComponent = () => {
       {loggedIn ? (
         <div>
           <h1>Calendar</h1>
+          <Slider id={1} />
+
           <Calendar
             value={selectedDate}
             onChange={handleDateChange}
