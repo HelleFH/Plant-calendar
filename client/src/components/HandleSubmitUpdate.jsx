@@ -1,37 +1,54 @@
-const handleSubmitUpdate = async (id, formData, entry, setFile, setPreviewSrc, navigate) => {
-    try {
-      let uploadResponse; 
-  
-      if (formData.get('file')) {
-        // If there's a new file, upload it first
-        uploadResponse = await axios.post(`${API_URL}/upload`, formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        });
-  
-        // Update entry data with new cloudinaryUrl
-        entry.cloudinaryUrl = uploadResponse.data.cloudinaryUrl;
-      }
-  
-      // Prepare data for updating the entry
-      const data = {
-        name: entry.name,
-        notes: entry.notes,
-        sunlight: entry.sunlight,
-        watering: entry.watering,
-        cloudinaryUrl: entry.cloudinaryUrl,
-        // Add other fields as needed
-      };
-  
-      // Send PUT request to update the entry
-      await axios.put(`${API_URL}/entries/${id}`, data);
-  
-      // Navigate to home page after successful update
-      navigate('/');
-    } catch (error) {
-      console.error('Error updating entry:', error);
-      // Handle error gracefully
+import axios from 'axios';
+
+const handleSubmitUpdate = async (id, editedEntry, file, selectedDate, onUpdateEntry, handleDeleteEntry) => {
+  try {
+    const data = {
+      name: editedEntry.name,
+      notes: editedEntry.notes,
+      sunlight: editedEntry.sunlight,
+      watering: editedEntry.watering,
+      date: selectedDate,
+      username: editedEntry.username.toString(),
+      cloudinaryUrl: editedEntry.cloudinaryUrl // Default to existing URL
+    };
+
+    // If there's a new file, upload it first
+    if (file) {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('name', editedEntry.name);
+      formData.append('notes', editedEntry.notes);
+      formData.append('sunlight', editedEntry.sunlight);
+      formData.append('watering', editedEntry.watering);
+      formData.append('username', editedEntry.username);
+      formData.append('date', editedEntry.date);
+
+      const uploadResponse = await axios.post(`http://localhost:3001/api/v1/upload`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      // Update cloudinaryUrl in the data
+      data.cloudinaryUrl = uploadResponse.data.cloudinaryUrl;
     }
-  };
-  
+
+    // Send PUT request to update the entry
+    const updateResponse = await axios.put(`http://localhost:3001/api/v1/entries/${id}`, data);
+
+    // Update the parent component with the new entry data
+    onUpdateEntry(updateResponse.data);
+
+    // Delete the old entry if the image was updated
+    if (file) {
+      await handleDeleteEntry(id);
+    }
+
+    return updateResponse.data;
+  } catch (error) {
+    console.error('Error updating entry:', error);
+    throw error; // Throw the error for the caller to handle
+  }
+};
+
+export default handleSubmitUpdate;

@@ -1,14 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
-import handleDeleteEntry from '../components/HandleDeleteEntry';
 import getEntriesByDateAndUsername from '../components/GetEntriesByDateAndUsername';
 import CalendarEntry from '../components/CalendarEntry';
-import DeleteConfirmationModal from '../components/DeleteConfirmationModal';
 import CreateEntryWithFileUpload from '../components/createEntry';
 import Slider from '../components/Slider';
-
 
 const CalendarComponent = () => {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -17,15 +13,11 @@ const CalendarComponent = () => {
   const [error, setError] = useState(null);
   const [highlightedDates, setHighlightedDates] = useState([]);
   const [showCreateForm, setShowCreateForm] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [idToDelete, setIdToDelete] = useState(null);
 
   useEffect(() => {
     const token = localStorage.getItem('auth');
     setLoggedIn(!!token);
   }, []);
-
-  const navigate = useNavigate();
 
   useEffect(() => {
     if (selectedDate) {
@@ -96,20 +88,15 @@ const CalendarComponent = () => {
     setShowCreateForm(true);
   };
 
-  const openDeleteModal = (id) => {
-    setIdToDelete(id);
-    setShowDeleteModal(true);
-  };
-
-  const closeDeleteModal = () => {
-    setIdToDelete(null);
-    setShowDeleteModal(false);
-  };
 
   const handleUpdateEntry = (updatedEntry) => {
     setEntries((prevEntries) =>
       prevEntries.map((entry) => (entry._id === updatedEntry._id ? updatedEntry : entry))
     );
+  };
+
+  const handleDeleteEntrySuccess = (deletedEntryId) => {
+    setEntries((prevEntries) => prevEntries.filter((entry) => entry._id !== deletedEntryId));
   };
 
   return (
@@ -132,15 +119,12 @@ const CalendarComponent = () => {
                 {entries.length > 0 ? (
                   <ul>
                     {entries.map((entry, index) => (
-                      
                       <CalendarEntry
                         key={index}
                         entry={entry}
                         onUpdateEntry={handleUpdateEntry}
-                        handleDeleteEntry={openDeleteModal}
+                        onDeleteEntry={handleDeleteEntrySuccess} // Pass the delete handler
                         selectedDate={selectedDate}
-                        setEntries={setEntries} // Pass setEntries here
-
                       />
                     ))}
                   </ul>
@@ -152,7 +136,6 @@ const CalendarComponent = () => {
             <button onClick={handleAddEntryClick}>Add Entry</button>
             {showCreateForm && <CreateEntryWithFileUpload selectedDate={selectedDate} />}
           </div>
-     
         </div>
       ) : (
         <p>Please log in to view the calendar.</p>

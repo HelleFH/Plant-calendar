@@ -39,7 +39,10 @@ const Slider = () => {
     return (
         <div className="slider">
             {quotes.length > 0 && (
-                <div className="quote">{quotes[currentQuoteIndex].quote}</div>
+                <div className="quote">
+                    <p>{quotes[currentQuoteIndex].quote}</p>
+                    <p><strong>- {quotes[currentQuoteIndex].author}</strong></p>
+                </div>
             )}
             <button className="pause" onClick={togglePause}>
                 {isPaused ? 'Resume' : 'Pause'}

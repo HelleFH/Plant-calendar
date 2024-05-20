@@ -33,7 +33,7 @@ const Login = () => {
         localStorage.setItem('auth', JSON.stringify(token));
         localStorage.setItem('username', JSON.stringify(username)); // Store username in local storage
         toast.success("Login successful");
-        navigate("/dashboard");
+        navigate("/calendar");
       } catch (err) {
         console.log(err);
         toast.error(err.message);

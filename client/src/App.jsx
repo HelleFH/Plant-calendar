@@ -1,6 +1,6 @@
 
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import { Dashboard, HomeLayout, Landing, Login, Logout, Register} from "./pages";
+import { HomeLayout, Landing, Login, Logout, Register} from "./pages";
 import CalendarComponent from "./pages/Calendar"
 import { ToastContainer, toast } from 'react-toastify';
 
@@ -20,10 +20,6 @@ const router = createBrowserRouter([
       {
         path: "register",
         element: <Register />,
-      },
-      {
-        path: "dashboard",
-        element: <Dashboard />,
       },
       {
         path: "calendar",

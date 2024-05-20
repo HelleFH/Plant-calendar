@@ -32,14 +32,6 @@ const login = async (req, res) => {
   }
 };
 
-const dashboard = async (req, res) => {
-  const luckyNumber = Math.floor(Math.random() * 100);
-
-  res.status(200).json({
-    msg: `Hello, ${req.user.name}`,
-    secret: `Here is your authorized data, your lucky number is ${luckyNumber}`,
-  });
-};
 
 const getAllUsers = async (req, res) => {
   let users = await User.find({});
@@ -70,6 +62,5 @@ const register = async (req, res) => {
 module.exports = {
   login,
   register,
-  dashboard,
   getAllUsers,
 };

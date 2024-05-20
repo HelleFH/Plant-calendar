@@ -5,6 +5,76 @@
   box-sizing: border-box;
   padding: 0px;
   margin: 0px;
+
+  
+}
+
+.topnav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #333;
+  padding: 10px 20px;
+}
+
+.topnav a {
+  color: white;
+  text-decoration: none;
+  padding: 14px 20px;
+  display: block;
+}
+
+.topnav a:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+.topnav-left .topnav-logo {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.topnav-right {
+  display: flex;
+  align-items: center;
+}
+
+.topnav-links {
+  display: flex;
+}
+
+.topnav-links a {
+  padding: 10px 15px;
+}
+
+.topnav-icon {
+  display: none;
+  cursor: pointer;
+}
+
+.topnav-icon i {
+  font-size: 24px;
+}
+
+/* Responsive Styles */
+@media screen and (max-width: 768px) {
+  .topnav-links {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    position: absolute;
+    top: 60px;
+    left: 0;
+    background-color: #333;
+  }
+
+  .topnav-links.open {
+    display: flex;
+  }
+
+  .topnav-icon {
+    display: block;
+  }
 }
 .modal {
   display: block;
