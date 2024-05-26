@@ -1,4 +1,6 @@
 const { Entry } = require('../models/EntryModel');
+const { Reminder } = require('../models/ReminderModel');
+
 const cloudinary = require('cloudinary').v2;
 const { generateDeletionToken } = require('../utils/tokenUtils');
 
@@ -7,6 +9,7 @@ cloudinary.config({
     api_key: process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_API_SECRET,
 });
+
 
 const uploadController = async (req, res) => {
     const { name, notes, sunlight, watering, date, username } = req.body;
@@ -76,5 +79,31 @@ const getEntriesByDate = async (req, res) => {
     }
 };
 
+const getRemindersByDate = async (req, res) => {
+    try {
+        // Extract date and username from request parameters
+        const { date } = req.params;
+        const { username } = req.query;
 
-module.exports = { uploadController, getEntriesByDate };
+        // Parse date string into JavaScript Date object
+        const searchDate = new Date(date);
+
+        // Get entries for the specified date and username
+        const reminders = await Reminder.find({ 
+            date: { 
+                $gte: searchDate, 
+                $lt: new Date(searchDate.getTime() + 24 * 60 * 60 * 1000) 
+            },
+            username: username // Add username as a condition
+        });
+
+        // Send entries as response
+        res.json(reminders);
+    } catch (error) {
+        console.error('Error in getting entries by date:', error);
+        return res.status(500).json({ error: 'Internal server error.' });
+    }
+};
+
+
+module.exports = { uploadController, getEntriesByDate, getRemindersByDate };

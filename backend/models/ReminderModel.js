@@ -1,13 +1,16 @@
+// models/ReminderModel.js
 const mongoose = require('mongoose');
 
-const ReminderSchema = new mongoose.Schema({
-    title: { type: String, required: true },
-    notes: { type: String, required: false },
-    entryLink: { type: String, required: false },
-    date: { type: Date, required: true },
-    username: { type: String, required: true } 
+const reminderSchema = new mongoose.Schema({
+  date: { type: Date, required: true }, // Add date field
+  time: { type: String, required: true },
+  description: { type: String, required: true },
+  username: { type: String, required: true },
+
+  entryId: { type: mongoose.Schema.Types.ObjectId, ref: 'Entry', required: true },
+  // Include any other necessary fields
 });
 
-const Reminder = mongoose.model('Reminder', ReminderSchema);
+const Reminder = mongoose.model('Reminder', reminderSchema);
 
 module.exports = { Reminder };

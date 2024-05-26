@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ImageUpload from '../components/ImageUpload';
 import DeleteConfirmationModal from './DeleteConfirmationModal';
 import handleSubmitUpdate from './HandleSubmitUpdate';
@@ -17,7 +17,15 @@ const CalendarEntry = ({
   const [previewSrc, setPreviewSrc] = useState(entry.cloudinaryUrl);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [idToDelete, setIdToDelete] = useState(null);
-  const [isReminderModalOpen, setIsReminderModalOpen] = useState(false); // State for reminder modal
+  const [isReminderModalOpen, setIsReminderModalOpen] = useState(false);
+  const [username, setUsername] = useState('');
+
+  useEffect(() => {
+    const storedUsername = localStorage.getItem('username');
+    if (storedUsername) {
+      setUsername(storedUsername);
+    }
+  }, []);
 
   const handleChange = (e) => {
     setEditedEntry({ ...editedEntry, [e.target.name]: e.target.value });
@@ -76,13 +84,12 @@ const CalendarEntry = ({
           <p>Watering: {entry.watering}</p>
           {entry.cloudinaryUrl && <img src={entry.cloudinaryUrl} alt={entry.name} />}
           <button onClick={() => setIsEditing(true)}>Edit Entry</button>
-          <button onClick={toggleReminderModal}>Set Reminder</button> {/* Button to open reminder modal */}
+          <button onClick={toggleReminderModal}>Set Reminder</button>
           <button onClick={() => {
             setIdToDelete(entry._id);
             setShowDeleteModal(true);
           }}>Delete Entry</button>
 
-          {/* Delete confirmation modal */}
           {showDeleteModal && (
             <DeleteConfirmationModal
               isOpen={showDeleteModal}
@@ -94,8 +101,7 @@ const CalendarEntry = ({
             />
           )}
 
-          {/* Reminder modal */}
-          <SetCalendarReminder isOpen={isReminderModalOpen} onClose={toggleReminderModal} />
+          <SetCalendarReminder isOpen={isReminderModalOpen} onClose={toggleReminderModal} date={selectedDate} entryId={entry._id} username={username} />
         </>
       )}
     </li>

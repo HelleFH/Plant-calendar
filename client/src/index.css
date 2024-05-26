@@ -115,6 +115,10 @@
 .highlighted {
   background-color: yellow;
 }
+
+.highlighted-reminder {
+  background-color: blue;
+}
 body{
   font-family: "Poppins", sans-serif;
   height: 100vh;
