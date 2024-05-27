@@ -18,7 +18,6 @@ const TopNav = () => {
         <div className={`topnav-links ${isMenuOpen ? 'open' : ''}`}>
           <Link to="/" onClick={toggleMenu}>Home</Link>
           <Link to="/about" onClick={toggleMenu}>About</Link>
-          <Link to="/services" onClick={toggleMenu}>Services</Link>
           <Link to="/contact" onClick={toggleMenu}>Contact</Link>
         </div>
         <div className="topnav-icon" onClick={toggleMenu}>

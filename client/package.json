@@ -13,6 +13,7 @@
     "axios": "^1.6.3",
     "env": "^0.0.2",
     "mdb-react-ui-kit": "^8.0.0",
+    "moment": "^2.30.1",
     "react": "^18.2.0",
     "react-bootstrap": "^2.10.2",
     "react-calendar": "^4.8.0",

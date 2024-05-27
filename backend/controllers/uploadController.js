@@ -84,6 +84,7 @@ const getRemindersByDate = async (req, res) => {
         // Extract date and username from request parameters
         const { date } = req.params;
         const { username } = req.query;
+        
 
         // Parse date string into JavaScript Date object
         const searchDate = new Date(date);

@@ -30,7 +30,38 @@ const setReminder = async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 };
+const getRemindersByEntryId = async (req, res) => {
+  try {
+      const entryId = req.params.entryId;
+      const reminders = await Reminder.find({ entryId });
+      res.status(200).json(reminders);
+  } catch (error) {
+      console.error('Error fetching reminders by entry ID:', error);
+      res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+
+const deleteReminder = async (req, res) => {
+  const { id } = req.params;
+  
+    try {
+      const deletedReminder = await Reminder.findByIdAndDelete(id);
+  
+      if (!deletedReminder) {
+        return res.status(404).json({ error: 'Entry not found' });
+      }
+  
+  
+      res.json({ message: 'Reminder deleted successfully', deletedReminder });
+    } catch (error) {
+      console.error('Error deleting reminder:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  };
 
 module.exports = {
   setReminder,
+  deleteReminder,
+  getRemindersByEntryId
 };

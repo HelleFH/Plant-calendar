@@ -8,6 +8,7 @@ const reminderSchema = new mongoose.Schema({
   username: { type: String, required: true },
 
   entryId: { type: mongoose.Schema.Types.ObjectId, ref: 'Entry', required: true },
+
   // Include any other necessary fields
 });
 

@@ -65,18 +65,18 @@ const updateEntry = async (req, res) => {
     res.status(500).json({ error: 'An error occurred while updating entry' });
   }
 };
+// Controller function to get entry details by ID
 const getEntryById = async (req, res) => {
-  const { id } = req.params;
-
   try {
-    const entry = await Entry.findById(id);
+    const entryId = req.params.id; // Adjusted to use req.params.id
+    const entry = await Entry.findById(entryId);
     if (!entry) {
-      return res.status(404).json({ error: 'Entry not found' });
+      return res.status(404).json({ message: 'Entry not found' });
     }
-    res.json({ entry });
+    res.status(200).json(entry);
   } catch (error) {
     console.error('Error fetching entry:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ message: 'Internal server error' });
   }
 };
 

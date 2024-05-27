@@ -9,6 +9,16 @@
   
 }
 
+.calendar-container {display:flex;flex-direction: column;justify-content: center; align-items: center ;}
+#root  {
+  background-image: url('../public/images/bg.jpg');
+  background-size: cover; /* or background-size: contain; */
+
+  /* Other CSS properties */
+}
+
+
+
 .topnav {
   display: flex;
   justify-content: space-between;

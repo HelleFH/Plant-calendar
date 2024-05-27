@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import ImageUpload from '../components/ImageUpload';
 import DeleteConfirmationModal from './DeleteConfirmationModal';
 import handleSubmitUpdate from './HandleSubmitUpdate';
 import handleDeleteEntry from './HandleDeleteEntry';
 import SetCalendarReminder from './SetCalendarReminder';
+import handleDeleteReminder from './HandleDeleteReminder';
+import moment from 'moment';
+
 
 const CalendarEntry = ({
   entry,
@@ -19,6 +23,7 @@ const CalendarEntry = ({
   const [idToDelete, setIdToDelete] = useState(null);
   const [isReminderModalOpen, setIsReminderModalOpen] = useState(false);
   const [username, setUsername] = useState('');
+  const [reminders, setReminders] = useState([]);
 
   useEffect(() => {
     const storedUsername = localStorage.getItem('username');
@@ -26,6 +31,21 @@ const CalendarEntry = ({
       setUsername(storedUsername);
     }
   }, []);
+
+  useEffect(() => {
+    const fetchRemindersByEntryId = async () => {
+      try {
+        const response = await axios.get(`http://localhost:3001/api/v1/reminders/entry/${entry._id}`);
+        setReminders(response.data);
+      } catch (error) {
+        console.error('Error fetching reminders by entry ID:', error);
+      }
+    };
+
+    if (entry._id) {
+      fetchRemindersByEntryId();
+    }
+  }, [entry._id]);
 
   const handleChange = (e) => {
     setEditedEntry({ ...editedEntry, [e.target.name]: e.target.value });
@@ -46,6 +66,8 @@ const CalendarEntry = ({
   const toggleReminderModal = () => {
     setIsReminderModalOpen(!isReminderModalOpen);
   };
+
+
 
   return (
     <li>
@@ -102,6 +124,17 @@ const CalendarEntry = ({
           )}
 
           <SetCalendarReminder isOpen={isReminderModalOpen} onClose={toggleReminderModal} date={selectedDate} entryId={entry._id} username={username} />
+          
+          <p>Reminders:</p>
+          <ul>
+  {reminders.map((reminder) => (
+    <li key={reminder._id}>
+      {moment(reminder.date).format('MMMM Do YYYY, h:mm:ss a')}
+      <button onClick={() => handleDeleteReminder(reminder._id)}>Delete Reminder</button>
+    </li>
+  ))}
+</ul>
+
         </>
       )}
     </li>
