@@ -25,7 +25,7 @@ export default function SearchPlantAPI({ onSelectPlant, setShowModal, savePlantN
 
   const handleSelectPlant = (plant) => {
     onSelectPlant(plant);
-    savePlantName(plant.common_name, plant.sunlight, plant.watering); // Pass the selected plant name, sunlight, and watering to the function in CreateEntryWithFileUpload
+    savePlantName(plant.common_name, plant.sunlight, plant.water); // Pass the selected plant name, sunlight, and water to the function in CreateEntryWithFileUpload
     setShowModal(false);
   };
 
@@ -44,7 +44,7 @@ export default function SearchPlantAPI({ onSelectPlant, setShowModal, savePlantN
             <div key={plant.id}>
               <h3>{plant.common_name}</h3>
               <h3>{plant.sunlight}</h3>
-              <h3>{plant.watering}</h3>
+              <h3>{plant.water}</h3>
 
 
               <button onClick={() => handleSelectPlant(plant)}>Select</button>

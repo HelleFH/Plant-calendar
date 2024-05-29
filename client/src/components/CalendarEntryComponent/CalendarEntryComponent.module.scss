@@ -1,0 +1,87 @@
+@import "../../styles/variables";
+@import "../../styles/mixins";
+
+.CalendarEntry {
+    padding: 1em;
+}
+.deleteButton {
+    @include flex-center;
+    background: none;
+    border: none;
+    color: $background-color; // Change the color as needed
+    cursor: pointer;
+    padding: 8px; // Adjust padding as needed
+    transition: color 0.3s ease;
+    font-size: $font-size-base;
+    text-decoration: underline;
+
+    &:hover {
+        color: darken(#ff6347, 10%);
+    }
+
+    .fa-trash {
+        font-size: 1.5rem; // Adjust the icon size as needed
+    }
+}
+.lineContainer {
+    padding: 1em 0.5em 1em 0.5em;
+}
+.buttonContainer {
+    gap: 1em;
+    margin-top: 2em;
+}
+
+p {
+    @include flex-right;
+}
+span {
+    background-color: white;
+    width: 100%;
+    margin: 0.5em;
+    padding: 0.2em;
+}
+
+.editForm {
+   
+    height: 100%;
+}
+.editForm div {
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+}
+.CalendarEntry {
+    padding: 10px;
+    margin-bottom: 10px;
+    width: 80vw;
+    border-radius: $border-radius;
+    list-style: none;
+    background-color: lighten($tertiary-color, 4%);
+    color: $secondary-color;
+    height: 100%;
+
+    .entryName {
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    .entryDetails {
+        overflow: hidden;
+        transition: height 0.3s ease-out;
+        height: 0;
+        @include flex-right;
+    }
+
+    .expanded {
+        @include flex-column-space-evenly;
+        height: 100%;
+    }
+
+    button {
+    }
+
+    img {
+        max-width: 100%;
+        height: auto;
+        border-radius: $border-radius;
+    }
+}

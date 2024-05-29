@@ -1,0 +1,50 @@
+@import "../../styles/variables";
+@import "../../styles/mixins";
+
+
+.calendarHeader {
+    background-color: $text-color;
+    color: $secondary-color;
+}
+.backgroundContainer {
+    background-image: url("../public/images/bg.jpg");
+    background-size: cover;
+    margin-bottom: 1em;
+    gap:1em;
+}
+
+.addEntryContainer {
+    @include flex-row;
+    background-color: $background-color;
+    gap: 1em;
+    width: 100%;
+    color: rgb(247, 245, 233);
+    border-radius: 5px;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    padding: 1em;
+    align-items: center;
+}
+
+.tile {
+    background: white;
+    color: $text-color;
+    border-radius: $border-radius;
+    padding: $padding-base;
+
+    &:enabled:hover,
+    &:enabled:focus {
+        background: lighten($background-color, 10%);
+        color: $text-color;
+    }
+
+    &--now {
+        background: $primary-color;
+        color: white;
+    }
+
+    &--active {
+        background: $secondary-color;
+        color: white;
+    }
+}

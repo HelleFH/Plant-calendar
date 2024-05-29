@@ -1,8 +1,12 @@
 
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { HomeLayout, Landing, Login, Logout, Register} from "./pages";
-import CalendarComponent from "./pages/Calendar"
+import CalendarComponent from "./pages/CalendarView/Calendar";
 import { ToastContainer, toast } from 'react-toastify';
+import './styles/main.scss';
+import './styles/global-styles.scss'; // Import global styles
+
+
 
 const router = createBrowserRouter([
   {

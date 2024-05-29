@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
-import useEntries from '../components/useEntries';
-import useReminders from '../components/useReminders';
-import CalendarEntry from '../components/CalendarEntry';
-import CalendarReminder from '../components/CalendarReminder';
-import CreateEntryWithFileUpload from '../components/createEntry';
-import Slider from '../components/Slider';
+import useEntries from '../../components/useEntries';
+import useReminders from '../../components/useReminders';
+import CalendarEntry from '../../components/CalendarEntryComponent/CalendarEntry';
+import CalendarReminder from '../../components/CalendarReminder';
+import CreateEntryWithFileUpload from '../../components/createEntry';
+import Slider from '../../components/SliderComponent/Slider';
+import styles from './CalendarView.module.scss';
+import Navbar from '../../components/Navbar';
+
 
 const CalendarComponent = () => {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -60,54 +63,57 @@ const CalendarComponent = () => {
   };
 
   return (
+    
     <div>
+                <Navbar />
+
       {loggedIn ? (
-        <div className='calendar-container'>
-          <h1>Calendar</h1>
+        <div className='flex-center'>
+          <div className={`flex-center width-100 ${styles.backgroundContainer}`}>
           <Slider id={1} />
           <Calendar value={selectedDate} onChange={handleDateChange} tileClassName={tileClassName} />
-          <div>
-            {selectedDate && (
-              <>
-                <p>Selected Date: {selectedDate.toDateString()}</p>
-                {entriesError && <p>Error: {entriesError}</p>}
-                {remindersError && <p>Error: {remindersError}</p>}
-                {entries.length > 0 ? (
-                  <ul>
-                    {entries.map((entry, index) => (
-                      <CalendarEntry
-                        key={index}
-                        entry={entry}
-                        onUpdateEntry={handleUpdateEntry}
-                        onDeleteEntry={handleDeleteEntrySuccess}
-                        selectedDate={selectedDate}
-                      />
-                    ))}
-                  </ul>
-                ) : (
-                  <p>No entries found for the selected date.</p>
-                )}
-                {reminders.length > 0 ? (
-                  <ul>
-                    {reminders.map((reminder, index) => (
-                      <CalendarReminder
-                        key={index}
-                        reminder={reminder}
-                        onDeleteReminder={handleDeleteReminderSuccess}
-                        selectedDate={selectedDate}
-                        onSelectDate={handleDateChange}
-                      />
-                    ))}
-                  </ul>
-                ) : (
-                  <p>No reminders found for the selected date.</p>
-                )}
-              </>
-            )}
-            <button onClick={handleAddEntryClick}>Add Entry</button>
-            {/* Render the modal with the appropriate props */}
-            <CreateEntryWithFileUpload isOpen={isCreateEntryModalOpen} onClose={handleCloseModal} selectedDate={selectedDate} />
+
+          {selectedDate && (
+            <div className={styles.addEntryContainer}>
+              <p className={styles.selectedDate}>{selectedDate.toDateString()}</p>
+              <button className={`primary-button ${styles.addEntryButton}`} onClick={handleAddEntryClick}>Add Entry</button>
+            </div>
+          )}
           </div>
+          {entriesError && <p>Error: {entriesError}</p>}
+          {remindersError && <p>Error: {remindersError}</p>}
+
+          {entries.length > 0 && (
+            <ul>
+              {entries.map((entry, index) => (
+                <CalendarEntry
+                  className={styles.calendarEntry}
+                  key={index}
+                  entry={entry}
+                  onUpdateEntry={handleUpdateEntry}
+                  onDeleteEntry={handleDeleteEntrySuccess}
+                  selectedDate={selectedDate}
+                />
+              ))}
+            </ul>
+          )}
+
+          {reminders.length > 0 && (
+            <ul>
+              {reminders.map((reminder, index) => (
+                <CalendarReminder
+                  className={styles.calendarReminder}
+                  key={index}
+                  reminder={reminder}
+                  onDeleteReminder={handleDeleteReminderSuccess}
+                  selectedDate={selectedDate}
+                  onSelectDate={handleDateChange}
+                />
+              ))}
+            </ul>
+          )}
+
+          <CreateEntryWithFileUpload isOpen={isCreateEntryModalOpen} onClose={handleCloseModal} selectedDate={selectedDate} />
         </div>
       ) : (
         <p>Please log in to view the calendar.</p>

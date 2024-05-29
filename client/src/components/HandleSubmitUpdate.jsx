@@ -6,7 +6,7 @@ const handleSubmitUpdate = async (id, editedEntry, file, selectedDate, onUpdateE
       name: editedEntry.name,
       notes: editedEntry.notes,
       sunlight: editedEntry.sunlight,
-      watering: editedEntry.watering,
+      water: editedEntry.water,
       date: selectedDate,
       username: editedEntry.username.toString(),
       cloudinaryUrl: editedEntry.cloudinaryUrl // Default to existing URL
@@ -19,7 +19,7 @@ const handleSubmitUpdate = async (id, editedEntry, file, selectedDate, onUpdateE
       formData.append('name', editedEntry.name);
       formData.append('notes', editedEntry.notes);
       formData.append('sunlight', editedEntry.sunlight);
-      formData.append('watering', editedEntry.watering);
+      formData.append('water', editedEntry.water);
       formData.append('username', editedEntry.username);
       formData.append('date', editedEntry.date);
 

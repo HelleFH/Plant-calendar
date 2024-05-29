@@ -7,10 +7,12 @@ const useReminders = (selectedDate) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchReminders = async (date) => {
+    const fetchRemindersForSelectedDate = async () => {
       try {
-        const formattedDate = date.toISOString().split('T')[0];
         const username = localStorage.getItem('username');
+        if (!username) return;
+
+        const formattedDate = selectedDate.toDateString(); // Use the same format as entries
         const remindersData = await getRemindersByDateAndUsername(formattedDate, username);
         setReminders(remindersData);
       } catch (error) {
@@ -20,12 +22,12 @@ const useReminders = (selectedDate) => {
     };
 
     if (selectedDate) {
-      fetchReminders(selectedDate);
+      fetchRemindersForSelectedDate();
     }
   }, [selectedDate]);
 
   useEffect(() => {
-    const fetchAndSaveReminderDates = async () => {
+    const fetchAndSaveReminderDatesForMonth = async () => {
       try {
         const username = localStorage.getItem('username');
         if (!username) return;
@@ -40,25 +42,25 @@ const useReminders = (selectedDate) => {
           currentDate.setDate(currentDate.getDate() + 1);
         }
 
-        const highlightedReminderDates = [];
+        const highlightedDates = [];
         for (const date of datesInRange) {
-          const formattedDate = date.toISOString().split('T')[0];
+          const formattedDate = date.toDateString(); // Use the same format as entries
           const remindersData = await getRemindersByDateAndUsername(formattedDate, username);
           if (remindersData.length > 0) {
-            highlightedReminderDates.push(date.toDateString());
+            highlightedDates.push(formattedDate);
           }
         }
 
-        setHighlightedReminderDates(highlightedReminderDates);
-        localStorage.setItem('highlightedReminderDates', JSON.stringify(highlightedReminderDates));
+        setHighlightedReminderDates(highlightedDates);
+        localStorage.setItem('highlightedReminderDates', JSON.stringify(highlightedDates));
       } catch (error) {
-        console.error('Error occurred while fetching reminders:', error);
-        setError('An error occurred while fetching reminders.');
+        console.error('Error occurred while fetching reminder dates:', error);
+        setError('An error occurred while fetching reminder dates.');
       }
     };
 
     if (selectedDate) {
-      fetchAndSaveReminderDates();
+      fetchAndSaveReminderDatesForMonth();
     }
   }, [selectedDate]);
 

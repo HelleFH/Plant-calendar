@@ -22,7 +22,7 @@ const handleFileUpload = async (file) => {
           name: "Your Name",
           notes: "Your Notes",
           sunlight: "Sunlight",
-          watering: "Watering",
+          water: "Water",
           date: new Date().toISOString(),
           username: username // Pass the username retrieved from local storage
         }

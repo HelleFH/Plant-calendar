@@ -29,7 +29,7 @@ const { id } = req.params;
 
 const updateEntry = async (req, res) => {
   const { id } = req.params;
-  const { name, notes, sunlight, watering, cloudinaryUrl } = req.body;
+  const { name, notes, sunlight, water, cloudinaryUrl } = req.body;
 
   try {
     let existingEntry = await Entry.findById(id);
@@ -43,7 +43,7 @@ const updateEntry = async (req, res) => {
         name,
         notes,
         sunlight,
-        watering,
+        water,
         cloudinaryUrl,
         date: existingEntry.date,
         username: existingEntry.username,
@@ -54,7 +54,7 @@ const updateEntry = async (req, res) => {
     existingEntry.name = name;
     existingEntry.notes = notes;
     existingEntry.sunlight = sunlight;
-    existingEntry.watering = watering;
+    existingEntry.water = water;
     existingEntry.cloudinaryUrl = cloudinaryUrl;
 
     existingEntry = await existingEntry.save();

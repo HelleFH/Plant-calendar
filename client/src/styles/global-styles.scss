@@ -1,0 +1,40 @@
+@import "../styles/variables";
+@import "../styles/mixins";
+
+.primary-button {
+    @include button-styles(darken($tertiary-color, 2%), $secondary-color);
+}
+.secondary-button {
+    @include button-styles($background-color, $tertiary-color);
+}
+.width-100 {
+    width: 100%;
+}
+.flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.flex-right {
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: column;
+    width: 100%;
+}
+
+.flex-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: row;
+    width: 100%;
+}
+
+.margin-top {
+    margin-top: 1em;
+}
+.margin-bottom {
+    margin-bottom: 1em;
+}

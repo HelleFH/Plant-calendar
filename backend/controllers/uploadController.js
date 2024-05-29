@@ -12,7 +12,7 @@ cloudinary.config({
 
 
 const uploadController = async (req, res) => {
-    const { name, notes, sunlight, watering, date, username } = req.body;
+    const { name, notes, sunlight, water, date, username } = req.body;
 
     // Check if username existss
     if (!username) {
@@ -39,7 +39,7 @@ const uploadController = async (req, res) => {
             name,
             notes,
             sunlight,
-            watering,
+            water,
             date, // Include date when creating the new entry
             cloudinaryUrl: result.secure_url,
             cloudinaryPublicId: result.public_id,

@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPause, faPlay } from '@fortawesome/free-solid-svg-icons';
+import styles from '../SliderComponent/SliderComponent.module.scss';
 
 const Slider = () => {
     const [quotes, setQuotes] = useState([]);
@@ -8,7 +11,7 @@ const Slider = () => {
     useEffect(() => {
         const fetchQuotes = async () => {
             try {
-                const response = await fetch('/data/quotes.json'); // Adjust the path
+                const response = await fetch('/data/quotes.json'); 
                 const data = await response.json();
                 setQuotes(data);
                 setCurrentQuoteIndex(Math.floor(Math.random() * data.length)); // Set random initial index
@@ -26,7 +29,7 @@ const Slider = () => {
         if (!isPaused && quotes.length > 0) {
             intervalId = setInterval(() => {
                 setCurrentQuoteIndex((prevIndex) => (prevIndex + 1) % quotes.length);
-            }, 5000);
+            }, 20000);
         }
 
         return () => clearInterval(intervalId);
@@ -37,16 +40,18 @@ const Slider = () => {
     };
 
     return (
-        <div className="slider">
+        <div className={styles.slider}>
             {quotes.length > 0 && (
-                <div className="quote">
-                    <p>{quotes[currentQuoteIndex].quote}</p>
-                    <p><strong>- {quotes[currentQuoteIndex].author}</strong></p>
+                <div className={styles.quote}>
+                    <p className={styles.quoteText}>{quotes[currentQuoteIndex].quote}</p>
+                    <p className={styles.quoteAuthor} ><strong>- {quotes[currentQuoteIndex].author}</strong></p>
                 </div>
             )}
-            <button className="pause" onClick={togglePause}>
-                {isPaused ? 'Resume' : 'Pause'}
-            </button>
+            <FontAwesomeIcon
+                icon={isPaused ? faPlay : faPause}
+                className={styles.pause}
+                onClick={togglePause}
+            />
         </div>
     );
 };

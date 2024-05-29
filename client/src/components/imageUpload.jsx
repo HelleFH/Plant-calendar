@@ -26,17 +26,17 @@ const ImageUpload = ({ onDrop, file, previewSrc, isPreviewAvailable }) => {
     isPreviewAvailable: PropTypes.bool,  // Change to bool
   };
   return (
-    <div className="upload-section w-100">
+    <div className="upload-section">
       <div
         className='upload-zone'
         style={{ cursor: 'pointer' }}
         onDragOver={handleDragOver}
         onDrop={handleDrop}
       >
-        <div className='bg-light text-dark mt-2 mb-2 w-75  p-1'>
+        <div>
           <input
             type="file"
-            className='text-dark ml-1'
+            className='margin-top'
             onChange={handleFileChange}
             accept="image/*"
           />
@@ -45,7 +45,7 @@ const ImageUpload = ({ onDrop, file, previewSrc, isPreviewAvailable }) => {
 
       {previewSrc ? (
         isPreviewAvailable ? (
-          <div className="image-preview">
+          <div className="image-preview margin-top">
             <img className="preview-image" src={previewSrc} alt="Preview" />
           </div>
         ) : (

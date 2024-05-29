@@ -1,0 +1,32 @@
+@import "../../styles/variables";
+@import "../../styles/mixins";
+
+.slider {
+  @include flex-row-center;
+  width: 100vw;
+  background-color: $background-color;
+  font-size: $font-size-small;
+  border-radius: $border-radius;
+  padding: 0.5em;
+  color: $text-color;
+  height: 80px;
+  display: flex;
+  text-align: center;
+}
+.quote {
+  @include flex-center;
+  margin: 0 auto;
+  height: 100%;
+  padding: 0 1em 0 1em;
+}
+.quoteText {
+  font-style: italic;
+  margin: auto;
+}
+
+.pause {
+  margin-left: auto;
+  width: 10px;
+  position: absolute;
+  right: 5px;
+}
