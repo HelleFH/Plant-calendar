@@ -7,6 +7,8 @@
     color: $secondary-color;
 }
 .backgroundContainer {
+    @include flex-center;
+    width:100%;
     background-image: url("../public/images/bg.jpg");
     background-size: cover;
     margin-bottom: 1em;
@@ -20,7 +22,6 @@
     width: 100%;
     color: rgb(247, 245, 233);
     border-radius: 5px;
-    margin-top: 1em;
     margin-bottom: 1em;
     padding: 1em;
     align-items: center;
@@ -48,3 +49,4 @@
         color: white;
     }
 }
+.reminderList {width:100%;}

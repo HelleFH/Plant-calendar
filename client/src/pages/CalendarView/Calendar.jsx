@@ -4,8 +4,8 @@ import 'react-calendar/dist/Calendar.css';
 import useEntries from '../../components/useEntries';
 import useReminders from '../../components/useReminders';
 import CalendarEntry from '../../components/CalendarEntryComponent/CalendarEntry';
-import CalendarReminder from '../../components/CalendarReminder';
-import CreateEntryWithFileUpload from '../../components/createEntry';
+import CalendarReminder from '../../components/CalendarReminder/CalendarReminder';
+import CreateEntryWithFileUpload from '../../components/CreateEntryComponent/createEntry';
 import Slider from '../../components/SliderComponent/Slider';
 import styles from './CalendarView.module.scss';
 import Navbar from '../../components/Navbar';
@@ -69,7 +69,7 @@ const CalendarComponent = () => {
 
       {loggedIn ? (
         <div className='flex-center'>
-          <div className={`flex-center width-100 ${styles.backgroundContainer}`}>
+          <div className={styles.backgroundContainer}>
           <Slider id={1} />
           <Calendar value={selectedDate} onChange={handleDateChange} tileClassName={tileClassName} />
 
@@ -99,7 +99,7 @@ const CalendarComponent = () => {
           )}
 
           {reminders.length > 0 && (
-            <ul>
+            <ul className={styles.reminderList}>
               {reminders.map((reminder, index) => (
                 <CalendarReminder
                   className={styles.calendarReminder}

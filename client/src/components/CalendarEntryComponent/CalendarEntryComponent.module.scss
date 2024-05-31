@@ -26,26 +26,29 @@
 .lineContainer {
     padding: 1em 0.5em 1em 0.5em;
 }
-.buttonContainer {
-    gap: 1em;
-    margin-top: 2em;
+.searchModal {
+    background-color: red;
+    z-index: 1000; /* ensure modal appears on top of everything */
 }
-
-p {
-    @include flex-right;
-}
-span {
+.EntryFormContainer span {
     background-color: white;
     width: 100%;
     margin: 0.5em;
     padding: 0.2em;
+    font-weight: 400 !important;
+    height:40px;
+}
+.EntryFormContainer p {
+    @include flex-right;
+    font-weight: 600;
 }
 
 .editForm {
-   
+    @include flex-right;
+    gap: 1em;
     height: 100%;
 }
-.editForm div {
+.editForm div:not(:last-child) {
     display: grid;
     grid-template-columns: 1fr 3fr;
 }
@@ -69,15 +72,14 @@ span {
         transition: height 0.3s ease-out;
         height: 0;
         @include flex-right;
+        height:fit-content;
     }
 
     .expanded {
-        @include flex-column-space-evenly;
-        height: 100%;
+display:flex;
+        height: fit-content;
     }
 
-    button {
-    }
 
     img {
         max-width: 100%;

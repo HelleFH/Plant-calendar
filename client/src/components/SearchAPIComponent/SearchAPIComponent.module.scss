@@ -1,0 +1,51 @@
+@import "../../styles/variables";
+@import "../../styles/mixins";
+/* SearchAPIComponent.module.scss */
+.searchModalContent {
+  position: relative;
+  @include flex-center;
+}
+.cancelButton {
+  @include flex-center;
+  background: none;
+  border: none;
+  color: $background-color; // Change the color as needed
+  cursor: pointer;
+  padding: 8px; // Adjust padding as needed
+  transition: color 0.3s ease;
+  font-size: $font-size-base;
+  text-decoration: underline;
+
+  &:hover {
+    color: darken(#ff6347, 10%);
+  }
+
+  .fa-trash {
+    font-size: 1.5rem; // Adjust the icon size as needed
+  }
+}
+.searchModalClose {
+  position: absolute;
+  top: 0;
+  cursor: pointer;
+  width: fit-content;
+  left: 0;
+  margin: 0;
+  font-size: 28px;
+  font-weight: 600;
+}
+
+.searchResults {
+  max-height: 300px;
+  overflow-y: auto;
+  margin-top: 20px;
+}
+
+.searchResultItem {
+  margin-bottom: 10px;
+}
+.searchModalContainer {
+  white-space: nowrap;
+  height:fit-content;
+  background-color: $background-color;
+}

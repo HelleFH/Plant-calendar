@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import moment from 'moment'; // Import moment.js for date formatting
-import DeleteConfirmationModal from './DeleteConfirmationModal';
-import handleDeleteReminder from './HandleDeleteReminder';
+import DeleteConfirmationModal from '../DeleteConfirmationModal';
+import handleDeleteReminder from '../HandleDeleteReminder';
+import { Link } from 'react-router-dom';
+import styles from './CalendarReminderComponent.module.scss';
+
+
 
 const CalendarReminder = ({
   reminder,
@@ -30,7 +34,7 @@ const CalendarReminder = ({
 
   // Function to format the date using moment.js
   const formatDate = (date) => {
-    return moment(date).format('MMMM Do YYYY, h:mm:ss a');
+    return moment(date).format('MMMM Do YYYY');
   };
 
   const handleGoToDate = () => {
@@ -41,23 +45,25 @@ const CalendarReminder = ({
   };
 
   return (
-    <li>
-      <p>Description: {reminder.description}</p>
-      <p>ID: {reminder.entryId}</p>
+    <li className={styles.ReminderItem}>
       {entryDetails && (
         <>
-          <p>Name: {entryDetails.name}</p>
-          <p>Date: {formatDate(entryDetails.date)}</p> {/* Format the date */}
-          <button onClick={handleGoToDate}>Go to Date</button>
+          <p>Reminder for {entryDetails.name} (<Link onClick={handleGoToDate}>{formatDate(entryDetails.date)} </Link>
+            ):{reminder.description}
+          </p>
+
         </>
       )}
 
-      <button onClick={() => {
+      <div onClick={() => {
         setIdToDelete(reminder._id);
         setShowDeleteModal(true);
       }}>
-        Delete Reminder
-      </button>
+ <i
+                      className="fas fa-trash"
+                      onClick={() => handleDeleteReminder(reminder._id)}
+                      style={{ cursor: 'pointer', marginLeft: '10px' }}
+                    ></i>      </div>
 
       {showDeleteModal && (
         <DeleteConfirmationModal

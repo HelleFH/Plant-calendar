@@ -1,6 +1,8 @@
 @import "../styles/variables";
 @import "../styles/mixins";
 
+ul {list-style:none;}
+
 .primary-button {
     @include button-styles(darken($tertiary-color, 2%), $secondary-color);
 }
@@ -31,9 +33,25 @@
     flex-direction: row;
     width: 100%;
 }
+.flex-row-center {
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    align-items: center;
+    text-align: center;
+  }
+
+.flex-row-right {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-direction: row;
+    width: 100%;
+    gap:1em;
+}
 
 .margin-top {
-    margin-top: 1em;
+    margin-top: 2em;
 }
 .margin-bottom {
     margin-bottom: 1em;

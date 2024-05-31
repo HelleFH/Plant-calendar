@@ -3,8 +3,9 @@ import { Form } from 'react-bootstrap';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import Modal from 'react-modal';
-import ImageUpload from './ImageUpload';
-import SearchPlantAPI from './SearchPlantAPI';
+import ImageUpload from '../ImageUpload';
+import SearchPlantAPI from '../SearchAPIComponent/SearchPlantAPI';
+import styles from './CreateEntryComponent.module.scss';
 
 const CreateEntryWithFileUpload = ({ isOpen, onClose, selectedDate }) => {
   const [file, setFile] = useState(null);
@@ -106,6 +107,10 @@ const CreateEntryWithFileUpload = ({ isOpen, onClose, selectedDate }) => {
     setIsPreviewAvailable(false);
     setErrorMsg('');
   };
+  const handleCancel = () => {
+    onClose();  // Close the CreateEntryWithFileUpload modal
+    navigate('/calendar');  // Navigate to the calendar page
+  };
 
   return (
     <Modal
@@ -177,7 +182,7 @@ const CreateEntryWithFileUpload = ({ isOpen, onClose, selectedDate }) => {
             />
           </div>
           <div className='form-group'>
-     
+    
           </div>
           <div className=" form-group margin-bottom">
             <textarea
@@ -192,10 +197,10 @@ const CreateEntryWithFileUpload = ({ isOpen, onClose, selectedDate }) => {
           </div>
         </div>
         <div className='margin-top flex-row'>
-          <Link to="/calendar">
+        <Link type="button" onClick={handleCancel}>
             Cancel
           </Link>
-          <div>
+          <div className='flex-row-right'>
           <button type="button" className="primary-button" onClick={handleClearForm}>
             Clear Form
           </button>
@@ -210,24 +215,11 @@ const CreateEntryWithFileUpload = ({ isOpen, onClose, selectedDate }) => {
       <Modal
         isOpen={showSearchPlantModal}
         onRequestClose={() => setShowSearchPlantModal(false)}
-        style={{
-          overlay: {
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          },
-          content: {
-            top: '50%',
-            left: '50%',
-            right: 'auto',
-            bottom: 'auto',
-            marginRight: '-50%',
-            transform: 'translate(-50%, -50%)',
-            width: '50%',
-          },
-        }}
+        className={styles.SearchModal}
+        overlayClassName="Overlay"
         contentLabel="Search Plant Modal"
       >
-        <span className="close" onClick={() => setShowSearchPlantModal(false)}>&times;</span>
-        <SearchPlantAPI onSelectPlant={handleSavePlantName} />
+        <SearchPlantAPI onSelectPlant={handleSavePlantName} closeModal={() => setShowSearchPlantModal(false)} />
       </Modal>
     </Modal>
   );

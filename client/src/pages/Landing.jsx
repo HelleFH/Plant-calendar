@@ -18,8 +18,8 @@ const Landing = () => {
     <div className='landing-main'>
       <h1>Landing Page</h1>
       <p>Hello and welcome!</p>
-      <Link to="/login" className="landing-login-button">Login</Link>
-      <Link to="/register" className="landing-register-button">Register</Link>
+      <Link className="primary-button" to="/login">Login</Link>
+      <Link className="secondary-button" to="/register">Register</Link>
     </div>
   );
 };

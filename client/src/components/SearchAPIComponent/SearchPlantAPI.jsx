@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import styles from './SearchAPIComponent.module.scss';
+import { useNavigate, Link } from 'react-router-dom';
 
-export default function SearchPlantAPI({ onSelectPlant, setShowModal, savePlantName }) {
+
+const SearchPlantAPI = ({ onSelectPlant, closeModal }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
 
@@ -20,41 +23,37 @@ export default function SearchPlantAPI({ onSelectPlant, setShowModal, savePlantN
 
   const handleSearch = async () => {
     await fetchData();
-    setShowModal(true);
   };
 
   const handleSelectPlant = (plant) => {
-    onSelectPlant(plant);
-    savePlantName(plant.common_name, plant.sunlight, plant.water); // Pass the selected plant name, sunlight, and water to the function in CreateEntryWithFileUpload
-    setShowModal(false);
-  };
-
-  const handleModalContentClick = (event) => {
-    event.stopPropagation(); // Prevent the modal from closing when clicking inside it
+    onSelectPlant(plant.common_name, plant.sunlight, plant.watering);
   };
 
   return (
-    <div className="modal" onClick={() => setShowModal(false)}>
-      <div className="modal-content" onClick={handleModalContentClick}>
-        <span className="close" onClick={() => setShowModal(false)}>&times;</span>
-        <input type="text" value={searchTerm} onChange={handleChange} />
-        <button onClick={handleSearch}>Search</button>
+    <div className='styles.searchModalContainer'>
+      <span className={styles.searchModalClose} onClick={closeModal}>&times;</span>
+      <h4 className="margin-top">Search for your plant in our Database!</h4>
+      <div className={styles.searchModalContent}>
+        <input className="margin-top" type="text" value={searchTerm} onChange={handleChange} />
+        <div className='flex-row-right margin-top'>
+          <Link onClick={closeModal}
+          >Cancel</Link>
+          <button onClick={handleSearch} className="secondary-button">Search</button>
+
+        </div>
         <div className="search-results" style={{ maxHeight: '100vh', overflowY: 'auto' }}>
           {searchResults.map(plant => (
             <div key={plant.id}>
               <h3>{plant.common_name}</h3>
               <h3>{plant.sunlight}</h3>
-              <h3>{plant.water}</h3>
-
-
+              <h3>{plant.watering}</h3>
               <button onClick={() => handleSelectPlant(plant)}>Select</button>
-              {plant.default_image && (
-                <img src={plant.default_image.thumbnail} alt={plant.common_name} />
-              )}
             </div>
           ))}
         </div>
       </div>
     </div>
   );
-}
+};
+
+export default SearchPlantAPI;

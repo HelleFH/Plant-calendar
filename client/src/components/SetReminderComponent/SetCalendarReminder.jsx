@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Modal, Button, Form } from 'react-bootstrap';
+import styles from './SetReminderComponent.module.scss';
+import { Link } from 'react-router-dom';
+import { Modal } from 'react-bootstrap';
+
 
 const SetCalendarReminder = ({ isOpen, onClose, entryId }) => {
   const [reminderDate, setReminderDate] = useState('');
@@ -36,47 +39,48 @@ const SetCalendarReminder = ({ isOpen, onClose, entryId }) => {
   };
 
   return (
-    <Modal show={isOpen} onHide={onClose}>
-      <Modal.Header closeButton>
-        <Modal.Title>Add Reminder</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <Form>
-          <Form.Group controlId="reminderDate">
-            <Form.Label>Date</Form.Label>
-            <Form.Control
+    <Modal className={styles.ReminderModal} show={isOpen} onHide={onClose}>
+      <div>
+        <p>Add Reminder</p>
+        <div className={styles.ReminderForm}>
+          <div>
+            <label htmlFor="reminderDate">Date</label>
+            <input
               type="date"
+              id="reminderDate"
               value={reminderDate}
               onChange={(e) => setReminderDate(e.target.value)}
             />
-          </Form.Group>
-          <Form.Group controlId="reminderTime">
-            <Form.Label>Time</Form.Label>
-            <Form.Control
+          </div>
+          <div>
+            <label htmlFor="reminderTime">Time</label>
+            <input
               type="time"
+              id="reminderTime"
               value={reminderTime}
               onChange={(e) => setReminderTime(e.target.value)}
             />
-          </Form.Group>
-          <Form.Group controlId="reminderDescription">
-            <Form.Label>Description</Form.Label>
-            <Form.Control
+          </div>
+          <div>
+            <label htmlFor="reminderDescription">Description</label>
+            <input
               type="text"
+              id="reminderDescription"
               placeholder="Enter description"
               value={reminderDescription}
               onChange={(e) => setReminderDescription(e.target.value)}
             />
-          </Form.Group>
-        </Form>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={onClose}>
-          Close
-        </Button>
-        <Button variant="primary" onClick={handleAddReminder}>
+          </div>
+        </div>
+      </div>
+      <div className='margin-top flex-row-right'>      
+        <Link className="secondary" onClick={onClose}>
+        Close
+      </Link>
+        <button className="primary-button" onClick={handleAddReminder}>
           Add Reminder
-        </Button>
-      </Modal.Footer>
+        </button>
+      </div>
     </Modal>
   );
 };
