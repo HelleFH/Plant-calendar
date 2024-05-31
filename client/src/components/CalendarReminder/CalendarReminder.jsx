@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import moment from 'moment'; // Import moment.js for date formatting
-import DeleteConfirmationModal from '../DeleteConfirmationModal';
+import DeleteConfirmationModal from '../DeleteConfirmationModal/DeleteConfirmationModal';
 import handleDeleteReminder from '../HandleDeleteReminder';
 import { Link } from 'react-router-dom';
 import styles from './CalendarReminderComponent.module.scss';
@@ -34,7 +34,7 @@ const CalendarReminder = ({
 
   // Function to format the date using moment.js
   const formatDate = (date) => {
-    return moment(date).format('MMMM Do YYYY');
+    return moment(date).format('MMMM Do');
   };
 
   const handleGoToDate = () => {
@@ -45,11 +45,13 @@ const CalendarReminder = ({
   };
 
   return (
+    
     <li className={styles.ReminderItem}>
+      
       {entryDetails && (
         <>
           <p>Reminder for {entryDetails.name} (<Link onClick={handleGoToDate}>{formatDate(entryDetails.date)} </Link>
-            ):{reminder.description}
+            ):<span>{reminder.description}</span>
           </p>
 
         </>
@@ -64,6 +66,7 @@ const CalendarReminder = ({
                       onClick={() => handleDeleteReminder(reminder._id)}
                       style={{ cursor: 'pointer', marginLeft: '10px' }}
                     ></i>      </div>
+                    
 
       {showDeleteModal && (
         <DeleteConfirmationModal
@@ -75,7 +78,9 @@ const CalendarReminder = ({
           }}
         />
       )}
+  
     </li>
+    
   );
 };
 

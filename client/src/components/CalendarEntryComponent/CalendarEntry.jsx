@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import ImageUpload from '../ImageUpload';
-import DeleteConfirmationModal from '../DeleteConfirmationModal';
+import DeleteConfirmationModal from '../DeleteConfirmationModal/DeleteConfirmationModal';
 import handleSubmitUpdate from '../HandleSubmitUpdate';
 import handleDeleteEntry from '../HandleDeleteEntry';
 import SetCalendarReminder from '../SetReminderComponent/SetCalendarReminder';

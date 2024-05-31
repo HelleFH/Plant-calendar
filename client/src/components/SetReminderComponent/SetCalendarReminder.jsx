@@ -1,23 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import styles from './SetReminderComponent.module.scss';
 import { Link } from 'react-router-dom';
 import { Modal } from 'react-bootstrap';
-
 
 const SetCalendarReminder = ({ isOpen, onClose, entryId }) => {
   const [reminderDate, setReminderDate] = useState('');
   const [reminderTime, setReminderTime] = useState('');
   const [reminderDescription, setReminderDescription] = useState('');
   const [username, setUsername] = useState('');
+  const [entryDetails, setEntryDetails] = useState(null); // State to store entry details
 
   // Retrieve username from localStorage
-  useState(() => {
+  useEffect(() => {
     const storedUsername = localStorage.getItem('username');
     if (storedUsername) {
       setUsername(storedUsername);
     }
   }, []);
+
+  // Fetch entry details when entryId changes
+  useEffect(() => {
+    const fetchEntryDetails = async () => {
+      try {
+        const response = await axios.get(`http://localhost:3001/api/v1/entries/${entryId}`);
+        setEntryDetails(response.data); // Assuming the response contains entry details
+      } catch (error) {
+        console.error('Error fetching entry details:', error);
+      }
+    };
+
+    if (entryId) {
+      fetchEntryDetails();
+    }
+  }, [entryId]);
 
   const handleAddReminder = async () => {
     try {
@@ -39,9 +55,22 @@ const SetCalendarReminder = ({ isOpen, onClose, entryId }) => {
   };
 
   return (
-    <Modal className={styles.ReminderModal} show={isOpen} onHide={onClose}>
-      <div>
-        <p>Add Reminder</p>
+    <Modal className={styles.modalOverlay} show={isOpen} onHide={onClose}>
+      <div className={styles.modalContent}>
+        <span
+          className={styles.modalClose}
+          type="button"
+          aria-label="Close"
+          onClick={onClose}
+        >
+          &times;
+        </span>
+        {entryDetails && (
+          <div className={styles.entryDetails}>
+                    <h4 className='margin-bottom'>Add Reminder for {entryDetails.name}</h4>
+
+          </div>
+        )}
         <div className={styles.ReminderForm}>
           <div>
             <label htmlFor="reminderDate">Date</label>
@@ -63,7 +92,7 @@ const SetCalendarReminder = ({ isOpen, onClose, entryId }) => {
           </div>
           <div>
             <label htmlFor="reminderDescription">Description</label>
-            <input
+            <input 
               type="text"
               id="reminderDescription"
               placeholder="Enter description"
@@ -72,14 +101,15 @@ const SetCalendarReminder = ({ isOpen, onClose, entryId }) => {
             />
           </div>
         </div>
-      </div>
-      <div className='margin-top flex-row-right'>      
+ 
+      <div className='margin-top flex-row-right'>
         <Link className="secondary" onClick={onClose}>
-        Close
-      </Link>
-        <button className="primary-button" onClick={handleAddReminder}>
+          Close
+        </Link>
+        <button  className="primary-button" onClick={handleAddReminder}>
           Add Reminder
         </button>
+      </div>
       </div>
     </Modal>
   );

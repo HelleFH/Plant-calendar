@@ -1,10 +1,26 @@
 @import "../../styles/variables";
 @import "../../styles/mixins";
-/* SearchAPIComponent.module.scss */
-.searchModalContent {
-  position: relative;
-  @include flex-center;
+
+
+
+.modalOverlay {
+  @include modal-overlay
 }
+
+.modalContent {
+ @include modal-content;
+  width: 70% !important;
+
+  @include flex-right;
+}
+
+.modalClose {
+  @include modal-close
+}
+.lineContainer {
+  padding: 1em 0.5em 1em 0.5em;
+}
+
 .cancelButton {
   @include flex-center;
   background: none;
@@ -24,16 +40,6 @@
     font-size: 1.5rem; // Adjust the icon size as needed
   }
 }
-.searchModalClose {
-  position: absolute;
-  top: 0;
-  cursor: pointer;
-  width: fit-content;
-  left: 0;
-  margin: 0;
-  font-size: 28px;
-  font-weight: 600;
-}
 
 .searchResults {
   max-height: 300px;
@@ -43,9 +49,4 @@
 
 .searchResultItem {
   margin-bottom: 10px;
-}
-.searchModalContainer {
-  white-space: nowrap;
-  height:fit-content;
-  background-color: $background-color;
 }

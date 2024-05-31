@@ -1,8 +1,32 @@
-@mixin flex-center {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
+
+
+
+@mixin modal-overlay {
+  position: fixed;
+  inset: 0px;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+@mixin modal-content {
+  background-color: white;
+  position: absolute;
+  inset: 50% auto auto 50%;
+  border: 1px solid rgb(204, 204, 204);
+  overflow: auto;
+  border-radius: 4px;
+  outline: none;
+  padding: 20px;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
+  width: 70% !important;
+
+  @include flex-right;
+}
+
+@mixin modal-close {
+  font-size: 20px;
+  font-weight: 600;
+  padding-bottom: 0.4em;
 }
 
 @mixin button-styles($background, $color) {
@@ -16,10 +40,6 @@
   font-weight: 800;
   white-space:nowrap;
   width:fit-content;
-
-  &:hover {
-    background-color: $color;
-  }
 }
 
 @mixin box-shadow($shadow: $box-shadow) {
@@ -30,6 +50,13 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
 @mixin flex-right {
   display: flex;
@@ -48,7 +75,6 @@
   flex-direction: column;
   justify-content: space-evenly;
 }
-
 
 @mixin flex-row {
   display: flex;

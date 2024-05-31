@@ -2,8 +2,7 @@
 @import "../../styles/mixins";
 
 .ReminderItem {
-    width: fit-content;
-    white-space: nowrap;
     @include flex-row;
     padding:1em;
 }
+.ReminderItem span {padding-left:0.2em;}

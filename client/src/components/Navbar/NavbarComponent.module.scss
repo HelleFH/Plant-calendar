@@ -1,0 +1,61 @@
+@import "../../styles/variables";
+@import "../../styles/mixins";
+
+.navbar {
+    @include flex-row;
+    padding: 0 20px;
+    background-color: $secondary-color;
+    color: $tertiary-color;
+    height: 60px;
+  }
+  
+  .navbarLogo a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  .navbarLinks {
+    display: flex;
+    gap: 20px;
+  }
+  
+  .navbarLinks a {
+    color: $text-color;
+    text-decoration: none;
+  }
+  
+  .navbarToggle {
+    display: none;
+    cursor: pointer;
+  }
+  
+  .navbarToggle i {
+    font-size: 24px;
+  }
+  
+  @media (max-width: 768px) {
+    .navbarLinks {
+        display: none;
+        flex-direction: column;
+        width: 40vw;
+        text-align: center;
+        position: absolute;
+        top: 60px;
+        left: 0;
+        background-color: #333;
+        padding: 10px 0;
+    }
+  
+    .navbarLinksOpen {
+        display: flex;
+        z-index: 9999;
+      margin-left:auto;
+      right:0; 
+    }
+  
+    .navbarToggle {
+      display: block;
+    }
+  }

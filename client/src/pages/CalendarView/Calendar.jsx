@@ -8,7 +8,7 @@ import CalendarReminder from '../../components/CalendarReminder/CalendarReminder
 import CreateEntryWithFileUpload from '../../components/CreateEntryComponent/createEntry';
 import Slider from '../../components/SliderComponent/Slider';
 import styles from './CalendarView.module.scss';
-import Navbar from '../../components/Navbar';
+import Navbar from '../../components/Navbar/Navbar';
 
 
 const CalendarComponent = () => {
@@ -31,7 +31,7 @@ const CalendarComponent = () => {
       className += ' highlighted';
     }
     if (highlightedReminderDates.includes(formattedDate)) {
-      className += ' highlighted-reminder';
+      className += ' highlightedReminder';
     }
     return className;
   };
@@ -109,8 +109,13 @@ const CalendarComponent = () => {
                   selectedDate={selectedDate}
                   onSelectDate={handleDateChange}
                 />
+                
               ))}
+                   <div className={styles.lineContainer}>
+              <hr className="long-line" ></hr>
+            </div>
             </ul>
+            
           )}
 
           <CreateEntryWithFileUpload isOpen={isCreateEntryModalOpen} onClose={handleCloseModal} selectedDate={selectedDate} />

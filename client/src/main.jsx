@@ -5,7 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import './index.scss'
 import "./responsive.css";
 import Modal from 'react-modal';
-import Navbar from './components/Navbar.jsx';
+import Navbar from './components/Navbar/Navbar.jsx';
 Modal.setAppElement('#root');
 
 

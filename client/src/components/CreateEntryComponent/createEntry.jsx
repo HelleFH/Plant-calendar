@@ -115,25 +115,20 @@ const CreateEntryWithFileUpload = ({ isOpen, onClose, selectedDate }) => {
   return (
     <Modal
       isOpen={isOpen}
+      className={styles.modalOverlay}
       onRequestClose={onClose}
-      style={{
-        overlay: {
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        },
-        content: {
-          top: '50%',
-          left: '50%',
-          right: 'auto',
-          bottom: 'auto',
-          marginRight: '-50%',
-          transform: 'translate(-50%, -50%)',
-          width: '95%',
-        },
-      }}
+
       contentLabel="Create Entry Modal"
     >
-      <span className="close" onClick={onClose}>&times;</span>
-      <Form className="search-form" onSubmit={handleEntrySubmit} encType="multipart/form-data">
+      <div className={styles.modalContent}>
+      <span
+          className={styles.modalClose}
+          type="button"
+          aria-label="Close"
+          onClick={onClose}
+        >    &times;       
+      </span>      
+        <Form className="search-form" onSubmit={handleEntrySubmit} encType="multipart/form-data">
         {errorMsg && <p className="errorMsg">{errorMsg}</p>}
         <ImageUpload
           onDrop={onDrop}
@@ -211,16 +206,13 @@ const CreateEntryWithFileUpload = ({ isOpen, onClose, selectedDate }) => {
         </div>
         </div>
       </Form>
+      </div>
 
-      <Modal
+      <SearchPlantAPI
         isOpen={showSearchPlantModal}
-        onRequestClose={() => setShowSearchPlantModal(false)}
-        className={styles.SearchModal}
-        overlayClassName="Overlay"
-        contentLabel="Search Plant Modal"
-      >
-        <SearchPlantAPI onSelectPlant={handleSavePlantName} closeModal={() => setShowSearchPlantModal(false)} />
-      </Modal>
+        onSelectPlant={handleSavePlantName}
+        closeModal={() => setShowSearchPlantModal(false)}
+      />
     </Modal>
   );
 };
