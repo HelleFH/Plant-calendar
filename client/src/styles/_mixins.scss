@@ -2,11 +2,11 @@
   background-color: $background;
   color: $color;
   border: 1px solid $background-color;
-  padding: $spacing-unit $spacing-unit * 2;
+  padding: 0.5em 1em;
   border-radius: $border-radius;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  font-weight: 800;
+  font-weight: 600;
   white-space: nowrap;
   width: fit-content;
 

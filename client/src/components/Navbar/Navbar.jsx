@@ -64,6 +64,7 @@ const Navbar = () => {
       </div>
       <div className={`${styles.navbarLinks} ${isOpen ? styles.navbarLinksOpen : ''}`}>
         {username && <div className={styles.username}>Hello, {username}</div>}
+        
         <a href="/logout" onClick={handleLogoutClick}>Logout</a>
       </div>
       <div className={styles.navbarToggle} onClick={toggleMenu}>

@@ -12,14 +12,14 @@ const CustomModal = ({ isOpen, onClose, title, children }) => {
     >
       <div className={styles.modalContent}>
         <div className={styles.modalHeader}>
-          <h3>{title}</h3>
+          <h2>{title}</h2>
           <span
             className={styles.modalClose}
             type="button"
             aria-label="Close"
             onClick={onClose}
           >
-            &times;
+            <i className="fas fa-times"></i>
           </span>
         </div>
         <div className={styles.lineContainer}>

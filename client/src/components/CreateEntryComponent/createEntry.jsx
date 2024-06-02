@@ -115,7 +115,7 @@ const CreateEntryWithFileUpload = ({ isOpen, onClose, selectedDate }) => {
 
   return (
     <CustomModal isOpen={isOpen} onClose={onClose} title="Create Entry">
-    <Form className="search-form" onSubmit={handleEntrySubmit} encType="multipart/form-data">
+    <Form onSubmit={handleEntrySubmit} encType="multipart/form-data">
       {errorMsg && <p className="errorMsg">{errorMsg}</p>}
       <ImageUpload
         onDrop={onDrop}

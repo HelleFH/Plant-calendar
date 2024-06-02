@@ -11,10 +11,17 @@
     margin: 0px;
     font-family: "DM Sans", sans-serif;
 }
+body {
+    font-family: "Poppins", sans-serif;
+    
 
+}
 #root {
-    background-color: lighten($primary-color, 40%);
+    max-width:1200px;
+    margin:0 auto;
     min-height: 100vh;
+    background-color: lighten($primary-color, 40%);
+
 }
 .react-calendar {
     border: 1px solid #ccc;
@@ -36,9 +43,7 @@
     @include flex-center;
 }
 
-body {
-    font-family: "Poppins", sans-serif;
-}
+
 .highlighted {
     background-color: lighten($background-color, 40%);
     color: $secondary-color;

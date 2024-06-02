@@ -5,6 +5,11 @@
     @include flex-center;
     gap: 1em;
     background-image: url("../public/images/bg.jpg");
+    background-position: top center;
+    background-size:contain;
+  
+    
+
 }
 
 .header {
@@ -49,9 +54,6 @@
     padding-left: 1em;
 }
 
-.registerForm input {
-    width: 100%;
-}
 .signupButton {
     @include primary-button;
     float:right;

@@ -106,11 +106,11 @@ const CalendarEntry = ({ entry, onUpdateEntry, onDeleteEntry, selectedDate }) =>
         </div>
 
         {entry.cloudinaryUrl && <img src={entry.cloudinaryUrl} alt={entry.name} />}
-        
+
         <div className={styles.lineContainer}>
           <hr className="long-line"></hr>
         </div>
-        
+
         <div className={styles.EntryFormContainer}>
           <div>
             <label>Name:</label>
@@ -120,7 +120,7 @@ const CalendarEntry = ({ entry, onUpdateEntry, onDeleteEntry, selectedDate }) =>
               <span> {entry.name}</span>
             )}
           </div>
-         
+
           <div>
             <label>Sunlight:</label>
             {isEditing ? (
@@ -147,25 +147,25 @@ const CalendarEntry = ({ entry, onUpdateEntry, onDeleteEntry, selectedDate }) =>
           </div>
         </div>
 
-        <div className='flex-row-right'>
+        <div className='flex-row'>
           {isEditing ? (
             <>
-            <div className='flex-row-right margin-top'>
-              <Link onClick={handleCancel}>Cancel</Link>
-              <button className="primary-button" onClick={handleSave}>Save</button>
+              <div className='flex-row margin-top'>
+                <Link onClick={handleCancel}>Cancel</Link>
+                <button className="primary-button" onClick={handleSave}>Save</button>
               </div>
             </>
           ) : (
             <>
-              <button
-                className={styles.deleteButton}
+              <Link
+                className="margin-top"
                 onClick={() => {
                   setIdToDelete(entry._id);
                   setShowDeleteModal(true);
                 }}
               >
                 Delete
-              </button>
+              </Link>
 
               {showDeleteModal && (
                 <DeleteConfirmationModal
@@ -178,7 +178,7 @@ const CalendarEntry = ({ entry, onUpdateEntry, onDeleteEntry, selectedDate }) =>
                 />
               )}
 
-              <button className="primary-button" onClick={() => setIsEditing(true)}>Edit Entry</button>
+              <button className="primary-button margin-top" onClick={() => setIsEditing(true)}>Edit Entry</button>
             </>
           )}
         </div>

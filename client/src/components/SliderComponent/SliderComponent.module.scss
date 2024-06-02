@@ -3,7 +3,7 @@
 
 .slider {
   @include flex-row-center;
-  width: 100vw;
+  width: 100%;
   background-color: $background-color;
   font-size: $font-size-small;
   border-radius: $border-radius;
