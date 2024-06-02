@@ -4,7 +4,7 @@
   "description": "",
   "main": "backend && node app.js",
   "scripts": {
-    "start": "backend && node app.js",
+    "start": "node app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Kuzma02",
