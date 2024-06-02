@@ -14,14 +14,14 @@
   text-decoration: underline;
 
   &:hover {
-    color: darken(#ff6347, 10%);
+  color: darken(#ff6347, 10%);
   }
 
   .fa-trash {
     font-size: 1.5rem; // Adjust the icon size as needed
   }
 }
-
+.searchResults {top:100%;}
 
 .searchResultItem {
   margin-bottom: 10px;

@@ -43,7 +43,7 @@ const SearchPlantAPI = ({ isOpen, onSelectPlant, closeModal }) => {
           <Link onClick={closeModal}>Cancel</Link>
           <button onClick={handleSearch} className="secondary-button">Search</button>
         </div>
-        <div className="search-results" style={{ maxHeight: '100vh', overflowY: 'auto' }}>
+        <div className={styles.searchResults} style={{ maxHeight: '100vh', overflowY: 'scroll' }}>
           {searchResults.map(plant => (
             <div key={plant.id} className={styles.searchResultItem}>
               {plant.default_image && plant.default_image.small_url && (
