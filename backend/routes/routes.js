@@ -28,7 +28,7 @@ router.get('/entries/date/:date', getEntriesByDate); // Fetch entries by date
 router.delete('/entries/:id', EntryController.deleteEntry);
 router.delete('/reminders/:id', reminderController.deleteReminder);
 router.post('/reminders', reminderController.setReminder); // New route for setting reminders
-router.get('/reminders/date/:date', getRemindersByDate); // New route for setting reminders
+router.get('/reminders/date/:date', reminderController.getRemindersByDate); // New route for setting reminders
 router.get(`/entries/:id`, EntryController.getEntryById);
 
   router.put('/entries/:id', EntryController.updateEntry);

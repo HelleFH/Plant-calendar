@@ -1,20 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Logo from "../../assets/Logo.png";
 import GoogleSvg from "../../assets/icons8-google.svg";
-import { FaEye } from "react-icons/fa6";
-import { FaEyeSlash } from "react-icons/fa6";
+import { FaEye, FaEyeSlash } from "react-icons/fa6";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+import axiosInstance from "../../components/axiosInstance";
 import { toast } from "react-toastify";
 import styles from './LoginComponent.module.scss';
 import bg from '../../assets/login-bg.jpg'; // Adjust the path according to your file structure
 
-
-
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const [token, setToken] = useState(JSON.parse(localStorage.getItem("auth")) || "");
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // Ensure navigate is correctly used from react-router-dom
 
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
@@ -27,8 +23,8 @@ const Login = () => {
         password,
       };
       try {
-        const response = await axios.post(
-          "http://localhost:3001/api/v1/login",
+        const response = await axiosInstance.post(
+          '/login',
           formData
         );
         const { token, username } = response.data;
@@ -46,24 +42,15 @@ const Login = () => {
   };
 
   return (
-
-
     <div className={styles.container}>
-
       <div className={styles.overlay}></div>
       <div className={styles.headerContainer}>
-        <div className={styles.background}>
-        </div>
-        
+        <div className={styles.background}></div>
       </div>
       <h1 className={styles.header}>Plant Planner</h1>
-
       <h2>Welcome back!</h2>
-
       <div className={styles.content}>
-
         <p>Please enter your details</p>
-
         <form className={styles.form} onSubmit={handleLoginSubmit}>
           <div className={styles.credentialInput}>
             <input type="email" placeholder="Email" name="email" />
@@ -74,8 +61,7 @@ const Login = () => {
             />
             {showPassword ? (
               <FaEyeSlash
-              className={styles.faEye}
-
+                className={styles.faEye}
                 onClick={() => {
                   setShowPassword(!showPassword);
                 }}
@@ -83,7 +69,6 @@ const Login = () => {
             ) : (
               <FaEye
                 className={styles.faEye}
-
                 onClick={() => {
                   setShowPassword(!showPassword);
                 }}
@@ -92,20 +77,12 @@ const Login = () => {
           </div>
           <div>
             <input type="checkbox" id="remember-checkbox" />
-            <label htmlFor="remember-checkbox">
-              Remember for 30 days
-            </label>
+            <label htmlFor="remember-checkbox">Remember for 30 days</label>
           </div>
-
           <button className={styles.loginButton} type="submit">Log In</button>
-
-          <a href="#">
-            Forgot password?
-          </a>
-
+          <a href="#">Forgot password?</a>
         </form>
       </div>
-
       <h4 className="margin-top">
         Don't have an account? <Link to="/register">Sign Up</Link>
       </h4>

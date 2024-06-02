@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import styles from './SetReminderComponent.module.scss';
 import { Link } from 'react-router-dom';
-import { Modal } from 'react-bootstrap';
 import CustomModal from '../CustomModal/CustomModal';
+import axiosInstance from '../axiosInstance';
 
 const SetCalendarReminder = ({ isOpen, onClose, entryId }) => {
   const [reminderDate, setReminderDate] = useState('');
@@ -24,7 +23,7 @@ const SetCalendarReminder = ({ isOpen, onClose, entryId }) => {
   useEffect(() => {
     const fetchEntryDetails = async () => {
       try {
-        const response = await axios.get(`http://localhost:3001/api/v1/entries/${entryId}`);
+        const response = await axiosInstance.get(`/entries/${entryId}`);
         setEntryDetails(response.data); // Assuming the response contains entry details
       } catch (error) {
         console.error('Error fetching entry details:', error);
@@ -46,7 +45,7 @@ const SetCalendarReminder = ({ isOpen, onClose, entryId }) => {
         username, // Include the username
       };
 
-      await axios.post('http://localhost:3001/api/v1/reminders', reminderData);
+      await axiosInstance.post('/reminders', reminderData);
 
       console.log('Reminder added:', reminderData);
       onClose(); // Close the modal after setting the reminder
@@ -54,7 +53,6 @@ const SetCalendarReminder = ({ isOpen, onClose, entryId }) => {
       console.error('Error adding reminder:', error);
     }
   };
-
   return (
     <CustomModal isOpen={isOpen} onClose={onClose} title="Set Reminder">
      

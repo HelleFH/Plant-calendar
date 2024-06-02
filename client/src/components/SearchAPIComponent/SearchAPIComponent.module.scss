@@ -1,27 +1,18 @@
 @import "../../styles/variables";
 @import "../../styles/mixins";
 
-
-.cancelButton {
+.searchModal {
   @include flex-center;
-  background: none;
-  border: none;
-  color: $background-color; // Change the color as needed
-  cursor: pointer;
-  padding: 8px; // Adjust padding as needed
-  transition: color 0.3s ease;
-  font-size: $font-size-base;
-  text-decoration: underline;
-
-  &:hover {
-  color: darken(#ff6347, 10%);
-  }
-
-  .fa-trash {
-    font-size: 1.5rem; // Adjust the icon size as needed
+  gap: 1em;
+  margin-top: 0.5em;
+  input {
+    height: 30px;
+    background-color: white;
   }
 }
-.searchResults {top:100%;}
+.searchResults {
+  top: 100%;
+}
 
 .searchResultItem {
   margin-bottom: 10px;

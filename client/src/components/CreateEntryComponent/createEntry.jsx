@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import { Form } from 'react-bootstrap';
 import { useNavigate, Link } from 'react-router-dom';
-import axios from 'axios';
-import Modal from 'react-modal';
 import ImageUpload from '../ImageUpload';
 import SearchPlantAPI from '../SearchAPIComponent/SearchPlantAPI';
 import styles from './CreateEntryComponent.module.scss';
 import CustomModal from '../CustomModal/CustomModal';
+import axiosInstance from '../axiosInstance';
 
 const CreateEntryWithFileUpload = ({ isOpen, onClose, selectedDate }) => {
   const [file, setFile] = useState(null);
@@ -34,19 +33,21 @@ const CreateEntryWithFileUpload = ({ isOpen, onClose, selectedDate }) => {
       formData.append('notes', entry.notes);
       formData.append('sunlight', entry.sunlight);
       formData.append('water', entry.water);
-      formData.append('date', entry.date);
+      formData.append('date', selectedDate.toDateString()); // Use selectedDate
       formData.append('username', localStorage.getItem('username'));
 
-      await axios.post(`http://localhost:3001/api/v1/upload`, formData, {
+       await axiosInstance.post('/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
 
+
       setFile(null);
       setPreviewSrc('');
       setIsPreviewAvailable(false);
-      navigate('/calendar');
+      onClose();  // Close the modal after creating the entry
+      navigate('/calendar');  // Navigate to the calendar page
     } catch (error) {
       console.error('Error creating entry:', error);
       setErrorMsg('Error creating entry, please try again.');
@@ -108,6 +109,7 @@ const CreateEntryWithFileUpload = ({ isOpen, onClose, selectedDate }) => {
     setIsPreviewAvailable(false);
     setErrorMsg('');
   };
+
   const handleCancel = () => {
     onClose();  // Close the CreateEntryWithFileUpload modal
     navigate('/calendar');  // Navigate to the calendar page
@@ -115,88 +117,88 @@ const CreateEntryWithFileUpload = ({ isOpen, onClose, selectedDate }) => {
 
   return (
     <CustomModal isOpen={isOpen} onClose={onClose} title="Create Entry">
-    <Form onSubmit={handleEntrySubmit} encType="multipart/form-data">
-      {errorMsg && <p className="errorMsg">{errorMsg}</p>}
-      <ImageUpload
-        onDrop={onDrop}
-        file={file}
-        previewSrc={previewSrc}
-        isPreviewAvailable={isPreviewAvailable}
-      />
-      <div className={styles.formContainer}>
-        <div className='flex-row'>
-          <div className={styles.nameContainer}>
+      <Form onSubmit={handleEntrySubmit} encType="multipart/form-data">
+        {errorMsg && <p className="errorMsg">{errorMsg}</p>}
+        <ImageUpload
+          onDrop={onDrop}
+          file={file}
+          previewSrc={previewSrc}
+          isPreviewAvailable={isPreviewAvailable}
+        />
+        <div className={styles.formContainer}>
+          <div className='flex-row'>
+            <div className={styles.nameContainer}>
+              <input
+                type="text"
+                placeholder="Name"
+                name="name"
+                className="form-control"
+                value={entry.name}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+            <button
+              className="primary-button"
+              onClick={handleOpenSearchPlantModal}
+            >
+              Search Database
+            </button>
+          </div>
+          <div>
             <input
               type="text"
-              placeholder="Name"
-              name="name"
+              placeholder="Sunlight"
+              name="sunlight"
               className="form-control"
-              value={entry.name}
+              value={entry.sunlight}
               onChange={handleInputChange}
-              required
             />
           </div>
-          <button
-            className="primary-button"
-            onClick={handleOpenSearchPlantModal}
-          >
-            Search Database
-          </button>
+          <div>
+            <input
+              type="text"
+              placeholder="Water"
+              name="water"
+              className="form-control"
+              value={entry.water}
+              onChange={handleInputChange}
+            />
+          </div>
+          <div className='form-group'>
+          </div>
+          <div className="form-group margin-bottom">
+            <textarea
+              type="text"
+              placeholder="Notes"
+              name="notes"
+              className="form-control width-100"
+              value={entry.notes}
+              onChange={handleInputChange}
+              style={{ height: '150px', verticalAlign: 'top' }}
+            />
+          </div>
         </div>
-        <div>
-          <input
-            type="text"
-            placeholder="Sunlight"
-            name="sunlight"
-            className="form-control"
-            value={entry.sunlight}
-            onChange={handleInputChange}
-          />
+        <div className='margin-top flex-row'>
+          <Link type="button" onClick={handleCancel}>
+            Cancel
+          </Link>
+          <div className='flex-row-right'>
+            <button type="button" className="primary-button" onClick={handleClearForm}>
+              Clear Form
+            </button>
+            <button className="secondary-button" type="submit">
+              Submit
+            </button>
+          </div>
         </div>
-        <div>
-          <input
-            type="text"
-            placeholder="Water"
-            name="water"
-            className="form-control"
-            value={entry.water}
-            onChange={handleInputChange}
-          />
-        </div>
-        <div className='form-group'>
-        </div>
-        <div className="form-group margin-bottom">
-          <textarea
-            type="text"
-            placeholder="Notes"
-            name="notes"
-            className="form-control width-100"
-            value={entry.notes}
-            onChange={handleInputChange}
-            style={{ height: '150px', verticalAlign: 'top' }}
-          />
-        </div>
-      </div>
-      <div className='margin-top flex-row'>
-        <Link type="button" onClick={handleCancel}>
-          Cancel
-        </Link>
-        <div className='flex-row-right'>
-          <button type="button" className="primary-button" onClick={handleClearForm}>
-            Clear Form
-          </button>
-          <button className="secondary-button" type="submit">
-            Submit
-          </button>
-        </div>
-      </div>
-    </Form>
-    <SearchPlantAPI
-      isOpen={showSearchPlantModal}
-      onSelectPlant={handleSavePlantName}
-      closeModal={() => setShowSearchPlantModal(false)}
-    />
-  </CustomModal>
+      </Form>
+      <SearchPlantAPI
+        isOpen={showSearchPlantModal}
+        onSelectPlant={handleSavePlantName}
+        closeModal={() => setShowSearchPlantModal(false)}
+      />
+    </CustomModal>
   );
 };
 

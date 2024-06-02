@@ -33,29 +33,34 @@ const SearchPlantAPI = ({ isOpen, onSelectPlant, closeModal }) => {
   };
 
   return (
-    <CustomModal isOpen={isOpen}       onRequestClose={closeModal}
-    title="Search Database"       contentLabel="Search Plant Modal"
+    <CustomModal
+      isOpen={isOpen}
+      onRequestClose={closeModal}
+      title="Search Database"
+      contentLabel="Search Plant Modal"
     >
-       
-        <h4 className="margin-bottom">Search for your plant in our Database!</h4>
-        <input className="margin-bottom" type="text" value={searchTerm} onChange={handleChange} />
-        <div className='flex-row-right margin-top'>
-          <Link onClick={closeModal}>Cancel</Link>
-          <button onClick={handleSearch} className="secondary-button">Search</button>
-        </div>
-        <div className={styles.searchResults} style={{ maxHeight: '100vh', overflowY: 'scroll' }}>
-          {searchResults.map(plant => (
-            <div key={plant.id} className={styles.searchResultItem}>
-              {plant.default_image && plant.default_image.small_url && (
-                <img src={plant.default_image.small_url} alt={plant.common_name} className={styles.plantImage} />
-              )}
-              <h3>{plant.common_name}</h3>
-              <p>Sunlight: {plant.sunlight.join(', ')}</p>
-              <p>Watering: {plant.watering}</p>
-              <button onClick={() => handleSelectPlant(plant)}>Select</button>
-            </div>
-          ))}
-        </div>
+      <div className={styles.searchModal}>
+
+      <h4>Search for your plant in our Database!</h4>
+      <input type="text" value={searchTerm} onChange={handleChange} />
+      <div className='flex-row-right'>
+        <Link onClick={closeModal}>Cancel</Link>
+        <button onClick={handleSearch} className="secondary-button">Search</button>
+      </div>
+      <div className={styles.searchResults} style={{ maxHeight: '100vh', overflowY: 'scroll' }}>
+        {searchResults.map(plant => (
+          <div key={plant.id} className={styles.searchResultItem}>
+            {plant.default_image && plant.default_image.small_url && (
+              <img src={plant.default_image.small_url} alt={plant.common_name} className={styles.plantImage} />
+            )}
+            <h3>{plant.common_name}</h3>
+            <p>Sunlight: {Array.isArray(plant.sunlight) ? plant.sunlight.join(', ') : plant.sunlight}</p>
+            <p>Watering: {plant.watering}</p>
+            <button onClick={() => handleSelectPlant(plant)}>Select</button>
+          </div>
+        ))}
+      </div>
+      </div>
     </CustomModal>
   );
 };

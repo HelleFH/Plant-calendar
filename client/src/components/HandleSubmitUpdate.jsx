@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axiosInstance from './axiosInstance';
 
 const handleSubmitUpdate = async (id, editedEntry, file, selectedDate, onUpdateEntry, handleDeleteEntry) => {
   try {
@@ -23,7 +23,7 @@ const handleSubmitUpdate = async (id, editedEntry, file, selectedDate, onUpdateE
       formData.append('username', editedEntry.username);
       formData.append('date', editedEntry.date);
 
-      const uploadResponse = await axios.post(`http://localhost:3001/api/v1/upload`, formData, {
+      const uploadResponse = await axiosInstance.post(`/upload`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -34,7 +34,7 @@ const handleSubmitUpdate = async (id, editedEntry, file, selectedDate, onUpdateE
     }
 
     // Send PUT request to update the entry
-    const updateResponse = await axios.put(`http://localhost:3001/api/v1/entries/${id}`, data);
+    const updateResponse = await axiosInstance.put(`/entries/${id}`, data);
 
     // Update the parent component with the new entry data
     onUpdateEntry(updateResponse.data);

@@ -9,7 +9,7 @@ const Logout = () => {
         localStorage.removeItem("auth");
         setTimeout(() => {
             navigate("/login");
-        }, 3001);
+        }, 3000);
     }, []);
 
  

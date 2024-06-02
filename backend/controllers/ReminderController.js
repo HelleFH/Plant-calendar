@@ -30,6 +30,34 @@ const setReminder = async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 };
+
+const getRemindersByDate = async (req, res) => {
+  try {
+      // Extract date and username from request parameters
+      const { date } = req.params;
+      const { username } = req.query;
+      
+
+      // Parse date string into JavaScript Date object
+      const searchDate = new Date(date);
+
+      // Get entries for the specified date and username
+      const reminders = await Reminder.find({ 
+          date: { 
+              $gte: searchDate, 
+              $lt: new Date(searchDate.getTime() + 24 * 60 * 60 * 1000) 
+          },
+          username: username // Add username as a condition
+      });
+
+      // Send entries as response
+      res.json(reminders);
+  } catch (error) {
+      console.error('Error in getting entries by date:', error);
+      return res.status(500).json({ error: 'Internal server error.' });
+  }
+};
+
 const getRemindersByEntryId = async (req, res) => {
   try {
       const entryId = req.params.entryId;
@@ -63,5 +91,6 @@ const deleteReminder = async (req, res) => {
 module.exports = {
   setReminder,
   deleteReminder,
-  getRemindersByEntryId
+  getRemindersByEntryId,
+  getRemindersByDate
 };

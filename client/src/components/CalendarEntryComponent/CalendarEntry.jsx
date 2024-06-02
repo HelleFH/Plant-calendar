@@ -9,6 +9,7 @@ import handleDeleteReminder from '../HandleDeleteReminder';
 import moment from 'moment';
 import styles from '../CalendarEntryComponent/CalendarEntryComponent.module.scss';
 import '@fortawesome/fontawesome-free/css/all.min.css'; // Make sure this is included
+import axiosInstance from '../axiosInstance';
 
 const CalendarEntry = ({ entry, onUpdateEntry, onDeleteEntry, selectedDate }) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -34,7 +35,7 @@ const CalendarEntry = ({ entry, onUpdateEntry, onDeleteEntry, selectedDate }) =>
   useEffect(() => {
     const fetchRemindersByEntryId = async () => {
       try {
-        const response = await axios.get(`http://localhost:3001/api/v1/reminders/entry/${entry._id}`);
+        const response = await axiosInstance.get(`/reminders/entry/${entry._id}`);
         setReminders(response.data);
       } catch (error) {
         console.error('Error fetching reminders by entry ID:', error);
@@ -44,11 +45,12 @@ const CalendarEntry = ({ entry, onUpdateEntry, onDeleteEntry, selectedDate }) =>
     if (entry._id) {
       fetchRemindersByEntryId();
     }
-  }, [entry._id]);
+  }, [entry._id, setReminders]);
 
   const handleChange = (e) => {
     setEditedEntry({ ...editedEntry, [e.target.name]: e.target.value });
   };
+
 
   const onDrop = (acceptedFiles) => {
     const currentFile = acceptedFiles[0];

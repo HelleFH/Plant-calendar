@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axiosInstance from '../axiosInstance';
 import moment from 'moment';
 import DeleteConfirmationModal from '../DeleteConfirmationModal/DeleteConfirmationModal';
 import handleDeleteReminder from '../HandleDeleteReminder';
@@ -8,18 +8,16 @@ import styles from './CalendarReminderComponent.module.scss';
 
 const CalendarReminder = ({
   reminder,
-  reminders,
   setReminders, // Add setReminders prop to update reminders state
   onSelectDate,
 }) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [idToDelete, setIdToDelete] = useState(null);
   const [entryDetails, setEntryDetails] = useState(null);
-
   useEffect(() => {
     const fetchEntryDetails = async () => {
       try {
-        const response = await axios.get(`http://localhost:3001/api/v1/entries/${reminder.entryId}`);
+        const response = await axiosInstance.get(`/entries/${reminder.entryId}`);
         setEntryDetails(response.data);
       } catch (error) {
         console.error('Error fetching entry details:', error);

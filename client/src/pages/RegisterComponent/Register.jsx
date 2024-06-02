@@ -15,8 +15,6 @@ const Login = () => {
   const navigate = useNavigate();
   const [ token, setToken ] = useState(JSON.parse(localStorage.getItem("auth")) || "");
 
-
-
   const handleRegisterSubmit = async (e) => {
     e.preventDefault();
     let name = e.target.name.value;
@@ -24,31 +22,27 @@ const Login = () => {
     let email = e.target.email.value;
     let password = e.target.password.value;
     let confirmPassword = e.target.confirmPassword.value;
-
-    if(name.length > 0 && lastname.length > 0 && email.length > 0 && password.length > 0 && confirmPassword.length > 0){
-
-      if(password === confirmPassword){
+  
+    if (name.length > 0 && lastname.length > 0 && email.length > 0 && password.length > 0 && confirmPassword.length > 0) {
+      if (password === confirmPassword) {
         const formData = {
           username: name + " " + lastname,
           email,
           password
         };
-        try{
-        const response = await axios.post("http://localhost:3001/api/v1/register", formData);
-         toast.success("Registration successfull");
-         navigate("/login");
-       }catch(err){
-         toast.error(err.message);
-       }
-      }else{
+        try {
+          const response = await axiosInstance.post("/register", formData);
+          toast.success("Registration successful");
+          navigate("/login");
+        } catch (err) {
+          toast.error(err.message);
+        }
+      } else {
         toast.error("Passwords don't match");
       }
-    
-
-    }else{
+    } else {
       toast.error("Please fill all inputs");
     }
-
 
   }
 

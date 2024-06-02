@@ -81,7 +81,6 @@ const getEntryById = async (req, res) => {
 };
 
 
-
 module.exports = {
   deleteEntry,
   updateEntry,

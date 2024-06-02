@@ -1,9 +1,9 @@
-import axios from 'axios';
+import axiosInstance from "./axiosInstance";
 
 // Function to fetch entries by date and username
 const getEntriesByDateAndUsername = async (date, username) => {
   try {
-    const response = await axios.get(`http://localhost:3001/api/v1/entries/date/${date}?username=${username}`);
+    const response = await axiosInstance.get(`/entries/date/${date}?username=${username}`);
     return response.data;
   } catch (error) {
     if (error.response && error.response.status === 404) {
