@@ -1,10 +1,10 @@
 {
-  "name": "simple-login-and-register-with-json-web-token",
+  "name": "plant-calendar",
   "version": "1.0.0",
   "description": "",
-  "main": "backend/app.js",
+  "main": "backend && node app.js",
   "scripts": {
-    "start": "node backend/app.js",
+    "start": "backend && node app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Kuzma02",
