@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
-import Image from "../assets/image.png";
-import Logo from "../assets/logo.png";
-import GoogleSvg from "../assets/icons8-google.svg";
+
 import { FaEye } from "react-icons/fa6";
 import { FaEyeSlash } from "react-icons/fa6";
-import "../styles/Register.css";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
+import styles from './RegisterComponent.module.scss';
+
 
 
 
@@ -61,48 +60,49 @@ const Login = () => {
   }, []);
 
   return (
-    <div className="register-main">
-      <div className="register-left">
-        <img src={Image} alt="" />
-      </div>
-      <div className="register-right">
-        <div className="register-right-container">
-          <div className="register-logo">
-            <img src={Logo} alt="" />
-          </div>
-          <div className="register-center">
-            <h2>Welcome to our website!</h2>
-            <p>Please enter your details</p>
-            <form onSubmit={handleRegisterSubmit}>
+    <div>
+    <div className={styles.registerContainer}>
+    <h1 className={styles.header}>Plant Planner</h1>
+
+          <div>
+          <div className={styles.registerContent}>
+
+            <h2>Welcome to the Plant Planner!</h2>
+            <h4>Please enter your details</h4>
+            <form className={styles.registerForm} onSubmit={handleRegisterSubmit}>
+              <div className={styles.nameContainer}>
             <input type="text" placeholder="Name" name="name" required={true} />
-            <input type="text" placeholder="Lastname" name="lastname" required={true} />
-              <input type="email" placeholder="Email" name="email" required={true} />
-              <div className="pass-input-div">
+            <input type="text" placeholder="Last name" name="lastname" required={true} />
+            </div>
+             <div> <input type="email" placeholder="Email" name="email" required={true} />
+             </div>
+              <div>
                 <input type={showPassword ? "text" : "password"} placeholder="Password" name="password" required={true} />
-                {showPassword ? <FaEyeSlash onClick={() => {setShowPassword(!showPassword)}} /> : <FaEye onClick={() => {setShowPassword(!showPassword)}} />}
+                {showPassword ? <FaEyeSlash className={styles.faEye} onClick={() => {setShowPassword(!showPassword)}} /> : <FaEye className={styles.faEye} onClick={() => {setShowPassword(!showPassword)}} />}
                 
               </div>
-              <div className="pass-input-div">
+              <div>
                 <input type={showPassword ? "text" : "password"} placeholder="Confirm Password" name="confirmPassword" required={true} />
-                {showPassword ? <FaEyeSlash onClick={() => {setShowPassword(!showPassword)}} /> : <FaEye onClick={() => {setShowPassword(!showPassword)}} />}
+                {showPassword ? <FaEyeSlash className={styles.faEye} onClick={() => {setShowPassword(!showPassword)}} /> : <FaEye className={styles.faEye} onClick={() => {setShowPassword(!showPassword)}} />}
                 
               </div>
-              <div className="register-center-buttons">
-                <button type="submit">Sign Up</button>
-                <button type="submit">
-                  <img src={GoogleSvg} alt="" />
-                  Sign Up with Google
-                </button>
+              <div>
+                <button className={styles.signupButton} type="submit">Sign Up</button>
+            
               </div>
             </form>
-          </div>
+     
 
-          <p className="login-bottom-p">
-            Already have an account? <Link to="/login">Login</Link>
-          </p>
         </div>
+        
+        </div>
+        
+     
       </div>
-    </div>
+      <h4 className={styles.loginLink}>
+            Already have an account? <Link to="/login">Login</Link>
+          </h4>
+      </div>
   );
 };
 

@@ -3,6 +3,7 @@ import axios from 'axios';
 import styles from './SearchAPIComponent.module.scss';
 import Modal from 'react-modal';
 import { Link } from 'react-router-dom';
+import CustomModal from '../CustomModal/CustomModal';
 
 Modal.setAppElement('#root'); // Ensure this line is included in your main application file
 
@@ -32,39 +33,30 @@ const SearchPlantAPI = ({ isOpen, onSelectPlant, closeModal }) => {
   };
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onRequestClose={closeModal}
-   className={styles.modalOverlay}
-      contentLabel="Search Plant Modal"
+    <CustomModal isOpen={isOpen}       onRequestClose={closeModal}
+    title="Search Database"       contentLabel="Search Plant Modal"
     >
-      <div className={styles.modalContent}>
-        <span
-          className={styles.modalClose}
-          type="button"
-          aria-label="Close"
-          onClick={closeModal}
-        >
-          &times;
-        </span>      
+       
         <h4 className="margin-bottom">Search for your plant in our Database!</h4>
-        <input className=" margin-bottom" type="text" value={searchTerm} onChange={handleChange} />
+        <input className="margin-bottom" type="text" value={searchTerm} onChange={handleChange} />
         <div className='flex-row-right margin-top'>
           <Link onClick={closeModal}>Cancel</Link>
           <button onClick={handleSearch} className="secondary-button">Search</button>
         </div>
         <div className="search-results" style={{ maxHeight: '100vh', overflowY: 'auto' }}>
           {searchResults.map(plant => (
-            <div key={plant.id}>
+            <div key={plant.id} className={styles.searchResultItem}>
+              {plant.default_image && plant.default_image.small_url && (
+                <img src={plant.default_image.small_url} alt={plant.common_name} className={styles.plantImage} />
+              )}
               <h3>{plant.common_name}</h3>
-              <h3>{plant.sunlight}</h3>
-              <h3>{plant.watering}</h3>
+              <p>Sunlight: {plant.sunlight.join(', ')}</p>
+              <p>Watering: {plant.watering}</p>
               <button onClick={() => handleSelectPlant(plant)}>Select</button>
             </div>
           ))}
         </div>
-      </div>
-    </Modal>
+    </CustomModal>
   );
 };
 

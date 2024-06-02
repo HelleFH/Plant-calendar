@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import moment from 'moment'; // Import moment.js for date formatting
+import moment from 'moment';
 import DeleteConfirmationModal from '../DeleteConfirmationModal/DeleteConfirmationModal';
 import handleDeleteReminder from '../HandleDeleteReminder';
 import { Link } from 'react-router-dom';
 import styles from './CalendarReminderComponent.module.scss';
 
-
-
 const CalendarReminder = ({
   reminder,
-  onDeleteReminder,
-  onSelectDate, // Add onSelectDate prop
+  reminders,
+  setReminders, // Add setReminders prop to update reminders state
+  onSelectDate,
 }) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [idToDelete, setIdToDelete] = useState(null);
@@ -21,7 +20,7 @@ const CalendarReminder = ({
     const fetchEntryDetails = async () => {
       try {
         const response = await axios.get(`http://localhost:3001/api/v1/entries/${reminder.entryId}`);
-        setEntryDetails(response.data); // Assuming the response contains entry details
+        setEntryDetails(response.data);
       } catch (error) {
         console.error('Error fetching entry details:', error);
       }
@@ -32,28 +31,28 @@ const CalendarReminder = ({
     }
   }, [reminder.entryId]);
 
-  // Function to format the date using moment.js
   const formatDate = (date) => {
     return moment(date).format('MMMM Do');
   };
 
   const handleGoToDate = () => {
-    // Call onSelectDate if it exists
     if (onSelectDate && reminder && reminder.date) {
-      onSelectDate(new Date(entryDetails.date)); // Navigate to the date of the original entry
+      onSelectDate(new Date(entryDetails.date));
     }
   };
 
+  const handleDeleteReminderSuccess = (deletedReminderId) => {
+    setReminders((prevReminders) => prevReminders.filter((reminder) => reminder._id !== deletedReminderId));
+  };
+
   return (
-    
     <li className={styles.ReminderItem}>
-      
       {entryDetails && (
         <>
-          <p>Reminder for {entryDetails.name} (<Link onClick={handleGoToDate}>{formatDate(entryDetails.date)} </Link>
-            ):<span>{reminder.description}</span>
+          <i className="fas fa-xs fa-bell"></i>
+          <p>
+            {entryDetails.name} (<Link onClick={handleGoToDate}>{formatDate(entryDetails.date)}</Link>):<span>{reminder.description}</span>
           </p>
-
         </>
       )}
 
@@ -61,27 +60,24 @@ const CalendarReminder = ({
         setIdToDelete(reminder._id);
         setShowDeleteModal(true);
       }}>
- <i
-                      className="fas fa-trash"
-                      onClick={() => handleDeleteReminder(reminder._id)}
-                      style={{ cursor: 'pointer', marginLeft: '10px' }}
-                    ></i>      </div>
-                    
+        <i
+          className="fas fa-trash"
+          style={{ cursor: 'pointer', marginLeft: '10px' }}
+        ></i>
+      </div>
 
       {showDeleteModal && (
         <DeleteConfirmationModal
           isOpen={showDeleteModal}
           onCancel={() => setShowDeleteModal(false)}
           onConfirm={async () => {
-            await handleDeleteReminder(idToDelete, onDeleteReminder);
+            await handleDeleteReminder(idToDelete, handleDeleteReminderSuccess);
             setShowDeleteModal(false);
           }}
         />
       )}
-  
     </li>
-    
   );
 };
 
-export default CalendarReminder;  
+export default CalendarReminder;

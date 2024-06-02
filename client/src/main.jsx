@@ -2,8 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
 import 'react-toastify/dist/ReactToastify.css';
-import './index.scss'
-import "./responsive.css";
+import '../src/styles/main.scss'
 import Modal from 'react-modal';
 import Navbar from './components/Navbar/Navbar.jsx';
 Modal.setAppElement('#root');

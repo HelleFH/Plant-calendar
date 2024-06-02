@@ -3,6 +3,7 @@ import axios from 'axios';
 import styles from './SetReminderComponent.module.scss';
 import { Link } from 'react-router-dom';
 import { Modal } from 'react-bootstrap';
+import CustomModal from '../CustomModal/CustomModal';
 
 const SetCalendarReminder = ({ isOpen, onClose, entryId }) => {
   const [reminderDate, setReminderDate] = useState('');
@@ -55,16 +56,8 @@ const SetCalendarReminder = ({ isOpen, onClose, entryId }) => {
   };
 
   return (
-    <Modal className={styles.modalOverlay} show={isOpen} onHide={onClose}>
-      <div className={styles.modalContent}>
-        <span
-          className={styles.modalClose}
-          type="button"
-          aria-label="Close"
-          onClick={onClose}
-        >
-          &times;
-        </span>
+    <CustomModal isOpen={isOpen} onClose={onClose} title="Set Reminder">
+     
         {entryDetails && (
           <div className={styles.entryDetails}>
                     <h4 className='margin-bottom'>Add Reminder for {entryDetails.name}</h4>
@@ -110,9 +103,7 @@ const SetCalendarReminder = ({ isOpen, onClose, entryId }) => {
           Add Reminder
         </button>
       </div>
-      </div>
-    </Modal>
-  );
+      </CustomModal>  );
 };
 
 export default SetCalendarReminder;

@@ -46,7 +46,7 @@ const ImageUpload = ({ onDrop, file, previewSrc, isPreviewAvailable }) => {
       {previewSrc ? (
         isPreviewAvailable ? (
           <div className="image-preview margin-top">
-            <img className="preview-image" src={previewSrc} alt="Preview" />
+            <img className="preview-image" style={{maxHeight:'250px', margin:'0 auto'}} src={previewSrc} alt="Preview" />
           </div>
         ) : (
           <div className="preview-message">

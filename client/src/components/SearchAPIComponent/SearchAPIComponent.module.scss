@@ -2,25 +2,6 @@
 @import "../../styles/mixins";
 
 
-
-.modalOverlay {
-  @include modal-overlay
-}
-
-.modalContent {
- @include modal-content;
-  width: 70% !important;
-
-  @include flex-right;
-}
-
-.modalClose {
-  @include modal-close
-}
-.lineContainer {
-  padding: 1em 0.5em 1em 0.5em;
-}
-
 .cancelButton {
   @include flex-center;
   background: none;
@@ -41,11 +22,6 @@
   }
 }
 
-.searchResults {
-  max-height: 300px;
-  overflow-y: auto;
-  margin-top: 20px;
-}
 
 .searchResultItem {
   margin-bottom: 10px;

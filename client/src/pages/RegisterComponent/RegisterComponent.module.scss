@@ -1,0 +1,67 @@
+@import "../../styles/variables";
+@import "../../styles/mixins";
+
+.registerContainer {
+    @include flex-center;
+    gap: 1em;
+    background-image: url("../public/images/bg.jpg");
+}
+
+.header {
+    font-family: "Headland One", serif;
+    height: 60px;
+    background-color: $secondary-color;
+    width:100%;
+    color: $tertiary-color;
+   @include flex-center;
+   margin-top:0.5em;
+   margin-bottom: 0.5em;
+
+}
+
+.registerContent {
+    @include flex-center;
+    padding-top: 1em;
+    background: rgb(74, 84, 46, 0.9);
+    color: $text-color;
+    margin-top:5em;
+    margin-bottom: 2em;
+    padding:1em;
+}
+.registerForm {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    margin: 1em 10% 1em 10%;
+}
+.loginLink {
+    background-color: lighten($primary-color, 40%);
+    width: 100%;
+    text-align:center;
+    padding-top:1em;
+}
+.registerForm input {
+    outline: none;
+    border: none;
+    height: 35px;
+    border-radius: 20px;
+    width: 100%;
+    padding-left: 1em;
+}
+
+.registerForm input {
+    width: 100%;
+}
+.signupButton {
+    @include primary-button;
+    float:right;
+
+}
+.faEye {
+    position: absolute;
+    margin-left: 0.5em;
+}
+.nameContainer {
+    @include flex-row;
+    gap: 1em;
+}

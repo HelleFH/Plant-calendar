@@ -6,6 +6,7 @@ import Modal from 'react-modal';
 import ImageUpload from '../ImageUpload';
 import SearchPlantAPI from '../SearchAPIComponent/SearchPlantAPI';
 import styles from './CreateEntryComponent.module.scss';
+import CustomModal from '../CustomModal/CustomModal';
 
 const CreateEntryWithFileUpload = ({ isOpen, onClose, selectedDate }) => {
   const [file, setFile] = useState(null);
@@ -113,32 +114,18 @@ const CreateEntryWithFileUpload = ({ isOpen, onClose, selectedDate }) => {
   };
 
   return (
-    <Modal
-      isOpen={isOpen}
-      className={styles.modalOverlay}
-      onRequestClose={onClose}
-
-      contentLabel="Create Entry Modal"
-    >
-      <div className={styles.modalContent}>
-      <span
-          className={styles.modalClose}
-          type="button"
-          aria-label="Close"
-          onClick={onClose}
-        >    &times;       
-      </span>      
-        <Form className="search-form" onSubmit={handleEntrySubmit} encType="multipart/form-data">
-        {errorMsg && <p className="errorMsg">{errorMsg}</p>}
-        <ImageUpload
-          onDrop={onDrop}
-          file={file}
-          previewSrc={previewSrc}
-          isPreviewAvailable={isPreviewAvailable}
-        />
-        <div className='form-container'>
-          <div className='flex-row'>
-          <div>
+    <CustomModal isOpen={isOpen} onClose={onClose} title="Create Entry">
+    <Form className="search-form" onSubmit={handleEntrySubmit} encType="multipart/form-data">
+      {errorMsg && <p className="errorMsg">{errorMsg}</p>}
+      <ImageUpload
+        onDrop={onDrop}
+        file={file}
+        previewSrc={previewSrc}
+        isPreviewAvailable={isPreviewAvailable}
+      />
+      <div className={styles.formContainer}>
+        <div className='flex-row'>
+          <div className={styles.nameContainer}>
             <input
               type="text"
               placeholder="Name"
@@ -150,70 +137,66 @@ const CreateEntryWithFileUpload = ({ isOpen, onClose, selectedDate }) => {
             />
           </div>
           <button
-              className="primary-button"
-              onClick={handleOpenSearchPlantModal}
-            >
-              Search Database
-            </button>
-            </div>
-          <div>
-            <input
-              type="text"
-              placeholder="Sunlight"
-              name="sunlight"
-              className="form-control"
-              value={entry.sunlight}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div>
-            <input
-              type="text"
-              placeholder="Water"
-              name="water"
-              className="form-control"
-              value={entry.water}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div className='form-group'>
-    
-          </div>
-          <div className=" form-group margin-bottom">
-            <textarea
-              type="text"
-              placeholder="Notes"
-              name="notes"
-              className="form-control width-100"
-              value={entry.notes}
-              onChange={handleInputChange}
-              style={{ height: '150px', verticalAlign: 'top' }}
-            />
-          </div>
+            className="primary-button"
+            onClick={handleOpenSearchPlantModal}
+          >
+            Search Database
+          </button>
         </div>
-        <div className='margin-top flex-row'>
+        <div>
+          <input
+            type="text"
+            placeholder="Sunlight"
+            name="sunlight"
+            className="form-control"
+            value={entry.sunlight}
+            onChange={handleInputChange}
+          />
+        </div>
+        <div>
+          <input
+            type="text"
+            placeholder="Water"
+            name="water"
+            className="form-control"
+            value={entry.water}
+            onChange={handleInputChange}
+          />
+        </div>
+        <div className='form-group'>
+        </div>
+        <div className="form-group margin-bottom">
+          <textarea
+            type="text"
+            placeholder="Notes"
+            name="notes"
+            className="form-control width-100"
+            value={entry.notes}
+            onChange={handleInputChange}
+            style={{ height: '150px', verticalAlign: 'top' }}
+          />
+        </div>
+      </div>
+      <div className='margin-top flex-row'>
         <Link type="button" onClick={handleCancel}>
-            Cancel
-          </Link>
-          <div className='flex-row-right'>
+          Cancel
+        </Link>
+        <div className='flex-row-right'>
           <button type="button" className="primary-button" onClick={handleClearForm}>
             Clear Form
           </button>
           <button className="secondary-button" type="submit">
             Submit
           </button>
-  
         </div>
-        </div>
-      </Form>
       </div>
-
-      <SearchPlantAPI
-        isOpen={showSearchPlantModal}
-        onSelectPlant={handleSavePlantName}
-        closeModal={() => setShowSearchPlantModal(false)}
-      />
-    </Modal>
+    </Form>
+    <SearchPlantAPI
+      isOpen={showSearchPlantModal}
+      onSelectPlant={handleSavePlantName}
+      closeModal={() => setShowSearchPlantModal(false)}
+    />
+  </CustomModal>
   );
 };
 

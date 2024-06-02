@@ -2,7 +2,29 @@
 @import "../../styles/mixins";
 
 .ReminderItem {
-    @include flex-row;
-    padding:1em;
+    background-color: white;
+    display: grid;
+    grid-template-columns: 1fr 9fr 1fr;
+    align-items: flex-start;
+    text-align: left;
+
+    width: 90vw;
+    padding: 1em;
+    margin: 0 auto;
+    margin-top:1em;
+
+    i {
+        grid-column: 1;
+        grid-row: 1;
+    }
+    p {
+        grid-column: 2;
+    }
+    div {
+        grid-column: 3;
+        grid-row: 1;
+    }
+    span {
+        padding-left: 0.2em;
+    }
 }
-.ReminderItem span {padding-left:0.2em;}

@@ -1,20 +1,6 @@
 @import "../../styles/mixins";
 @import "../../styles/variables";
 
-.modalOverlay {
-    @include modal-overlay;
-}
-
-.modalContent {
-    @include modal-content;
-    width: 95% !important;
-    height: fit-content;
-    @include flex-right;
-}
-
-.modalClose {
-    @include modal-close;
-}
 .ReminderForm div {
     @include flex-right;
     gap: 0.5em;

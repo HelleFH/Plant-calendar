@@ -10,11 +10,10 @@ import Slider from '../../components/SliderComponent/Slider';
 import styles from './CalendarView.module.scss';
 import Navbar from '../../components/Navbar/Navbar';
 
-
 const CalendarComponent = () => {
   const [loggedIn, setLoggedIn] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [isCreateEntryModalOpen, setIsCreateEntryModalOpen] = useState(false); // State for modal visibility
+  const [isCreateEntryModalOpen, setIsCreateEntryModalOpen] = useState(false);
 
   const { entries, highlightedDates, error: entriesError, setEntries } = useEntries(selectedDate);
   const { reminders, highlightedReminderDates, error: remindersError, setReminders } = useReminders(selectedDate);
@@ -41,7 +40,7 @@ const CalendarComponent = () => {
   };
 
   const handleAddEntryClick = () => {
-    setIsCreateEntryModalOpen(true); // Open the modal when Add Entry button is clicked
+    setIsCreateEntryModalOpen(true);
   };
 
   const handleUpdateEntry = (updatedEntry) => {
@@ -59,26 +58,25 @@ const CalendarComponent = () => {
   };
 
   const handleCloseModal = () => {
-    setIsCreateEntryModalOpen(false); // Close the modal
+    setIsCreateEntryModalOpen(false);
   };
 
   return (
-    
     <div>
-                <Navbar />
+      <Navbar />
 
       {loggedIn ? (
         <div className='flex-center'>
           <div className={styles.backgroundContainer}>
-          <Slider id={1} />
-          <Calendar value={selectedDate} onChange={handleDateChange} tileClassName={tileClassName} />
+            <Slider id={1} />
+            <Calendar value={selectedDate} onChange={handleDateChange} tileClassName={tileClassName} />
 
-          {selectedDate && (
-            <div className={styles.addEntryContainer}>
-              <p className={styles.selectedDate}>{selectedDate.toDateString()}</p>
-              <button className={`primary-button ${styles.addEntryButton}`} onClick={handleAddEntryClick}>Add Entry</button>
-            </div>
-          )}
+            {selectedDate && (
+              <div className={styles.addEntryContainer}>
+                <p className={styles.selectedDate}>{selectedDate.toDateString()}</p>
+                <button className={`primary-button ${styles.addEntryButton}`} onClick={handleAddEntryClick}>Add Entry</button>
+              </div>
+            )}
           </div>
           {entriesError && <p>Error: {entriesError}</p>}
           {remindersError && <p>Error: {remindersError}</p>}
@@ -108,20 +106,24 @@ const CalendarComponent = () => {
                   onDeleteReminder={handleDeleteReminderSuccess}
                   selectedDate={selectedDate}
                   onSelectDate={handleDateChange}
+                  setReminders={setReminders} // Pass setReminders to update reminders state
                 />
-                
               ))}
-                   <div className={styles.lineContainer}>
-              <hr className="long-line" ></hr>
-            </div>
+              <div className={styles.lineContainer}>
+                <hr className="long-line" />
+              </div>
             </ul>
-            
           )}
 
           <CreateEntryWithFileUpload isOpen={isCreateEntryModalOpen} onClose={handleCloseModal} selectedDate={selectedDate} />
         </div>
       ) : (
-        <p>Please log in to view the calendar.</p>
+        <div className='flex-center margin-top'>
+          <p className="margin-bottom">Please log in to view the calendar.</p>
+          <a href="/login">
+            <button className='secondary-button'>Login</button>
+          </a>
+        </div>
       )}
     </div>
   );

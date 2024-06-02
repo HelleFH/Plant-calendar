@@ -1,0 +1,81 @@
+@import "../../styles/variables";
+@import "../../styles/mixins";
+
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Headland+One&display=swap");
+
+.container {
+    @include flex-center;
+}
+
+
+.header {
+    font-family: "Headland One", serif;
+    height: 60px;
+    background-color: $secondary-color;
+    width:100%;
+    color: $tertiary-color;
+   @include flex-center;
+   margin-top: -2em;
+   margin-bottom: 0.5em;
+
+}
+
+
+.headerContainer {
+    @include flex-center;
+    background-color: $background-color;
+    color: $text-color;
+    width: 100%;
+    height: 200px;
+    background-image: url(../../../public/images/bg.jpg);
+    background-position: center center;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.credentialInput {
+    display: grid;
+    grid-template-columns: 1fr 7fr 1fr;
+    grid-auto-rows: auto auto;
+}
+
+.credentialInput input:first-child {
+    grid-column: 2;
+    margin-bottom: 1.5em;
+}
+.credentialInput input:nth-child(2) {
+    grid-column: 2;
+}
+.faEye {
+    grid-column: 3;
+    align-self: center;
+}
+.background img {
+    max-width: 200px;
+    border-radius: 5px;
+}
+.credentialInput input {
+    outline: none;
+    border: none;
+    height: 35px;
+    border-radius: 20px;
+    width: 100%;
+    padding-left: 1em;
+}
+
+.content {
+    @include flex-center;
+}
+
+.form {
+    @include flex-center;
+    gap: 1em;
+    padding-top: 1em;
+}
+.faEye {
+    margin-left: 0.5em;
+}
+.loginButton {
+    @include secondary-button;
+    width: 50%;
+}

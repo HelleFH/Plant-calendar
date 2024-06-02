@@ -1,6 +1,6 @@
 
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import { HomeLayout, Landing, Login, Logout, Register} from "./pages";
+import { HomeLayout, Login, Logout, Register} from "./pages";
 import CalendarComponent from "./pages/CalendarView/Calendar";
 import { ToastContainer, toast } from 'react-toastify';
 import './styles/main.scss';
@@ -15,7 +15,7 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Landing />,
+        element: <Login />,
       },
       {
         path: "login",

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import styles from './DeleteConfirmationModalComponent.module.scss';
-import Modal from 'react-modal';
+import CustomModal from '../CustomModal/CustomModal';
 
 const DeleteConfirmationModal = ({ isOpen, onCancel, onConfirm }) => {
   if (!isOpen) {
@@ -9,35 +9,19 @@ const DeleteConfirmationModal = ({ isOpen, onCancel, onConfirm }) => {
   }
 
   return (
-    <Modal
+    <CustomModal
       isOpen={isOpen}
       onRequestClose={onCancel}
       className={styles.modalOverlay}
       contentLabel="Delete Modal"
+      title="Confirm Delete"
     >
-      <div className={styles.modalContent}
-      >
-
-        <span
-        className={styles.modalClose}
-          type="button"
-          aria-label="Close"
-          onClick={onCancel}
-        >
-          &times;
-        </span>
-        
-        <h3 className="margin-bottom" id="deleteModalLabel">
-          Confirm Deletion
-        </h3>
-        
+     
         <div>
           Are you sure you want to delete this entry?
         </div>
-        <div className={`margin-bottom ${styles.lineContainer}`}> 
-              <hr className="long-line margin-top" ></hr>
-            </div>
-        <div className="flex-row-right">
+  
+        <div className="flex-row-right margin-top">
           
           <Link
             type="button"
@@ -54,8 +38,7 @@ const DeleteConfirmationModal = ({ isOpen, onCancel, onConfirm }) => {
             Delete
           </button>
         </div>
-      </div>
-    </Modal>
+    </CustomModal>
   );
 };
 

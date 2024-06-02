@@ -1,18 +1,14 @@
 @import "../../styles/variables";
 @import "../../styles/mixins";
 
-
-.modalOverlay {
-  @include modal-overlay
+.formContainer {
+  display: flex;
+  flex-direction: column;
+  padding-top: 1em;
+  gap: 1em;
 }
-
-.modalContent {
- @include modal-content;
-  width: 95% !important;
-
-  @include flex-right;
-}
-
-.modalClose {
-  @include modal-close
+.formContainer input {height:30px;padding-left:0.2em;}
+textarea {padding:0.2em;}
+.nameContainer {
+  place-self: flex-end;
 }
