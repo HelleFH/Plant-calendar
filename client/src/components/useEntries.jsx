@@ -18,46 +18,39 @@ const useEntries = (selectedDate) => {
         setError('An error occurred while fetching entries.');
       }
     };
-
-    if (selectedDate) {
-      fetchEntries(selectedDate);
-    }
-  }, [selectedDate]);
-
-  useEffect(() => {
     const fetchAndSaveEntryDates = async () => {
       try {
         const username = localStorage.getItem('username');
         if (!username) return;
-
+    
         const startDate = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1);
         const endDate = new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, 0);
-
+    
         const datesInRange = [];
         const currentDate = new Date(startDate);
         while (currentDate <= endDate) {
           datesInRange.push(new Date(currentDate));
           currentDate.setDate(currentDate.getDate() + 1);
         }
-
-        const highlightedDates = [];
-        for (const date of datesInRange) {
+    
+        const highlightedDatesPromises = datesInRange.map(async (date) => {
           const formattedDate = date.toISOString().split('T')[0];
           const entriesData = await getEntriesByDateAndUsername(formattedDate, username);
           if (entriesData.length > 0) {
-            highlightedDates.push(date.toDateString());
+            return date.toDateString();
           }
-        }
-
-        setHighlightedDates(highlightedDates);
-        localStorage.setItem('highlightedDates', JSON.stringify(highlightedDates));
+          return null;
+        });
+    
+        const highlightedDates = await Promise.all(highlightedDatesPromises);
+        setHighlightedDates(highlightedDates.filter(date => date !== null));
       } catch (error) {
         console.error('Error occurred while fetching entries:', error);
         setError('An error occurred while fetching entries.');
       }
     };
-
-    if (selectedDate) {
+        if (selectedDate) {
+      fetchEntries(selectedDate);
       fetchAndSaveEntryDates();
     }
   }, [selectedDate]);

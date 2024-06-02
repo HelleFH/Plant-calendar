@@ -2,11 +2,10 @@ import React, { useState, useEffect } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import useEntries from '../../components/useEntries';
-import useReminders from '../../components/useReminders';
+import useReminders from '../../components/useReminders'; // Import useReminders
 import CalendarEntry from '../../components/CalendarEntryComponent/CalendarEntry';
-import CalendarReminder from '../../components/CalendarReminder/CalendarReminder';
+import CalendarReminder from '../../components/CalendarReminder/CalendarReminder'; // Import CalendarReminder
 import CreateEntryWithFileUpload from '../../components/CreateEntryComponent/createEntry';
-import Slider from '../../components/SliderComponent/Slider';
 import styles from './CalendarView.module.scss';
 import Navbar from '../../components/Navbar/Navbar';
 
@@ -16,7 +15,7 @@ const CalendarComponent = () => {
   const [isCreateEntryModalOpen, setIsCreateEntryModalOpen] = useState(false);
 
   const { entries, highlightedDates, error: entriesError, setEntries } = useEntries(selectedDate);
-  const { reminders, highlightedReminderDates, error: remindersError, setReminders } = useReminders(selectedDate);
+  const { reminders, highlightedReminderDates, error: remindersError, setReminders } = useReminders(selectedDate); // Use useReminders
 
   useEffect(() => {
     const token = localStorage.getItem('auth');
@@ -43,20 +42,6 @@ const CalendarComponent = () => {
     setIsCreateEntryModalOpen(true);
   };
 
-  const handleUpdateEntry = (updatedEntry) => {
-    setEntries((prevEntries) =>
-      prevEntries.map((entry) => (entry._id === updatedEntry._id ? updatedEntry : entry))
-    );
-  };
-
-  const handleDeleteEntrySuccess = (deletedEntryId) => {
-    setEntries((prevEntries) => prevEntries.filter((entry) => entry._id !== deletedEntryId));
-  };
-
-  const handleDeleteReminderSuccess = (deletedReminderId) => {
-    setReminders((prevReminders) => prevReminders.filter((reminder) => reminder._id !== deletedReminderId));
-  };
-
   const handleCloseModal = () => {
     setIsCreateEntryModalOpen(false);
   };
@@ -68,7 +53,6 @@ const CalendarComponent = () => {
       {loggedIn ? (
         <div className='flex-center'>
           <div className={styles.backgroundContainer}>
-            <Slider id={1} />
             <Calendar value={selectedDate} onChange={handleDateChange} tileClassName={tileClassName} />
 
             {selectedDate && (
@@ -88,8 +72,6 @@ const CalendarComponent = () => {
                   className={styles.calendarEntry}
                   key={index}
                   entry={entry}
-                  onUpdateEntry={handleUpdateEntry}
-                  onDeleteEntry={handleDeleteEntrySuccess}
                   selectedDate={selectedDate}
                 />
               ))}
@@ -103,9 +85,7 @@ const CalendarComponent = () => {
                   className={styles.calendarReminder}
                   key={index}
                   reminder={reminder}
-                  onDeleteReminder={handleDeleteReminderSuccess}
                   selectedDate={selectedDate}
-                  onSelectDate={handleDateChange}
                   setReminders={setReminders} // Pass setReminders to update reminders state
                 />
               ))}

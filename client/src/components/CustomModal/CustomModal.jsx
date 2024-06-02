@@ -7,6 +7,7 @@ const CustomModal = ({ isOpen, onClose, title, children }) => {
     <Modal
       isOpen={isOpen}
       onRequestClose={onClose}
+      shouldCloseOnOverlayClick={true} // Enable closing when clicking outside
       className={styles.modalOverlay}
       contentLabel={title}
     >
