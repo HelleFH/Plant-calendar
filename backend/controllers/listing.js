@@ -1,4 +1,4 @@
-// entryController.js
+// EntryController.js
 
 const { Entry } = require('../models/entryModel');
 const cloudinary = require('cloudinary').v2;

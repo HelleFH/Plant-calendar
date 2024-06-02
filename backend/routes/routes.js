@@ -4,7 +4,7 @@ const router = express.Router();
 const { uploadController, getEntriesByDate, getRemindersByDate } = require('../controllers/uploadController');
 const { login, register, getAllUsers } = require("../controllers/user");
 const multer = require('multer');
-const entryController = require('../controllers/entryController'); // Import entry controller
+const EntryController = require('../controllers/EntryController'); // Import entry controller
 const reminderController = require('../controllers/ReminderController'); // Import the new reminder controller
 
 const upload = multer({
@@ -25,13 +25,13 @@ router.route("/login").post(login);
 router.route("/register").post(register);
 router.route("/users").get(getAllUsers);
 router.get('/entries/date/:date', getEntriesByDate); // Fetch entries by date
-router.delete('/entries/:id', entryController.deleteEntry);
+router.delete('/entries/:id', EntryController.deleteEntry);
 router.delete('/reminders/:id', reminderController.deleteReminder);
 router.post('/reminders', reminderController.setReminder); // New route for setting reminders
 router.get('/reminders/date/:date', getRemindersByDate); // New route for setting reminders
-router.get(`/entries/:id`, entryController.getEntryById);
+router.get(`/entries/:id`, EntryController.getEntryById);
 
-  router.put('/entries/:id', entryController.updateEntry);
+  router.put('/entries/:id', EntryController.updateEntry);
 
   router.get('/reminders/entry/:entryId', reminderController.getRemindersByEntryId);
 
