@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
 import ImageUpload from '../imageUpload';
 import DeleteConfirmationModal from '../DeleteConfirmationModal/DeleteConfirmationModal';
 import handleSubmitUpdate from '../HandleSubmitUpdate';
@@ -10,6 +9,7 @@ import handleDeleteReminder from '../HandleDeleteReminder';
 import moment from 'moment';
 import styles from '../CalendarEntryComponent/CalendarEntryComponent.module.scss';
 import '@fortawesome/fontawesome-free/css/all.min.css'; // Make sure this is included
+import axiosInstance from '../axiosInstance';
 
 const CalendarEntry = ({ entry, onUpdateEntry, onDeleteEntry, selectedDate }) => {
   const [isEditing, setIsEditing] = useState(false);
