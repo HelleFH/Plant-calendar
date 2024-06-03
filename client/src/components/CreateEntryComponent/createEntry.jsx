@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Form } from 'react-bootstrap';
 import { useNavigate, Link } from 'react-router-dom';
-import ImageUpload from '../ImageUpload';
+import ImageUpload from '../imageUpload';
 import SearchPlantAPI from '../SearchAPIComponent/SearchPlantAPI';
 import styles from './CreateEntryComponent.module.scss';
 import CustomModal from '../CustomModal/CustomModal';

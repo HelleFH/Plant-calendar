@@ -3,7 +3,7 @@ import axiosInstance from './axiosInstance'; // Adjust the path as per your proj
 const handleDeleteEntry = async (entryId, onDeleteSuccess) => {
   try {
     await axiosInstance.delete(`/entries/${entryId}`);
-    console.log('Entry deleted successfully');
+    console.log('Entry deleted successfully:', entryId);
     if (onDeleteSuccess) {
       onDeleteSuccess(entryId); // Call the callback function
     }

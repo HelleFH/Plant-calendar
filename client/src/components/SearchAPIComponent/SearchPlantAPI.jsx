@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import styles from './SearchAPIComponent.module.scss';
 import CustomModal from '../CustomModal/CustomModal';
+import { Link } from 'react-router-dom';
+
 
 const SearchPlantAPI = ({ isOpen, onSelectPlant, closeModal }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -47,7 +49,7 @@ const SearchPlantAPI = ({ isOpen, onSelectPlant, closeModal }) => {
           <h4>Search for your plant in our Database!</h4>
           <input type="text" value={searchTerm} onChange={handleChange} />
           <div className='flex-row-right'>
-            <button onClick={closeModal} className="secondary-button">Cancel</button>
+            <Link onClick={closeModal}>Cancel</Link>
             <button onClick={handleSearch} className="secondary-button">Search</button>
           </div>
         </div>

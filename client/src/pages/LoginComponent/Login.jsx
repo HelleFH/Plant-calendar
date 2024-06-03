@@ -1,12 +1,9 @@
 import React, { useState } from "react";
-import Logo from "../../assets/Logo.png";
-import GoogleSvg from "../../assets/icons8-google.svg";
 import { FaEye, FaEyeSlash } from "react-icons/fa6";
 import { Link, useNavigate } from "react-router-dom";
 import axiosInstance from "../../components/axiosInstance";
 import { toast } from "react-toastify";
 import styles from './LoginComponent.module.scss';
-import bg from '../../assets/login-bg.jpg'; // Adjust the path according to your file structure
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);

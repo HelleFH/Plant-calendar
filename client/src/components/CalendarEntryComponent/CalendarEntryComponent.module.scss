@@ -9,11 +9,10 @@
     background-color: lighten($tertiary-color, 5%);
     color: $secondary-color;
     height: 100%;
-    margin:1em auto;
+    margin:0 auto 1em;
 
     .entryName {
         cursor: pointer;
-        font-weight: bold;
     }
 
     .entryDetails {
@@ -47,6 +46,7 @@
     @include flex-right;
     gap:1em;
 
+    p {font-weight: 400;}
 
     span {
         background-color: white;
@@ -54,10 +54,10 @@
         padding: 0.2em;
         height: 40px;
         margin-top: 0.3em;
-        border: 1px solid $background-color;
         display: flex;
         align-items: center;
         border-radius: $border-radius;
+        font-weight:600 !important;
 
     }
 

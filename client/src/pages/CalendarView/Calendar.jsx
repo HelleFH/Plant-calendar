@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import useEntries from '../../components/useEntries';
-import useReminders from '../../components/useReminders'; // Import useReminders
+import useReminders from '../../components/useReminders';
 import CalendarEntry from '../../components/CalendarEntryComponent/CalendarEntry';
-import CalendarReminder from '../../components/CalendarReminder/CalendarReminder'; // Import CalendarReminder
+import CalendarReminder from '../../components/CalendarReminder/CalendarReminder';
 import CreateEntryWithFileUpload from '../../components/CreateEntryComponent/createEntry';
 import styles from './CalendarView.module.scss';
 import Navbar from '../../components/Navbar/Navbar';
@@ -13,9 +13,8 @@ const CalendarComponent = () => {
   const [loggedIn, setLoggedIn] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [isCreateEntryModalOpen, setIsCreateEntryModalOpen] = useState(false);
-
   const { entries, highlightedDates, error: entriesError, setEntries } = useEntries(selectedDate);
-  const { reminders, highlightedReminderDates, error: remindersError, setReminders } = useReminders(selectedDate); // Use useReminders
+  const { reminders, highlightedReminderDates, error: remindersError, setReminders } = useReminders(selectedDate);
 
   useEffect(() => {
     const token = localStorage.getItem('auth');
@@ -46,6 +45,16 @@ const CalendarComponent = () => {
     setIsCreateEntryModalOpen(false);
   };
 
+  const onUpdateEntry = (updatedEntry) => {
+    setEntries((prevEntries) =>
+      prevEntries.map((entry) => (entry._id === updatedEntry._id ? updatedEntry : entry))
+    );
+  };
+
+  const onDeleteEntry = (entryId) => {
+    setEntries((prevEntries) => prevEntries.filter((entry) => entry._id !== entryId));
+  };
+
   return (
     <div>
       <Navbar />
@@ -66,13 +75,16 @@ const CalendarComponent = () => {
           {remindersError && <p>Error: {remindersError}</p>}
 
           {entries.length > 0 && (
-            <ul>
+            <ul className='flex-center'>
+              <h4>Entries</h4>
               {entries.map((entry, index) => (
                 <CalendarEntry
                   className={styles.calendarEntry}
                   key={index}
                   entry={entry}
                   selectedDate={selectedDate}
+                  onUpdateEntry={onUpdateEntry}
+                  onDeleteEntry={onDeleteEntry}
                 />
               ))}
             </ul>
@@ -80,13 +92,14 @@ const CalendarComponent = () => {
 
           {reminders.length > 0 && (
             <ul className={styles.reminderList}>
+              <h4>Reminders</h4>
               {reminders.map((reminder, index) => (
                 <CalendarReminder
                   className={styles.calendarReminder}
                   key={index}
                   reminder={reminder}
                   selectedDate={selectedDate}
-                  setReminders={setReminders} // Pass setReminders to update reminders state
+                  setReminders={setReminders}
                 />
               ))}
               <div className={styles.lineContainer}>

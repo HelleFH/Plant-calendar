@@ -1,19 +1,11 @@
 import axiosInstance from './axiosInstance';
 
-const handleSubmitUpdate = async (id, editedEntry, file, selectedDate, onUpdateEntry, handleDeleteEntry) => {
+const handleSubmitUpdate = async (id, editedEntry, file, selectedDate, onUpdateEntry, onDeleteEntry) => {
   try {
-    const data = {
-      name: editedEntry.name,
-      notes: editedEntry.notes,
-      sunlight: editedEntry.sunlight,
-      water: editedEntry.water,
-      date: selectedDate,
-      username: editedEntry.username.toString(),
-      cloudinaryUrl: editedEntry.cloudinaryUrl // Default to existing URL
-    };
+    let uploadResponse;
 
-    // If there's a new file, upload it first
     if (file) {
+      // If there's a new file, upload it first
       const formData = new FormData();
       formData.append('file', file);
       formData.append('name', editedEntry.name);
@@ -23,28 +15,51 @@ const handleSubmitUpdate = async (id, editedEntry, file, selectedDate, onUpdateE
       formData.append('username', editedEntry.username);
       formData.append('date', editedEntry.date);
 
-      const uploadResponse = await axiosInstance.post(`/upload`, formData, {
+      uploadResponse = await axiosInstance.post(`/upload`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
 
-      // Update cloudinaryUrl in the data
-      data.cloudinaryUrl = uploadResponse.data.cloudinaryUrl;
-    }
+      // Prepare data for updating the entry
+      const data = {
+        name: editedEntry.name,
+        notes: editedEntry.notes,
+        sunlight: editedEntry.sunlight,
+        water: editedEntry.water,
+        date: selectedDate,
+        username: editedEntry.username.toString(),
+        cloudinaryUrl: uploadResponse.data.cloudinaryUrl,
+      };
 
-    // Send PUT request to update the entry
-    const updateResponse = await axiosInstance.put(`/entries/${id}`, data);
+      // Send PUT request to update the entry
+      const updateResponse = await axiosInstance.put(`/entries/${id}`, data);
 
-    // Update the parent component with the new entry data
-    onUpdateEntry(updateResponse.data);
-
-    // Delete the old entry if the image was updated
-    if (file) {
+      // Delete the old entry
       await handleDeleteEntry(id);
-    }
+      onDeleteEntry(id);
 
-    return updateResponse.data;
+      // Update the parent component with the new entry data
+      onUpdateEntry(updateResponse.data);
+
+    } else {
+      // Prepare data for updating the entry if no new file is uploaded
+      const data = {
+        name: editedEntry.name,
+        notes: editedEntry.notes,
+        sunlight: editedEntry.sunlight,
+        water: editedEntry.water,
+        date: selectedDate,
+        username: editedEntry.username.toString(),
+        cloudinaryUrl: editedEntry.cloudinaryUrl,
+      };
+
+      // Send PUT request to update the entry
+      const updateResponse = await axiosInstance.put(`/entries/${id}`, data);
+
+      // Update the parent component with the new entry data
+      onUpdateEntry(updateResponse.data);
+    }
   } catch (error) {
     console.error('Error updating entry:', error);
     throw error; // Throw the error for the caller to handle

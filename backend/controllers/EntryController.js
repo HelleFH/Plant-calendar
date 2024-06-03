@@ -27,6 +27,7 @@ const { id } = req.params;
   }
 };
 
+
 const updateEntry = async (req, res) => {
   const { id } = req.params;
   const { name, notes, sunlight, water, cloudinaryUrl } = req.body;
