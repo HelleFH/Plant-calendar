@@ -60,7 +60,7 @@ const CalendarComponent = () => {
       <Navbar />
 
       {loggedIn ? (
-        <div className='flex-center'>
+          <div className={styles.calendarContainer}>
           <div className={styles.backgroundContainer}>
             <Calendar value={selectedDate} onChange={handleDateChange} tileClassName={tileClassName} />
 
@@ -105,6 +105,7 @@ const CalendarComponent = () => {
               <div className={styles.lineContainer}>
                 <hr className="long-line" />
               </div>
+              
             </ul>
           )}
 
@@ -117,7 +118,9 @@ const CalendarComponent = () => {
             <button className='secondary-button'>Login</button>
           </a>
         </div>
+        
       )}
+      
     </div>
   );
 };
