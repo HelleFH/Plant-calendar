@@ -7,19 +7,16 @@
     @include flex-center;
 }
 
-
 .header {
     font-family: "Headland One", serif;
     height: 60px;
     background-color: $secondary-color;
-    width:100%;
+    width: 100%;
     color: $tertiary-color;
-   @include flex-center;
-   margin-top: -2em;
-   margin-bottom: 0.5em;
-
+    @include flex-center;
+    margin-top: -2em;
+    margin-bottom: 0.5em;
 }
-
 
 .headerContainer {
     @include flex-center;
@@ -32,7 +29,9 @@
     background-size: cover;
     background-repeat: no-repeat;
 }
-
+.rememberCheckbox {
+    margin-right: 0.3em;
+}
 .credentialInput {
     display: grid;
     grid-template-columns: 1fr 7fr 1fr;

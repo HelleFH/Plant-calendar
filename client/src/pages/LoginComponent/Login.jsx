@@ -73,7 +73,7 @@ const Login = () => {
             )}
           </div>
           <div>
-            <input type="checkbox" id="remember-checkbox" />
+            <input type="checkbox" id="remember-checkbox" className={styles.rememberCheckbox} />
             <label htmlFor="remember-checkbox">Remember for 30 days</label>
           </div>
           <button className={styles.loginButton} type="submit">Log In</button>

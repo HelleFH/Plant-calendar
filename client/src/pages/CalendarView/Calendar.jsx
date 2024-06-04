@@ -32,6 +32,10 @@ const CalendarComponent = () => {
     }
     return className;
   };
+  const handleSelectDate = (date) => {
+    console.log('Date selected:', date);
+    setSelectedDate(date);
+  };
 
   const handleDateChange = (date) => {
     setSelectedDate(selectedDate && selectedDate.getTime() === date.getTime() ? null : date);
@@ -100,6 +104,8 @@ const CalendarComponent = () => {
                   reminder={reminder}
                   selectedDate={selectedDate}
                   setReminders={setReminders}
+                  onSelectDate={handleSelectDate}
+
                 />
               ))}
               <div className={styles.lineContainer}>

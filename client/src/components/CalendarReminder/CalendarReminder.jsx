@@ -14,6 +14,7 @@ const CalendarReminder = ({
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [idToDelete, setIdToDelete] = useState(null);
   const [entryDetails, setEntryDetails] = useState(null);
+  
   useEffect(() => {
     const fetchEntryDetails = async () => {
       try {
@@ -33,8 +34,9 @@ const CalendarReminder = ({
     return moment(date).format('MMMM Do');
   };
 
-  const handleGoToDate = () => {
-    if (onSelectDate && reminder && reminder.date) {
+  const handleGoToDate = (event) => {
+    event.preventDefault();
+    if (onSelectDate && entryDetails && entryDetails.date) {
       onSelectDate(new Date(entryDetails.date));
     }
   };
@@ -49,7 +51,7 @@ const CalendarReminder = ({
         <>
           <i className="fas fa-xs fa-bell"></i>
           <p>
-            {entryDetails.name} (<Link onClick={handleGoToDate}>{formatDate(entryDetails.date)}</Link>):<span>{reminder.description}</span>
+            {entryDetails.name} (<Link to="#" onClick={handleGoToDate}>{formatDate(entryDetails.date)}</Link>):<span>{reminder.description}</span>
           </p>
         </>
       )}
