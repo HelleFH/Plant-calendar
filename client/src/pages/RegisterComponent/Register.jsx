@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { FaEye } from "react-icons/fa6";
 import { FaEyeSlash } from "react-icons/fa6";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+import axiosInstance from "../../components/axiosInstance";
 import { toast } from "react-toastify";
 import styles from './RegisterComponent.module.scss';
 
