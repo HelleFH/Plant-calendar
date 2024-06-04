@@ -9,6 +9,7 @@ app.use(express.json());
 app.use(cors())
 app.use("/api/v1", mainRouter);
 
+app.use(express.static('public'));
 
 const port = process.env.PORT || 3001;
 
