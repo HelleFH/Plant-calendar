@@ -19,7 +19,7 @@
 }
 .backgroundContainer {
    
-    background-image: url("../../../public/images/bg.jpg");
+    background-image: url(../../../public/images/bg.jpg);
     background-size: cover;
     @include flex-center;
     max-width: 500px;
@@ -97,9 +97,6 @@ ul h4 {
     }
 }
 .reminderList {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
+    @include flex-center;
     width: 90%;
 }
