@@ -2,14 +2,10 @@
 @import "../../styles/mixins";
 
 .ReminderItem {
-    background-color: white;
+  @include entry-item;
+
     display: grid;
     grid-template-columns: 1fr 9fr 1fr;
-    align-items: flex-start;
-    text-align: left;
-    width: 90%;
-    padding: 1em;
-    margin: 0 auto 0.5em;
 
     i {
         grid-column: 1;

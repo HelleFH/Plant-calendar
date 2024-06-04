@@ -75,7 +75,7 @@ const CalendarComponent = () => {
           {remindersError && <p>Error: {remindersError}</p>}
 
           {entries.length > 0 && (
-            <ul className='flex-center'>
+            <ul className={styles.entryListContainer}>
               <h4>Entries</h4>
               {entries.map((entry, index) => (
                 <CalendarEntry

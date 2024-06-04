@@ -22,7 +22,7 @@ const CalendarEntry = ({ entry, onUpdateEntry, onDeleteEntry, selectedDate }) =>
   const [isReminderModalOpen, setIsReminderModalOpen] = useState(false);
   const [username, setUsername] = useState('');
   const [reminders, setReminders] = useState([]);
-  
+
 
   const contentRef = useRef(null);
 
@@ -95,29 +95,22 @@ const CalendarEntry = ({ entry, onUpdateEntry, onDeleteEntry, selectedDate }) =>
       >
         {isEditing ? (
           <>
-            <ImageUpload
-              onDrop={onDrop}
-              file={file}
-              previewSrc={previewSrc}
-              isPreviewAvailable={true}
-            />
-            <div className={styles.editForm}>
-              <div>
+            <div className={styles.editFormContainer}>
+
+              <ImageUpload
+                onDrop={onDrop}
+                file={file}
+                previewSrc={previewSrc}
+                isPreviewAvailable={true}
+              />
                 <label>Name:</label>
                 <input type="text" name="name" value={editedEntry.name} onChange={handleChange} />
-              </div>
-              <div>
                 <label>Notes:</label>
                 <textarea name="notes" value={editedEntry.notes} onChange={handleChange} />
-              </div>
-              <div>
                 <label>Sunlight:</label>
                 <input type="text" name="sunlight" value={editedEntry.sunlight} onChange={handleChange} />
-              </div>
-              <div>
                 <label>Water:</label>
                 <input type="text" name="water" value={editedEntry.water} onChange={handleChange} />
-              </div>
               <div className="flex-row-right">
                 <Link onClick={() => setIsEditing(false)}>Cancel</Link>
                 <button className="secondary-button" onClick={() => handleSubmitUpdate(entry._id, editedEntry, file, selectedDate, onUpdateEntry, handleDeleteEntry).then(() => setIsEditing(false))}>Save</button>
@@ -130,22 +123,25 @@ const CalendarEntry = ({ entry, onUpdateEntry, onDeleteEntry, selectedDate }) =>
               <hr className="long-line"></hr>
             </div>
             {entry.cloudinaryUrl && <img className="margin-top margin-bottom" src={entry.cloudinaryUrl} alt={entry.name} />}
-        
+
             <div className={styles.EntryFormContainer}>
               <hr className="long-line"></hr>
-              <p>Notes:
-                <span> {entry.notes}</span></p>
+              <label>Notes:</label>
+              <p> {entry.notes}</p>
               <hr className="long-line"></hr>
-   
-              <p>Sunlight: <span>{entry.sunlight}</span></p>
+
+              <label>Sunlight:</label>
+
+              <p>{entry.sunlight}</p>
               <hr className="long-line"></hr>
-              <p>Water:<span> {entry.water}</span></p>
+              <label>Water:</label> 
+              <p>{entry.water}</p>
+              <hr className="long-line margin-bottom"></hr>
 
             </div>
 
-            
-           
-              <hr className="long-line margin-bottom"></hr>
+
+
             <SetCalendarReminder
               isOpen={isReminderModalOpen}
               onClose={toggleReminderModal}
@@ -173,11 +169,11 @@ const CalendarEntry = ({ entry, onUpdateEntry, onDeleteEntry, selectedDate }) =>
                     ></i>
                   </span>
                 </li>
-                
+
               ))}
             </ul>
             <div className='flex-row-right margin-top margin-bottom'>
-              
+
               <Link
                 className={styles.deleteButton}
                 onClick={() => {
@@ -201,11 +197,11 @@ const CalendarEntry = ({ entry, onUpdateEntry, onDeleteEntry, selectedDate }) =>
             </div>
           </>
         )}
-        
+
       </div>
-      
+
     </li>
-    
+
   );
 };
 

@@ -36,6 +36,15 @@
   text-overflow: ellipsis;
 }
 
+@mixin entry-item {
+  padding: 1em;
+  width: 100%;
+  list-style: none;
+  color: $secondary-color;
+  height: 100%;
+  margin:0 auto 1em;
+  background-color: white;}
+
 @mixin flex-center {
   display: flex;
   justify-content: center;
