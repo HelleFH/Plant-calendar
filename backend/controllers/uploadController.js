@@ -1,4 +1,6 @@
 const { Entry } = require('../models/EntryModel');
+const { FollowUpEntry } = require('../models/FollowUpModel');
+
 const { Reminder } = require('../models/ReminderModel');
 
 const cloudinary = require('cloudinary').v2;
@@ -12,7 +14,7 @@ cloudinary.config({
 
 
 const uploadController = async (req, res) => {
-    const { name, notes, sunlight, water, date, username } = req.body;
+    const { name, notes, sunlight, water, date, username, userID } = req.body;
 
     // Check if username existss
     if (!username) {
@@ -44,7 +46,8 @@ const uploadController = async (req, res) => {
             cloudinaryUrl: result.secure_url,
             cloudinaryPublicId: result.public_id,
             cloudinaryDeleteToken: deletionToken,
-            username: username // Include the username retrieved from the request body
+            username: username,
+            userID: userID // Include the username retrieved from the request body
         });
 
         await entry.save();
@@ -53,11 +56,13 @@ const uploadController = async (req, res) => {
     }).end(buffer);
 };
 
+
+
 const getEntriesByDate = async (req, res) => {
     try {
         // Extract date and username from request parameters
         const { date } = req.params;
-        const { username } = req.query;
+        const { userID } = req.query;
 
         // Parse date string into JavaScript Date object
         const searchDate = new Date(date);
@@ -68,7 +73,7 @@ const getEntriesByDate = async (req, res) => {
                 $gte: searchDate, 
                 $lt: new Date(searchDate.getTime() + 24 * 60 * 60 * 1000) 
             },
-            username: username // Add username as a condition
+            userID: userID // Add username as a condition
         });
 
         // Send entries as response

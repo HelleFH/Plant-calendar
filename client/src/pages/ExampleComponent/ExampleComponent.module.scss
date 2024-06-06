@@ -1,0 +1,10 @@
+@import "../../styles/variables";
+@import "../../styles/mixins";
+
+.entryListContainer {
+    @include entrylist-container;
+}
+
+.ExampleContainer {
+    @include page-container
+}

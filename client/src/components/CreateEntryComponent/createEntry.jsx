@@ -35,6 +35,8 @@ const CreateEntryWithFileUpload = ({ isOpen, onClose, selectedDate }) => {
       formData.append('water', entry.water);
       formData.append('date', selectedDate.toDateString()); // Use selectedDate
       formData.append('username', localStorage.getItem('username'));
+      formData.append('userID', localStorage.getItem('userId'));
+
 
        await axiosInstance.post('/upload', formData, {
         headers: {

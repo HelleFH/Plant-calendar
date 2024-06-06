@@ -10,6 +10,9 @@ import moment from 'moment';
 import styles from '../CalendarEntryComponent/CalendarEntryComponent.module.scss';
 import '@fortawesome/fontawesome-free/css/all.min.css'; // Make sure this is included
 import axiosInstance from '../axiosInstance';
+import CreateFollowUpEntry from '../FollowUpEntry/CreateFollowUpEntry';
+import FollowUpEntry from '../FollowUpEntry/FollowUpEntry';
+import useEntries from '../useEntries';
 
 const CalendarEntry = ({ entry, onUpdateEntry, onDeleteEntry, selectedDate }) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -20,9 +23,11 @@ const CalendarEntry = ({ entry, onUpdateEntry, onDeleteEntry, selectedDate }) =>
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [idToDelete, setIdToDelete] = useState(null);
   const [isReminderModalOpen, setIsReminderModalOpen] = useState(false);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const { entries, highlightedDates, error: entriesError, setEntries } = useEntries(selectedDate);
+
   const [username, setUsername] = useState('');
   const [reminders, setReminders] = useState([]);
-
 
   const contentRef = useRef(null);
 
@@ -68,8 +73,22 @@ const CalendarEntry = ({ entry, onUpdateEntry, onDeleteEntry, selectedDate }) =>
     setIsReminderModalOpen(!isReminderModalOpen);
   };
 
+  const toggleCreateModal = () => {
+    setIsCreateModalOpen(!isCreateModalOpen);
+  };
+
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
+  };
+
+  const handleCloseModal = () => {
+    setIsCreateModalOpen(false);
+  };
+
+  const handleUpdateEntry = (updatedEntry) => {
+    setEntries((prevEntries) =>
+      prevEntries.map((entry) => (entry._id === updatedEntry._id ? updatedEntry : entry))
+    );
   };
 
   return (
@@ -96,24 +115,23 @@ const CalendarEntry = ({ entry, onUpdateEntry, onDeleteEntry, selectedDate }) =>
         {isEditing ? (
           <>
             <div className={styles.editFormContainer}>
-
               <ImageUpload
                 onDrop={onDrop}
                 file={file}
                 previewSrc={previewSrc}
                 isPreviewAvailable={true}
               />
-                <label>Name:</label>
-                <input type="text" name="name" value={editedEntry.name} onChange={handleChange} />
-                <label>Notes:</label>
-                <textarea name="notes" value={editedEntry.notes} onChange={handleChange} />
-                <label>Sunlight:</label>
-                <input type="text" name="sunlight" value={editedEntry.sunlight} onChange={handleChange} />
-                <label>Water:</label>
-                <input type="text" name="water" value={editedEntry.water} onChange={handleChange} />
+              <label>Name:</label>
+              <input type="text" name="name" value={editedEntry.name} onChange={handleChange} />
+              <label>Notes:</label>
+              <textarea name="notes" value={editedEntry.notes} onChange={handleChange} />
+              <label>Sunlight:</label>
+              <input type="text" name="sunlight" value={editedEntry.sunlight} onChange={handleChange} />
+              <label>Water:</label>
+              <input type="text" name="water" value={editedEntry.water} onChange={handleChange} />
               <div className="flex-row-right">
                 <Link onClick={() => setIsEditing(false)}>Cancel</Link>
-                <button className="secondary-button" onClick={() => handleSubmitUpdate(entry._id, editedEntry, file, selectedDate, onUpdateEntry, handleDeleteEntry).then(() => setIsEditing(false))}>Save</button>
+                <button className="secondary-button" onClick={() => handleSubmitUpdate(entry._id, editedEntry, file, selectedDate, handleUpdateEntry, handleDeleteEntry).then(() => setIsEditing(false))}>Save</button>
               </div>
             </div>
           </>
@@ -127,20 +145,38 @@ const CalendarEntry = ({ entry, onUpdateEntry, onDeleteEntry, selectedDate }) =>
             <div className={styles.EntryFormContainer}>
               <hr className="long-line"></hr>
               <label>Notes:</label>
-              <p> {entry.notes}</p>
+              <p>{entry.notes}</p>
               <hr className="long-line"></hr>
 
               <label>Sunlight:</label>
-
               <p>{entry.sunlight}</p>
               <hr className="long-line"></hr>
-              <label>Water:</label> 
+              <label>Water:</label>
               <p>{entry.water}</p>
               <hr className="long-line margin-bottom"></hr>
-
             </div>
 
+            <CreateFollowUpEntry
+              isOpen={isCreateModalOpen}
+              onClose={handleCloseModal}
+              selectedDate={selectedDate}
+            />
 
+            {entries.length > 0 && (
+              <ul className={styles.entryListContainer}>
+                <h4>Follow ups</h4>
+                {entries.map((followUpEntry, index) => (
+                  <FollowUpEntry
+                    className={styles.calendarEntry}
+                    key={index}
+                    entry={followUpEntry}
+                    selectedDate={selectedDate}
+                    onUpdateEntry={handleUpdateEntry}
+                    onDeleteEntry={onDeleteEntry}
+                  />
+                ))}
+              </ul>
+            )}
 
             <SetCalendarReminder
               isOpen={isReminderModalOpen}
@@ -149,13 +185,16 @@ const CalendarEntry = ({ entry, onUpdateEntry, onDeleteEntry, selectedDate }) =>
               entryId={entry._id}
               username={username}
             />
-            <div className='flex-row'>
+            <Link onClick={toggleCreateModal}>
+              + Add Entry For this Plant
+            </Link>
+            <div className="flex-row">
               <p>Reminders:</p>
               <button className="secondary-button" onClick={toggleReminderModal}>
                 <i className="fas fa-bell"></i> Set Reminder
               </button>
             </div>
-            <ul className='flex-right margin-top'>
+            <ul className="flex-right margin-top">
               {reminders.map((reminder) => (
                 <li className="flex-row" key={reminder._id}>
                   <span>
@@ -169,11 +208,9 @@ const CalendarEntry = ({ entry, onUpdateEntry, onDeleteEntry, selectedDate }) =>
                     ></i>
                   </span>
                 </li>
-
               ))}
             </ul>
-            <div className='flex-row-right margin-top margin-bottom'>
-
+            <div className="flex-row-right margin-top margin-bottom">
               <Link
                 className={styles.deleteButton}
                 onClick={() => {
@@ -197,11 +234,8 @@ const CalendarEntry = ({ entry, onUpdateEntry, onDeleteEntry, selectedDate }) =>
             </div>
           </>
         )}
-
       </div>
-
     </li>
-
   );
 };
 

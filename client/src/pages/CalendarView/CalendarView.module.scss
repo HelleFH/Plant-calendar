@@ -13,9 +13,8 @@
     color: $secondary-color;
 }
 .calendarContainer {
-    @include flex-center;
-    margin-bottom: 1em;
-    gap: 1em;
+    @include page-container
+
 }
 .backgroundContainer {
    
@@ -71,8 +70,7 @@ ul h4 {
     align-items: center;
 }
 .entryListContainer {
-    @include flex-center;
-    width: 90%;
+    @include entrylist-container;
 }
 .tile {
     background: white;

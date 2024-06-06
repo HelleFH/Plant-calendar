@@ -1,10 +1,11 @@
 
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import { HomeLayout, Login, Logout, Register} from "./pages";
+import { HomeLayout, Login, Logout, Register, Example} from "./pages";
 import CalendarComponent from "./pages/CalendarView/Calendar";
 import { ToastContainer, toast } from 'react-toastify';
 import './styles/main.scss';
 import './styles/global-styles.scss'; // Import global styles
+
 
 const router = createBrowserRouter([
   {
@@ -20,9 +21,14 @@ const router = createBrowserRouter([
         element: <Login />,
       },
       {
+        path: "example",
+        element: <Example />,
+      },
+      {
         path: "register",
         element: <Register />,
       },
+
       {
         path: "calendar",
         element: <CalendarComponent />,

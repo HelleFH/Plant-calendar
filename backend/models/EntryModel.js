@@ -9,8 +9,14 @@ const entrySchema = new mongoose.Schema({
     cloudinaryPublicId: { type: String, required: false }, 
     cloudinaryDeleteToken: { type: String, required: false },
     date: { type: Date, required: true }, // Add date field
-    username: { type: String, required: true } // Add username field
+    username: { type: String, required: true }, // Add username field
+    userID: { type: String, required: true }, // Add date field
+
 });
+entrySchema.statics.findByUsername = function(username) {
+    return this.find({ username: username }, 'name'); // Only select the 'name' field
+  };
+  
 
 const Entry = mongoose.model('Entry', entrySchema);
 

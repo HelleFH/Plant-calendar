@@ -1,4 +1,4 @@
-@import './variables';
+@import "./variables";
 
 @mixin button-styles($background, $color) {
   background-color: $background;
@@ -41,9 +41,23 @@
   width: 100%;
   list-style: none;
   color: $secondary-color;
-  height: 100%;
-  margin:0 auto 1em;
-  background-color: white;}
+  margin: 0 auto 1em;
+  background-color: white;
+  overflow: scroll;
+}
+@mixin page-container {
+  @include flex-center;
+  margin-bottom: 1em;
+  gap: 1em;
+}
+
+@mixin entrylist-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 90%;
+}
 
 @mixin flex-center {
   display: flex;

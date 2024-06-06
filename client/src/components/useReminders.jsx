@@ -1,66 +1,58 @@
 import { useState, useEffect } from 'react';
 import getRemindersByDateAndUsername from '../components/GetRemindersbyDateAndUsername';
 
+
 const useReminders = (selectedDate) => {
   const [reminders, setReminders] = useState([]);
   const [highlightedReminderDates, setHighlightedReminderDates] = useState([]);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchRemindersForSelectedDate = async () => {
+    const fetchReminders = async (date) => {
       try {
+        const formattedDate = date.toISOString().split('T')[0];
         const username = localStorage.getItem('username');
-        if (!username) return;
-
-        const formattedDate = selectedDate.toDateString(); // Use the same format as entries
         const remindersData = await getRemindersByDateAndUsername(formattedDate, username);
         setReminders(remindersData);
       } catch (error) {
-        console.error('Error occurred while fetching reminders:', error);
-        setError('An error occurred while fetching reminders.');
+        console.error('Error occurred while fetching entries:', error);
+        setError('An error occurred while fetching entries.');
       }
     };
-
-    if (selectedDate) {
-      fetchRemindersForSelectedDate();
-    }
-  }, [selectedDate]);
-
-  useEffect(() => {
-    const fetchAndSaveReminderDatesForMonth = async () => {
+    const fetchAndSaveReminderDates = async () => {
       try {
         const username = localStorage.getItem('username');
         if (!username) return;
-
+    
         const startDate = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1);
         const endDate = new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, 0);
-
+    
         const datesInRange = [];
         const currentDate = new Date(startDate);
         while (currentDate <= endDate) {
           datesInRange.push(new Date(currentDate));
           currentDate.setDate(currentDate.getDate() + 1);
         }
-
-        const highlightedDates = [];
-        for (const date of datesInRange) {
-          const formattedDate = date.toDateString(); // Use the same format as entries
+    
+        const highlightedReminderDatesPromises = datesInRange.map(async (date) => {
+          const formattedDate = date.toISOString().split('T')[0];
           const remindersData = await getRemindersByDateAndUsername(formattedDate, username);
           if (remindersData.length > 0) {
-            highlightedDates.push(formattedDate);
+            return date.toDateString();
           }
-        }
-
-        setHighlightedReminderDates(highlightedDates);
-        localStorage.setItem('highlightedReminderDates', JSON.stringify(highlightedDates));
+          return null;
+        });
+    
+        const highlightedReminderDates = await Promise.all(highlightedReminderDatesPromises);
+        setHighlightedReminderDates(highlightedReminderDates.filter(date => date !== null));
       } catch (error) {
-        console.error('Error occurred while fetching reminder dates:', error);
-        setError('An error occurred while fetching reminder dates.');
+        console.error('Error occurred while fetching entries:', error);
+        setError('An error occurred while fetching entries.');
       }
     };
-
-    if (selectedDate) {
-      fetchAndSaveReminderDatesForMonth();
+        if (selectedDate) {
+      fetchReminders(selectedDate);
+      fetchAndSaveReminderDates();
     }
   }, [selectedDate]);
 

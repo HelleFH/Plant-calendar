@@ -27,7 +27,6 @@ const { id } = req.params;
   }
 };
 
-
 const updateEntry = async (req, res) => {
   const { id } = req.params;
   const { name, notes, sunlight, water, cloudinaryUrl } = req.body;
@@ -81,10 +80,55 @@ const getEntryById = async (req, res) => {
   }
 };
 
+const getEntryNamesByUserId = async (req, res) => {
+  try {
+      // Extract userID from request parameters
+      const { userID } = req.params;
+
+      // Get entries for the specified userID
+      const entries = await Entry.find({ userID });
+
+      // Extract entry names from the retrieved entries
+      const entryNames = entries.map(entry => entry.name);
+
+      // Send entry names as response
+      res.json({ entryNames });
+  } catch (error) {
+      console.error('Error in getting entry names by userID:', error);
+      return res.status(500).json({ error: 'Internal server error.' });
+  }
+};
+const getEntriesByUserId = async (req, res) => {
+  try {
+      // Extract userID and sorting criteria from request parameters and query parameters
+      const { userID } = req.params;
+      const { sortBy } = req.query;
+
+      // Define the sort options based on the sortBy parameter
+      let sortOptions = {};
+      if (sortBy === 'date') {
+          sortOptions = { date: 1 }; // Sort by date in ascending order
+      } else if (sortBy === 'name') {
+          sortOptions = { name: 1 }; // Sort by name in ascending order
+      }
+
+      // Get entries for the specified userID and apply sorting
+      const entries = await Entry.find({ userID }).sort(sortOptions);
+
+      // Send entries as response
+      res.json(entries);
+  } catch (error) {
+      console.error('Error in getting entries by userID:', error);
+      return res.status(500).json({ error: 'Internal server error.' });
+  }
+};
 
 module.exports = {
   deleteEntry,
   updateEntry,
   getEntryById,
+  getEntriesByUserId,
+  getEntryNamesByUserId,
+  
 
 };

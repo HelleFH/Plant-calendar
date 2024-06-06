@@ -1,27 +1,28 @@
 import { useState, useEffect } from 'react';
-import getEntriesByDateAndUsername from '../components/GetEntriesByDateAndUsername';
+import getEntriesByDateAndId from './GetEntriesByDateAndId';
 
 const useEntries = (selectedDate) => {
   const [entries, setEntries] = useState([]);
   const [highlightedDates, setHighlightedDates] = useState([]);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchEntries = async (date) => {
-      try {
-        const formattedDate = date.toISOString().split('T')[0];
-        const username = localStorage.getItem('username');
-        const entriesData = await getEntriesByDateAndUsername(formattedDate, username);
-        setEntries(entriesData);
-      } catch (error) {
-        console.error('Error occurred while fetching entries:', error);
-        setError('An error occurred while fetching entries.');
-      }
-    };
+
+    useEffect(() => {
+      const fetchEntries = async (date) => {
+        try {
+          const formattedDate = date.toISOString().split('T')[0];
+          const userID = localStorage.getItem('userId');
+          const entriesData = await getEntriesByDateAndId(formattedDate, userID);
+          setEntries(entriesData);
+        } catch (error) {
+          console.error('Error occurred while fetching entries:', error);
+          setError('An error occurred while fetching entries.');
+        }
+      };
     const fetchAndSaveEntryDates = async () => {
       try {
-        const username = localStorage.getItem('username');
-        if (!username) return;
+        const userID = localStorage.getItem('userId');
+        if (!userID) return;
     
         const startDate = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1);
         const endDate = new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, 0);
@@ -35,7 +36,7 @@ const useEntries = (selectedDate) => {
     
         const highlightedDatesPromises = datesInRange.map(async (date) => {
           const formattedDate = date.toISOString().split('T')[0];
-          const entriesData = await getEntriesByDateAndUsername(formattedDate, username);
+          const entriesData = await getEntriesByDateAndId(formattedDate, userID);
           if (entriesData.length > 0) {
             return date.toDateString();
           }

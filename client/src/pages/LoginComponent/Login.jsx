@@ -7,7 +7,7 @@ import styles from './LoginComponent.module.scss';
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const navigate = useNavigate(); // Ensure navigate is correctly used from react-router-dom
+  const navigate = useNavigate();
 
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
@@ -15,18 +15,18 @@ const Login = () => {
     let password = e.target.password.value;
 
     if (email.length > 0 && password.length > 0) {
-      const formData = {
-        email,
-        password,
-      };
+      const formData = { email, password };
       try {
-        const response = await axiosInstance.post(
-          '/login',
-          formData
-        );
+        const response = await axiosInstance.post('/login', formData);
         const { token, username } = response.data;
         localStorage.setItem('auth', JSON.stringify(token));
-        localStorage.setItem('username', JSON.stringify(username)); // Store username in local storage
+        localStorage.setItem('username', JSON.stringify(username));
+
+        // Fetch the user ID using the email provided at login
+        const userIdResponse = await axiosInstance.get(`/users/${email}`);
+        const { _id } = userIdResponse.data;
+        localStorage.setItem('userId', JSON.stringify(_id));
+
         toast.success("Login successful");
         navigate("/calendar");
       } catch (err) {
@@ -39,12 +39,12 @@ const Login = () => {
   };
 
   return (
-    <div className={styles.container}>
+    <div className={styles.loginContainer}>
       <div className={styles.overlay}></div>
       <div className={styles.headerContainer}>
         <div className={styles.background}></div>
       </div>
-      <h1 className={styles.header}>Plant Planner</h1>
+      <h1 className={styles.loginHeader}>Plant Planner</h1>
       <h2>Welcome back!</h2>
       <div className={styles.content}>
         <p>Please enter your details</p>

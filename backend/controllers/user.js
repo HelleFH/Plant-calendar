@@ -33,10 +33,42 @@ const login = async (req, res) => {
 };
 
 
+const getUserIdByEmail = async (req, res) => {
+  const { email } = req.params;
+  console.log(email)
+  try {
+    const user = await User.findOne({ email: email });
+    if (user) {
+      res.json({ _id: user._id });
+      console.log(_id)
+    } else {
+      res.status(404).json({ message: 'User not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+
+
 const getAllUsers = async (req, res) => {
   let users = await User.find({});
 
   return res.status(200).json({ users });
+};
+
+const getUserById = async (req, res) => {
+  const { email } = req.body;
+  try {
+    const user = await User.findOne({ email: email });
+    if (user) {
+      res.json({ _id: user._id });
+    } else {
+      res.status(404).json({ message: 'User not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
 };
 
 const register = async (req, res) => {
@@ -63,4 +95,6 @@ module.exports = {
   login,
   register,
   getAllUsers,
+  getUserById,
+  getUserIdByEmail
 };

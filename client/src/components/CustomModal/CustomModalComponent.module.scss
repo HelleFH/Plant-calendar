@@ -28,6 +28,7 @@
     width: 95% !important;
     background-color: lighten($primary-color, 60%);
     max-width: 500px;
+    max-height:95vh;
     @include flex-right;
 }
 

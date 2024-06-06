@@ -1,9 +1,9 @@
 import axiosInstance from "./axiosInstance";
 
-// Function to fetch entries by date and username
-const getEntriesByDateAndUsername = async (date, username) => {
+
+const getEntriesByDateAndId = async (date, userID) => {
   try {
-    const response = await axiosInstance.get(`/entries/date/${date}?username=${username}`);
+    const response = await axiosInstance.get(`/entries/date/${date}?userID=${userID}`);
     return response.data;
   } catch (error) {
     if (error.response && error.response.status === 404) {
@@ -15,5 +15,4 @@ const getEntriesByDateAndUsername = async (date, username) => {
   }
 };
 
-
-export default getEntriesByDateAndUsername;
+export default getEntriesByDateAndId;

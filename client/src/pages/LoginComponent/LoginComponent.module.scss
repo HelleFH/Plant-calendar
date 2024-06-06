@@ -3,11 +3,11 @@
 
 @import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Headland+One&display=swap");
 
-.container {
-    @include flex-center;
+.loginContainer {
+    @include page-container
 }
 
-.header {
+.loginHeader {
     font-family: "Headland One", serif;
     height: 60px;
     background-color: $secondary-color;
