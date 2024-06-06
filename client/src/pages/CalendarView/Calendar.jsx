@@ -8,12 +8,15 @@ import CalendarReminder from '../../components/CalendarReminder/CalendarReminder
 import CreateEntryWithFileUpload from '../../components/CreateEntryComponent/createEntry';
 import styles from './CalendarView.module.scss';
 import Navbar from '../../components/Navbar/Navbar';
+import useFollowUpEntries from '../../components/useFollowUpEntries';
 
 const CalendarComponent = () => {
   const [loggedIn, setLoggedIn] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [isCreateEntryModalOpen, setIsCreateEntryModalOpen] = useState(false);
   const { entries, highlightedDates, error: entriesError, setEntries } = useEntries(selectedDate);
+  const {  setFollowUpEntries,highlightedFollowUpDates } = useFollowUpEntries(selectedDate);
+
   const { reminders, highlightedReminderDates, error: remindersError, setReminders } = useReminders(selectedDate);
 
   useEffect(() => {
@@ -24,11 +27,15 @@ const CalendarComponent = () => {
   const tileClassName = ({ date }) => {
     const formattedDate = date.toDateString();
     let className = '';
-    if (highlightedDates.includes(formattedDate)) {
+  
+    if (highlightedDates && highlightedDates.includes(formattedDate)) {
       className += ' highlighted';
     }
-    if (highlightedReminderDates.includes(formattedDate)) {
+    if (highlightedReminderDates && highlightedReminderDates.includes(formattedDate)) {
       className += ' highlightedReminder';
+    }
+    if (highlightedFollowUpDates && highlightedFollowUpDates.includes(formattedDate)) {
+      className += ' highlighted';
     }
     return className;
   };
@@ -115,7 +122,8 @@ const CalendarComponent = () => {
             </ul>
           )}
 
-          <CreateEntryWithFileUpload isOpen={isCreateEntryModalOpen} onClose={handleCloseModal} selectedDate={selectedDate} />
+          <CreateEntryWithFileUpload                   setFollowUpEntries={setFollowUpEntries}
+isOpen={isCreateEntryModalOpen} onClose={handleCloseModal} selectedDate={selectedDate} />
         </div>
       ) : (
         <div className='flex-center margin-top'>

@@ -83,6 +83,30 @@ const getEntriesByDate = async (req, res) => {
         return res.status(500).json({ error: 'Internal server error.' });
     }
 };
+const getFollowUpEntriesByDate = async (req, res) => {
+    try {
+        // Extract date and username from request parameters
+        const { date } = req.params;
+        const { userID } = req.query;
 
+        // Parse date string into JavaScript Date object
+        const searchDate = new Date(date);
 
-module.exports = { uploadController, getEntriesByDate };
+        // Get entries for the specified date and username
+        const entries = await FollowUpEntry.find({ 
+            date: { 
+                $gte: searchDate, 
+                $lt: new Date(searchDate.getTime() + 24 * 60 * 60 * 1000) 
+            },
+            userID: userID // Add username as a condition
+        });
+
+        // Send entries as response
+        res.json(entries);
+    } catch (error) {
+        console.error('Error in getting entries by date:', error);
+        return res.status(500).json({ error: 'Internal server error.' });
+    }
+};
+
+module.exports = { uploadController, getEntriesByDate, getFollowUpEntriesByDate };

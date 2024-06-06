@@ -24,12 +24,27 @@ const CalendarEntry = ({ entry, onUpdateEntry, onDeleteEntry, selectedDate }) =>
   const [idToDelete, setIdToDelete] = useState(null);
   const [isReminderModalOpen, setIsReminderModalOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const { entries, highlightedDates, error: entriesError, setEntries } = useEntries(selectedDate);
+  const [followUpEntries, setFollowUpEntries] = useState([]);
 
   const [username, setUsername] = useState('');
   const [reminders, setReminders] = useState([]);
 
   const contentRef = useRef(null);
+
+  useEffect(() => {
+    const fetchFollowUpEntriesByEntryId = async () => {
+      try {
+        const response = await axiosInstance.get(`entries/follow-up/${entry._id}`);
+        setFollowUpEntries(response.data);
+      } catch (error) {
+        console.error('Error fetching follow-up entries by entry ID:', error);
+      }
+    };
+
+    if (entry._id) {
+      fetchFollowUpEntriesByEntryId();
+    }
+  }, [entry._id]);
 
   useEffect(() => {
     const storedUsername = localStorage.getItem('username');
@@ -157,25 +172,24 @@ const CalendarEntry = ({ entry, onUpdateEntry, onDeleteEntry, selectedDate }) =>
             </div>
 
             {isCreateModalOpen && (
-          <CreateFollowUpEntry
-            isOpen={isCreateModalOpen}
-            onClose={handleCloseModal}
-            selectedDate={selectedDate}
-            oldEntryID={entry._id} // Pass the old entry ID as oldEntryID
-          />
-        )}
-            {entries.length > 0 && (
+              <CreateFollowUpEntry
+                isOpen={isCreateModalOpen}
+                onClose={handleCloseModal}
+                selectedDate={selectedDate}
+                oldEntryID={entry._id} // Pass the old entry ID as oldEntryID
+              />
+            )}
+                            <h4>Other entries for this plant</h4>
+
+            {followUpEntries.length > 0 && (
               <ul className={styles.entryListContainer}>
-                <h4>Follow ups</h4>
-                {entries.map((followUpEntry, index) => (
+                {followUpEntries.map((followUpEntry, index) => (
                   <FollowUpEntry
-                    className={styles.calendarEntry}
                     key={index}
                     entry={followUpEntry}
                     selectedDate={selectedDate}
                     onUpdateEntry={handleUpdateEntry}
                     onDeleteEntry={onDeleteEntry}
-                    
                   />
                 ))}
               </ul>
@@ -188,10 +202,13 @@ const CalendarEntry = ({ entry, onUpdateEntry, onDeleteEntry, selectedDate }) =>
               entryId={entry._id}
               username={username}
             />
-            <Link onClick={toggleCreateModal}>
-              + Add Entry For this Plant
+            <Link className={styles.addEntryLink} onClick={toggleCreateModal}>
+              + Add Entry
             </Link>
-            <div className="flex-row">
+            <div className={styles.lineContainer}>
+              <hr className="long-line"></hr>
+            </div>
+            <div className="margin-top flex-row">
               <p>Reminders:</p>
               <button className="secondary-button" onClick={toggleReminderModal}>
                 <i className="fas fa-bell"></i> Set Reminder
@@ -227,13 +244,12 @@ const CalendarEntry = ({ entry, onUpdateEntry, onDeleteEntry, selectedDate }) =>
                 <DeleteConfirmationModal
                   isOpen={showDeleteModal}
                   onCancel={() => setShowDeleteModal(false)}
-                  onConfirm={async () => {
-                    await handleDeleteEntry(idToDelete, onDeleteEntry);
-                    setShowDeleteModal(false);
-                  }}
+                  onConfirm={() => handleDeleteEntry(idToDelete)}
                 />
               )}
-              <button className="primary-button" onClick={() => setIsEditing(true)}>Edit Entry</button>
+              <button className="secondary-button" onClick={() => setIsEditing(true)}>
+                Edit
+              </button>
             </div>
           </>
         )}
