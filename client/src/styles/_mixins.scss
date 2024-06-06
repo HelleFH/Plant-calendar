@@ -43,7 +43,6 @@
   color: $secondary-color;
   margin: 0 auto 1em;
   background-color: white;
-  overflow: scroll;
 }
 @mixin page-container {
   @include flex-center;

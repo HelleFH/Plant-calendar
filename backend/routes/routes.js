@@ -6,7 +6,7 @@ const { login, register, getAllUsers, getUserIdByEmail } = require("../controlle
 const multer = require('multer');
 const EntryController = require('../controllers/EntryController'); // Import entry controller
 const reminderController = require('../controllers/ReminderController');
-const { FollowUpController } = require('../controllers/FollowUpController'); // Ensure this path is correct for your setup
+const followUpEntryController = require('../controllers/FollowUpController');
 
 const upload = multer({
     storage: multer.memoryStorage(),
@@ -22,8 +22,8 @@ const upload = multer({
 });
 
 router.post('/upload', upload.single('file'), uploadController);
-router.post('/upload/follow-up', upload.single('file'), FollowUpController);
-
+router.post('/upload/follow-up', upload.single('file'), followUpEntryController.FollowUpController);
+router.get('/entries/follow-up/:entryID', followUpEntryController.getFollowUpEntriesByEntryId);
 router.route("/login").post(login);
 router.route("/register").post(register);
 router.route("/users").get(getAllUsers);

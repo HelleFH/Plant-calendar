@@ -1,3 +1,5 @@
+// FollowUpEntry.js
+
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import ImageUpload from '../imageUpload';
@@ -8,7 +10,7 @@ import styles from '../CalendarEntryComponent/CalendarEntryComponent.module.scss
 import '@fortawesome/fontawesome-free/css/all.min.css'; // Make sure this is included
 import axiosInstance from '../axiosInstance';
 
-const FollowUpEntry = ({ entry, onUpdateEntry, onDeleteEntry, selectedDate }) => {
+const FollowUpEntry = ({ entry, onUpdateEntry, onDeleteEntry, selectedDate, oldName, oldSunlight, oldWater }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [editedFollowUpEntry, setEditedFollowUpEntry] = useState(entry);
@@ -23,13 +25,22 @@ const FollowUpEntry = ({ entry, onUpdateEntry, onDeleteEntry, selectedDate }) =>
   useEffect(() => {
     const fetchFollowUpEntriesByEntryId = async () => {
       try {
-        const response = await axiosInstance.get(`entries/followup-entry/${entry._id}`);
+        const response = await axiosInstance.get(`entries/follow-up/${entry._id}`);
+        console.log('Entry ID:', entry._id); // Log the entry ID
+    
+        console.log('Follow-up entry data:', response.data); // Log the response data
+    
         setFollowUpEntries(response.data);
+        
+        // Update previewSrc with the Cloudinary URL from the follow-up entry
+        if (response.data.length > 0) {
+          setPreviewSrc(response.data[0].cloudinaryUrl);
+        }
       } catch (error) {
         console.error('Error fetching follow-up entries by entry ID:', error);
       }
     };
-
+  
     if (entry._id) {
       fetchFollowUpEntriesByEntryId();
     }
@@ -59,7 +70,7 @@ const FollowUpEntry = ({ entry, onUpdateEntry, onDeleteEntry, selectedDate }) =>
     <li className={styles.CalendarEntry}>
       <div className="flex-row">
         <p onClick={toggleExpand} className={styles.entryName}>
-          {editedFollowUpEntry.name}
+          {oldName}
         </p>
         <i
           onClick={toggleExpand}
@@ -98,11 +109,11 @@ const FollowUpEntry = ({ entry, onUpdateEntry, onDeleteEntry, selectedDate }) =>
             <div className={styles.lineContainer}>
               <hr className="long-line"></hr>
             </div>
-            {entry.cloudinaryUrl && <img className="margin-top margin-bottom" src={entry.cloudinaryUrl} alt={entry.name} />}
+            {followUpEntries.length > 0 && <img className="margin-top margin-bottom" src={followUpEntries[0].cloudinaryUrl} alt={followUpEntries[0].name} />}
             <div className={styles.EntryFormContainer}>
               <hr className="long-line"></hr>
               <label>Notes:</label>
-              <p>{editedFollowUpEntry.notes}</p>
+              <p>{followUpEntries.length > 0 ? followUpEntries[0].notes : ''}</p>
               <hr className="long-line"></hr>
             </div>
             <div className='flex-row-right margin-top margin-bottom'>

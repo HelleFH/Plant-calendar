@@ -156,12 +156,14 @@ const CalendarEntry = ({ entry, onUpdateEntry, onDeleteEntry, selectedDate }) =>
               <hr className="long-line margin-bottom"></hr>
             </div>
 
-            <CreateFollowUpEntry
-              isOpen={isCreateModalOpen}
-              onClose={handleCloseModal}
-              selectedDate={selectedDate}
-            />
-
+            {isCreateModalOpen && (
+          <CreateFollowUpEntry
+            isOpen={isCreateModalOpen}
+            onClose={handleCloseModal}
+            selectedDate={selectedDate}
+            oldEntryID={entry._id} // Pass the old entry ID as oldEntryID
+          />
+        )}
             {entries.length > 0 && (
               <ul className={styles.entryListContainer}>
                 <h4>Follow ups</h4>

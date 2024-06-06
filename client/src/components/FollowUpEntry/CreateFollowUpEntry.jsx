@@ -6,19 +6,16 @@ import { useNavigate } from 'react-router-dom';
 import { Form } from 'react-bootstrap';
 import ImageUpload from '../imageUpload';
 
-const CreateFollowUpEntry = ({ isOpen, onClose, entryID, name, sunlight, water }) => {
+const CreateFollowUpEntry = ({ isOpen, onClose, oldEntryID, name, sunlight, water }) => {
     const [file, setFile] = useState(null);
     const [followUpDate, setFollowUpDate] = useState('');
     const [previewSrc, setPreviewSrc] = useState('');
     const [isPreviewAvailable, setIsPreviewAvailable] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
     const navigate = useNavigate();
-    console.log(entryID)
 
     const initialEntryState = {
         notes: '',
-        date: '',
-        entryID: entryID,
     };
 
     const [entry, setEntry] = useState(initialEntryState);
@@ -28,9 +25,9 @@ const CreateFollowUpEntry = ({ isOpen, onClose, entryID, name, sunlight, water }
             const formData = new FormData();
             if (file) formData.append('file', file);
             formData.append('notes', entry.notes);
-            formData.append('date', followUpDate); // Use followUpDate
+            formData.append('date', followUpDate);
             formData.append('userID', localStorage.getItem('userId'));
-            formData.append('entryID', entry.entryID);
+            formData.append('entryID', oldEntryID); // Use entryID here
 
             await axiosInstance.post('/upload/follow-up', formData, {
                 headers: {
@@ -41,8 +38,8 @@ const CreateFollowUpEntry = ({ isOpen, onClose, entryID, name, sunlight, water }
             setFile(null);
             setPreviewSrc('');
             setIsPreviewAvailable(false);
-            onClose();  // Close the modal after creating the entry
-            navigate('/calendar');  // Navigate to the calendar page
+            onClose();
+            navigate('/calendar');
         } catch (error) {
             console.error('Error creating entry:', error);
             setErrorMsg('Error creating entry, please try again.');
@@ -84,8 +81,8 @@ const CreateFollowUpEntry = ({ isOpen, onClose, entryID, name, sunlight, water }
     };
 
     const handleCancel = () => {
-        onClose();  // Close the CreateEntryWithFileUpload modal
-        navigate('/calendar');  // Navigate to the calendar page
+        onClose();
+        navigate('/calendar');
     };
 
     return (
