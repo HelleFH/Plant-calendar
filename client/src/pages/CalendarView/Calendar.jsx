@@ -10,11 +10,12 @@ import styles from './CalendarView.module.scss';
 import Navbar from '../../components/Navbar/Navbar';
 import useFollowUpEntries from '../../components/useFollowUpEntries';
 import FollowUpEntry from '../../components/FollowUpEntry/FollowUpEntry';
+import NewEntryModal from '../../components/CreateEntryModal';
 
 const CalendarComponent = () => {
   const [loggedIn, setLoggedIn] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [isCreateEntryModalOpen, setIsCreateEntryModalOpen] = useState(false);
+  const [isNewEntryModalOpen, setIsNewEntryModalOpen] = useState(false);
   const { entries, highlightedDates, error: entriesError, setEntries } = useEntries(selectedDate);
   const { followUpEntries, highlightedFollowUpDates, error: followUpEntriesError, setFollowUpEntries } = useFollowUpEntries(selectedDate);
   const { reminders, highlightedReminderDates, error: remindersError, setReminders } = useReminders(selectedDate);
@@ -49,12 +50,12 @@ const CalendarComponent = () => {
     setSelectedDate(selectedDate && selectedDate.getTime() === date.getTime() ? null : date);
   };
 
-  const handleAddEntryClick = () => {
-    setIsCreateEntryModalOpen(true);
+  const handleNewEntryClick = () => {
+    setIsNewEntryModalOpen(true);
   };
 
   const handleCloseModal = () => {
-    setIsCreateEntryModalOpen(false);
+    setIsNewEntryModalOpen(false);
   };
 
   const onUpdateEntry = (updatedEntry) => {
@@ -79,13 +80,18 @@ const CalendarComponent = () => {
             {selectedDate && (
               <div className={styles.addEntryContainer}>
                 <p className={styles.selectedDate}>{selectedDate.toDateString()}</p>
-                <button className={`primary-button ${styles.addEntryButton}`} onClick={handleAddEntryClick}>Add Entry</button>
+                <button className={`primary-button ${styles.addEntryButton}`} onClick={handleNewEntryClick}>Add Entry</button>
               </div>
             )}
           </div>
           {entriesError && <p>Error: {entriesError}</p>}
           {remindersError && <p>Error: {remindersError}</p>}
           {followUpEntriesError && <p>Error: {followUpEntriesError}</p>}
+          <NewEntryModal
+          
+            isOpen={isNewEntryModalOpen}
+            onClose={handleCloseModal}
+            selectedDate={selectedDate}/>
           <h4>Entries</h4>
 
           {entries.length > 0 && (
@@ -136,12 +142,7 @@ const CalendarComponent = () => {
             </ul>
           )}
 
-          <CreateEntryWithFileUpload
-            setFollowUpEntries={setFollowUpEntries}
-            isOpen={isCreateEntryModalOpen}
-            onClose={handleCloseModal}
-            selectedDate={selectedDate}
-          />
+    
         </div>
       ) : (
         <div className='flex-center margin-top'>

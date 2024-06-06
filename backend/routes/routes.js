@@ -8,6 +8,7 @@ const EntryController = require('../controllers/EntryController'); // Import ent
 const reminderController = require('../controllers/ReminderController');
 const followUpEntryController = require('../controllers/FollowUpController');
 
+
 const upload = multer({
     storage: multer.memoryStorage(),
     limits: {
@@ -32,7 +33,6 @@ router.get('/entries/date/:date', getEntriesByDate); // Fetch entries by date
 router.get('/entries/follow-up/date/:date', getFollowUpEntriesByDate);
 
 
-
 router.delete('/entries/:id', EntryController.deleteEntry);
 router.delete('/entries/follow-up/:id', followUpEntryController.deleteFollowUp);
 
@@ -49,8 +49,6 @@ router.get('/reminders/entry/:entryId', reminderController.getRemindersByEntryId
 router.get('/users/:email', getUserIdByEmail);
 
 router.get('/entries/userID/:userID', EntryController.getEntriesByUserId);
-router.get('/entries/userID/:userID/names', EntryController.getEntryNamesByUserId);
-
 
 
 

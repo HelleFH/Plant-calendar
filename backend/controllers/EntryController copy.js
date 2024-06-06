@@ -80,24 +80,8 @@ const getEntryById = async (req, res) => {
   }
 };
 
-const getEntryNamesByUserId = async (req, res) => {
-  try {
-      // Extract userID from request parameters
-      const { userID } = req.params;
 
-      // Get entries for the specified userID
-      const entries = await Entry.find({ userID });
 
-      // Extract entry names from the retrieved entries
-      const entryNames = entries.map(entry => entry.name);
-
-      // Send entry names as response
-      res.json({ entryNames });
-  } catch (error) {
-      console.error('Error in getting entry names by userID:', error);
-      return res.status(500).json({ error: 'Internal server error.' });
-  }
-};
 const getEntriesByUserId = async (req, res) => {
   try {
       // Extract userID and sorting criteria from request parameters and query parameters
@@ -128,7 +112,7 @@ module.exports = {
   updateEntry,
   getEntryById,
   getEntriesByUserId,
-  getEntryNamesByUserId,
+  getEntryDetailsByUserId,
   
 
 };

@@ -1,12 +1,11 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import CustomModal from '../CustomModal/CustomModal';
 import axiosInstance from '../axiosInstance';
-import { useNavigate } from 'react-router-dom';
 import { Form } from 'react-bootstrap';
 import ImageUpload from '../imageUpload';
 
-const CreateFollowUpEntry = ({ isOpen, onClose, oldEntryID, name, sunlight, water }) => {
+const CreateFollowUpEntry = ({ isOpen, onClose, oldEntryID, name, sunlight, water, selectedDate }) => {
     const [file, setFile] = useState(null);
     const [followUpDate, setFollowUpDate] = useState('');
     const [previewSrc, setPreviewSrc] = useState('');
@@ -19,6 +18,15 @@ const CreateFollowUpEntry = ({ isOpen, onClose, oldEntryID, name, sunlight, wate
     };
 
     const [entry, setEntry] = useState(initialEntryState);
+
+    useEffect(() => {
+        console.log("Selected date:", selectedDate);
+        if (selectedDate) {
+            const dateObject = new Date(selectedDate);
+            const formattedDate = dateObject.toISOString().split('T')[0];
+            setFollowUpDate(formattedDate);
+        }
+    }, [selectedDate]);
 
     const createEntry = async () => {
         try {
@@ -88,6 +96,7 @@ const CreateFollowUpEntry = ({ isOpen, onClose, oldEntryID, name, sunlight, wate
     return (
         <CustomModal isOpen={isOpen} onClose={onClose} title="Follow-Up Entry">
             <div>
+                <label>Name:</label>
                 <h3>{name}</h3>
                 <label>Sunlight:</label>
                 <p>{sunlight}</p>

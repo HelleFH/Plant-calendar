@@ -30,6 +30,8 @@ const CalendarEntry = ({ entry, onUpdateEntry, onDeleteEntry, selectedDate }) =>
   const [reminders, setReminders] = useState([]);
 
   const contentRef = useRef(null);
+  const formattedSelectedDate = selectedDate instanceof Date ? selectedDate.toISOString() : selectedDate;
+
 
   useEffect(() => {
     const fetchFollowUpEntriesByEntryId = async () => {
@@ -172,12 +174,16 @@ const CalendarEntry = ({ entry, onUpdateEntry, onDeleteEntry, selectedDate }) =>
             </div>
 
             {isCreateModalOpen && (
-              <CreateFollowUpEntry
-                isOpen={isCreateModalOpen}
-                onClose={handleCloseModal}
-                selectedDate={selectedDate}
-                oldEntryID={entry._id} // Pass the old entry ID as oldEntryID
-              />
+             <CreateFollowUpEntry
+             isOpen={isCreateModalOpen}
+             onClose={handleCloseModal}
+             selectedDate={formattedSelectedDate}
+             oldEntryID={entry._id}
+             sunlight={entry.sunlight} 
+             water={entry.water}
+             name={entry.name} 
+         />
+         
             )}
                             <h4 className="margin-bottom">Other entries for this plant</h4>
 
