@@ -175,6 +175,7 @@ const CalendarEntry = ({ entry, onUpdateEntry, onDeleteEntry, selectedDate }) =>
                     selectedDate={selectedDate}
                     onUpdateEntry={handleUpdateEntry}
                     onDeleteEntry={onDeleteEntry}
+                    
                   />
                 ))}
               </ul>
