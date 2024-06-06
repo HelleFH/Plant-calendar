@@ -34,12 +34,16 @@ router.get('/entries/follow-up/date/:date', getFollowUpEntriesByDate);
 
 
 router.delete('/entries/:id', EntryController.deleteEntry);
+router.delete('/entries/follow-up/:id', followUpEntryController.deleteFollowUp);
+
 router.delete('/reminders/:id', reminderController.deleteReminder);
 router.post('/reminders', reminderController.setReminder); // New route for setting reminders
 router.get('/reminders/date/:date', reminderController.getRemindersByDate);
  // New route for setting reminders
 router.get(`/entries/:id`, EntryController.getEntryById);
 router.put('/entries/:id', EntryController.updateEntry);
+
+router.put('/entries/follow-up/:id', followUpEntryController.updateFollowUp);
 
 router.get('/reminders/entry/:entryId', reminderController.getRemindersByEntryId);
 router.get('/users/:email', getUserIdByEmail);

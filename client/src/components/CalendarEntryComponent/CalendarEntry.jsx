@@ -179,7 +179,7 @@ const CalendarEntry = ({ entry, onUpdateEntry, onDeleteEntry, selectedDate }) =>
                 oldEntryID={entry._id} // Pass the old entry ID as oldEntryID
               />
             )}
-                            <h4>Other entries for this plant</h4>
+                            <h4 className="margin-bottom">Other entries for this plant</h4>
 
             {followUpEntries.length > 0 && (
               <ul className={styles.entryListContainer}>
@@ -210,7 +210,7 @@ const CalendarEntry = ({ entry, onUpdateEntry, onDeleteEntry, selectedDate }) =>
             </div>
             <div className="margin-top flex-row">
               <p>Reminders:</p>
-              <button className="secondary-button" onClick={toggleReminderModal}>
+              <button className="primary-button" onClick={toggleReminderModal}>
                 <i className="fas fa-bell"></i> Set Reminder
               </button>
             </div>

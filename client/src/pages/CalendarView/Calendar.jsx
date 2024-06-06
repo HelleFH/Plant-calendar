@@ -9,14 +9,14 @@ import CreateEntryWithFileUpload from '../../components/CreateEntryComponent/cre
 import styles from './CalendarView.module.scss';
 import Navbar from '../../components/Navbar/Navbar';
 import useFollowUpEntries from '../../components/useFollowUpEntries';
+import FollowUpEntry from '../../components/FollowUpEntry/FollowUpEntry';
 
 const CalendarComponent = () => {
   const [loggedIn, setLoggedIn] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [isCreateEntryModalOpen, setIsCreateEntryModalOpen] = useState(false);
   const { entries, highlightedDates, error: entriesError, setEntries } = useEntries(selectedDate);
-  const {  setFollowUpEntries,highlightedFollowUpDates } = useFollowUpEntries(selectedDate);
-
+  const { followUpEntries, highlightedFollowUpDates, error: followUpEntriesError, setFollowUpEntries } = useFollowUpEntries(selectedDate);
   const { reminders, highlightedReminderDates, error: remindersError, setReminders } = useReminders(selectedDate);
 
   useEffect(() => {
@@ -27,7 +27,7 @@ const CalendarComponent = () => {
   const tileClassName = ({ date }) => {
     const formattedDate = date.toDateString();
     let className = '';
-  
+
     if (highlightedDates && highlightedDates.includes(formattedDate)) {
       className += ' highlighted';
     }
@@ -35,10 +35,11 @@ const CalendarComponent = () => {
       className += ' highlightedReminder';
     }
     if (highlightedFollowUpDates && highlightedFollowUpDates.includes(formattedDate)) {
-      className += ' highlighted';
+      className += ' highlightedFollowUp';
     }
     return className;
   };
+
   const handleSelectDate = (date) => {
     console.log('Date selected:', date);
     setSelectedDate(date);
@@ -71,7 +72,7 @@ const CalendarComponent = () => {
       <Navbar />
 
       {loggedIn ? (
-          <div className={styles.calendarContainer}>
+        <div className={styles.calendarContainer}>
           <div className={styles.backgroundContainer}>
             <Calendar value={selectedDate} onChange={handleDateChange} tileClassName={tileClassName} />
 
@@ -84,15 +85,30 @@ const CalendarComponent = () => {
           </div>
           {entriesError && <p>Error: {entriesError}</p>}
           {remindersError && <p>Error: {remindersError}</p>}
+          {followUpEntriesError && <p>Error: {followUpEntriesError}</p>}
+          <h4>Entries</h4>
 
           {entries.length > 0 && (
             <ul className={styles.entryListContainer}>
-              <h4>Entries</h4>
               {entries.map((entry, index) => (
                 <CalendarEntry
                   className={styles.calendarEntry}
                   key={index}
                   entry={entry}
+                  selectedDate={selectedDate}
+                  onUpdateEntry={onUpdateEntry}
+                  onDeleteEntry={onDeleteEntry}
+                />
+              ))}
+            </ul>
+          )}
+
+          {followUpEntries.length > 0 && (
+            <ul className={styles.entryListContainer}>
+              {followUpEntries.map((followUpEntry, index) => (
+                <FollowUpEntry
+                  key={index}
+                  entry={followUpEntry}
                   selectedDate={selectedDate}
                   onUpdateEntry={onUpdateEntry}
                   onDeleteEntry={onDeleteEntry}
@@ -112,18 +128,20 @@ const CalendarComponent = () => {
                   selectedDate={selectedDate}
                   setReminders={setReminders}
                   onSelectDate={handleSelectDate}
-
                 />
               ))}
               <div className={styles.lineContainer}>
                 <hr className="long-line" />
               </div>
-              
             </ul>
           )}
 
-          <CreateEntryWithFileUpload                   setFollowUpEntries={setFollowUpEntries}
-isOpen={isCreateEntryModalOpen} onClose={handleCloseModal} selectedDate={selectedDate} />
+          <CreateEntryWithFileUpload
+            setFollowUpEntries={setFollowUpEntries}
+            isOpen={isCreateEntryModalOpen}
+            onClose={handleCloseModal}
+            selectedDate={selectedDate}
+          />
         </div>
       ) : (
         <div className='flex-center margin-top'>
@@ -132,9 +150,7 @@ isOpen={isCreateEntryModalOpen} onClose={handleCloseModal} selectedDate={selecte
             <button className='secondary-button'>Login</button>
           </a>
         </div>
-        
       )}
-      
     </div>
   );
 };

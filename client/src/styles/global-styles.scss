@@ -49,16 +49,8 @@ body {
     background-color: lighten($background-color, 40%);
     color: $secondary-color;
   }
-  
-  .highlightedReminder {
-    position: relative;
-  }
 
-  .highlighted {
-    background-color: lighten($background-color, 40%);
-    color: $secondary-color;
-  }
-  
+  .highlightedFollowUp {background-color: #B85E39; color:$text-color;}
   .highlightedReminder {
     position: relative;
   }

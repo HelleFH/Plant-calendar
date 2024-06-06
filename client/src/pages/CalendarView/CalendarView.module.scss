@@ -12,8 +12,22 @@
     background-color: $text-color;
     color: $secondary-color;
 }
+
 .calendarContainer {
-    @include page-container
+    @include page-container;
+
+
+    h4{    @include flex-row;
+        margin-top: 1em;
+        background-color: $background-color;
+        color: $text-color;
+        padding: 0.5em;
+        align-items: center;
+        margin-bottom: 0.5em;
+        max-width:1200px;
+
+        
+     }
 
 }
 .backgroundContainer {
@@ -28,16 +42,6 @@
    
 }
 
-ul h4 {
-    @include flex-row;
-    margin-top: 1em;
-    background-color: $background-color;
-    color: $text-color;
-    padding: 0.5em;
-    align-items: center;
-    margin-bottom: 0.5em;
-    width: 100%;
-}
 .highlighted {
     background-color: lighten($background-color, 40%);
     color: $secondary-color;

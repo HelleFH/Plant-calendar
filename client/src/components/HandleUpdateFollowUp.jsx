@@ -1,4 +1,5 @@
 import axiosInstance from './axiosInstance';
+import handleDeleteFollowUp from './HandleDeleteFollowUp';
 
 const handleUpdateFollowUp = async (id, editedEntry, file, selectedDate, onUpdateEntry, onDeleteEntry) => {
   try {
@@ -11,7 +12,7 @@ const handleUpdateFollowUp = async (id, editedEntry, file, selectedDate, onUpdat
       formData.append('notes', editedEntry.notes);
       formData.append('date', editedEntry.date);
 
-      uploadResponse = await axiosInstance.post(`/upload`, formData, {
+      uploadResponse = await axiosInstance.post(`/upload/follow-up`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -25,14 +26,19 @@ const handleUpdateFollowUp = async (id, editedEntry, file, selectedDate, onUpdat
       };
 
       // Send PUT request to update the entry
-      const updateResponse = await axiosInstance.put(`/entries/${id}`, data);
+      const updateResponse = await axiosInstance.put(`/entries/follow-up/${id}`, data);
+      
+      if (updateResponse.status === 200) {
+        // Delete the old entry
+        await handleDeleteFollowUp(id);
+        onDeleteEntry(id);
 
-      // Delete the old entry
-      await handleDeleteEntry(id);
-      onDeleteEntry(id);
-
-      // Update the parent component with the new entry data
-      onUpdateEntry(updateResponse.data);
+        // Update the parent component with the new entry data
+        onUpdateEntry(updateResponse.data);
+      } else {
+        console.error('Update failed with status:', updateResponse.status);
+        throw new Error('Failed to update the entry');
+      }
 
     } else {
       // Prepare data for updating the entry if no new file is uploaded
@@ -43,13 +49,22 @@ const handleUpdateFollowUp = async (id, editedEntry, file, selectedDate, onUpdat
       };
 
       // Send PUT request to update the entry
-      const updateResponse = await axiosInstance.put(`/entries/${id}`, data);
+      const updateResponse = await axiosInstance.put(`/entries/follow-up/${id}`, data);
 
-      // Update the parent component with the new entry data
-      onUpdateEntry(updateResponse.data);
+      if (updateResponse.status === 200) {
+        // Update the parent component with the new entry data
+        onUpdateEntry(updateResponse.data);
+      } else {
+        console.error('Update failed with status:', updateResponse.status);
+        throw new Error('Failed to update the entry');
+      }
     }
   } catch (error) {
-    console.error('Error updating entry:', error);
+    if (error.response && error.response.status === 404) {
+      console.error('Entry not found:', id);
+    } else {
+      console.error('Error updating entry:', error);
+    }
     throw error; // Throw the error for the caller to handle
   }
 };

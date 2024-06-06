@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 import ImageUpload from '../imageUpload';
 import moment from 'moment';
 import DeleteConfirmationModal from '../DeleteConfirmationModal/DeleteConfirmationModal';
-import handleSubmitUpdate from '../HandleSubmitUpdate';
-import handleDeleteEntry from '../HandleDeleteEntry';
+import handleUpdateFollowUp from '../HandleUpdateFollowUp';
+import handleDeleteFollowUp from '../HandleDeleteFollowUp';
 import styles from '../FollowUpEntry/FollowUpEntryComponent.module.scss';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
@@ -80,7 +80,7 @@ const FollowUpEntry = ({ entry, onUpdateEntry, onSelectDate, onDeleteEntry, sele
                 <button
                   className="secondary-button"
                   onClick={() =>
-                    handleSubmitUpdate(entry._id, editedFollowUpEntry, file, selectedDate, onUpdateEntry, onDeleteEntry).then(() => setIsEditing(false))
+                    handleUpdateFollowUp(entry._id, editedFollowUpEntry, file, selectedDate, onUpdateEntry, onDeleteEntry).then(() => setIsEditing(false))
                   }
                 >
                   Save
@@ -114,7 +114,7 @@ const FollowUpEntry = ({ entry, onUpdateEntry, onSelectDate, onDeleteEntry, sele
                     isOpen={showDeleteModal}
                     onCancel={() => setShowDeleteModal(false)}
                     onConfirm={async () => {
-                      await handleDeleteEntry(entry._id, onDeleteEntry);
+                      await handleDeleteFollowUp(entry._id, onDeleteEntry);
                       setShowDeleteModal(false);
                     }}
                   />

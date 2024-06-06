@@ -54,6 +54,71 @@ const FollowUpController = async (req, res) => {
   }
 };
 
+
+
+const deleteFollowUp = async (req, res) => {
+  const { id } = req.params;
+  
+    try {
+      const deletedFollowUp = await FollowUpEntry.findByIdAndDelete(id);
+  
+      if (!deletedFollowUp) {
+        return res.status(404).json({ error: 'Entry not found' });
+      }
+  
+      const { cloudinaryPublicId } = deletedFollowUp;
+      console.log('Cloudinary public_id:', cloudinaryPublicId);
+  
+      if (cloudinaryPublicId) {
+        const result = await cloudinary.uploader.destroy(cloudinaryPublicId);
+        console.log('Cloudinary deletion result:', result);
+      }
+  
+      res.json({ message: 'Entry deleted successfully', deletedFollowUp});
+    } catch (error) {
+      console.error('Error deleting entry:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  };
+  
+
+const updateFollowUp = async (req, res) => {
+  const { id } = req.params;
+  const { notes, cloudinaryUrl } = req.body;
+
+  try {
+    let existingFollowUpEntry = await FollowUpEntry.findById(id);
+    if (!existingFollowUpEntry) {
+      return res.status(404).json({ error: 'Entry not found' });
+    }
+
+    if (cloudinaryUrl && existingFollowUpEntry.cloudinaryUrl !== cloudinaryUrl) {
+      await FollowUpEntry.findByIdAndDelete(id);
+      existingEntry = await Entry.create({
+      
+        notes,
+        
+        cloudinaryUrl,
+        date: existingFollowUpEntry.date,
+        username: existingFollowUpEntry.username,
+        entryID: existingFollowUpEntry.entryID,
+
+      });
+      return res.json({ message: 'Entry updated successfully', updatedFollowUpEntry: existingFollowUpEntry });
+    }
+
+    existingFollowUpEntry.notes = notes;
+    existingFollowUpEntry.cloudinaryUrl = cloudinaryUrl;
+
+    existingFollowUpEntry = await existingFollowUpEntry.save();
+    
+    res.json({ message: 'Entry updated successfully', updatedFollowUpEntry: existingFollowUpEntry });
+  } catch (error) {
+    console.error('Error updating entry:', error);
+    res.status(500).json({ error: 'An error occurred while updating entry' });
+  }
+};
+
   const getFollowUpEntriesByEntryId = async (req, res) => {
     try {
       const { entryID } = req.params;
@@ -65,7 +130,6 @@ const FollowUpController = async (req, res) => {
       }
       
       const objectId = new mongoose.Types.ObjectId(entryID);
-      console.log(objectId); // Ensure objectId is created correctly
       
       const followUpEntries = await FollowUpEntry.find({ entryID: objectId });
       res.json(followUpEntries);
@@ -76,5 +140,7 @@ const FollowUpController = async (req, res) => {
   };
 module.exports = {
   FollowUpController,
-  getFollowUpEntriesByEntryId
+  getFollowUpEntriesByEntryId,
+  updateFollowUp,
+  deleteFollowUp
 };

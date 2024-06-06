@@ -4,7 +4,9 @@
 .CalendarEntry {
     @include entry-item;
     padding:0.5em;
-    border:5px solid lighten($primary-color,40%);
+    border:5px solid lighten( #B85E39, 20%);
+    
+
 
     .entryName {
         cursor: pointer;
@@ -12,7 +14,7 @@
     }
 
     .entryDetails {
-        overflow: hidden;
+        overflow: hidden; 
         transition: height 0.3s ease-out;
         height: 0;
         @include flex-right;

@@ -25,7 +25,10 @@
         max-width: 100%;
         height: auto;
         border-radius: $border-radius;
-    }
+    };
+
+    h4{background-color: darken(#B85E39,30%) !important;
+}
 }
 .addEntryLink {
     @include flex-row-right;
