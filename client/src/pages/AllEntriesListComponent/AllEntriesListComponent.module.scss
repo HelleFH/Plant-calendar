@@ -1,0 +1,31 @@
+@import "../../styles/variables";
+@import "../../styles/mixins";
+
+
+
+.EntryList {
+    @include entrylist-container;
+
+    h1{    text-align:left;
+        width:100%;
+    }
+}
+
+.AllEntriesListContainer {
+    @include page-container;
+    width: 95vw;
+    max-width: 700px;
+    margin: 0 auto;
+
+}
+.sortButtons {
+    @include flex-row-center;
+    gap: 0.5em;
+
+ button {
+    background-color: $tertiary-color;
+    border: 1px solid $secondary-color;
+    padding: 0.5em;
+
+ }
+}

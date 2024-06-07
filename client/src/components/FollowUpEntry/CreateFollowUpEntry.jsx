@@ -97,16 +97,8 @@ const CreateFollowUpEntry = ({ isOpen, onClose, oldEntryID, oldEntryName, name, 
 
     return (
         <CustomModal isOpen={isOpen} onClose={onClose} title="Follow-Up Entry">
-            <div>
-                <label>Name:</label>
                 <h3>{name}</h3>
-                <label>Sunlight:</label>
-                <p>{sunlight}</p>
-                <hr className="long-line"></hr>
-                <label>Water:</label>
-                <p>{water}</p>
-                <hr className="long-line margin-bottom"></hr>
-            </div>
+              
 
             <Form onSubmit={handleEntrySubmit} encType="multipart/form-data">
                 {errorMsg && <p className="errorMsg">{errorMsg}</p>}

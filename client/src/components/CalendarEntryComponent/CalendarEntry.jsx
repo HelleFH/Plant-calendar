@@ -158,8 +158,10 @@ const CalendarEntry = ({ entry, onUpdateEntry, onDeleteEntry, selectedDate }) =>
           <>
             <div className={styles.lineContainer}>
               <hr className="long-line"></hr>
+              <h5 className='margin-top'>Created on {moment(entry.date).format('DD/MM/YYYY')}</h5>
+
             </div>
-            {entry.cloudinaryUrl && <img className="margin-top margin-bottom" src={entry.cloudinaryUrl} alt={entry.name} />}
+            {entry.cloudinaryUrl && <img className="margin-bottom" src={entry.cloudinaryUrl} alt={entry.name} />}
 
             <div className={styles.EntryFormContainer}>
               <hr className="long-line"></hr>
@@ -225,7 +227,7 @@ const CalendarEntry = ({ entry, onUpdateEntry, onDeleteEntry, selectedDate }) =>
             </div>
             <div className="margin-top flex-row">
               <p>Reminders:</p>
-              <button className="primary-button" onClick={toggleReminderModal}>
+              <button className="secondary-button" onClick={toggleReminderModal}>
                 <i className="fas fa-bell"></i> Set Reminder
               </button>
             </div>
@@ -262,7 +264,7 @@ const CalendarEntry = ({ entry, onUpdateEntry, onDeleteEntry, selectedDate }) =>
                   onConfirm={() => handleDeleteEntry(idToDelete)}
                 />
               )}
-              <button className="secondary-button" onClick={() => setIsEditing(true)}>
+              <button className="primary-button" onClick={() => setIsEditing(true)}>
                 Edit
               </button>
             </div>

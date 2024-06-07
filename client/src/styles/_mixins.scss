@@ -114,7 +114,8 @@ gap:1em;
   }
 
   .expanded {
-    
+    height: auto;
+overflow:scroll;
     display: flex;
   }
 

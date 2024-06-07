@@ -13,6 +13,9 @@ h5 {}
 .expanded {
     background-color: white;
     padding: 1em;
+    height: auto;
+    overflow:scroll;
+
 }
 .lineContainer {
     padding: 1em 0.5em 1em 0.5em;

@@ -59,13 +59,16 @@ const Navbar = () => {
 
   return (
     <nav className={styles.navbar} ref={navbarRef}>
-      <div className={styles.navbarLogo}>
+      <a href="/calendar" className={styles.navbarLogo}>
         <h1>Calendar</h1>
-      </div>
+      </a>
       <div className={`${styles.navbarLinks} ${isOpen ? styles.navbarLinksOpen : ''}`}>
-        {username && <div className={styles.username}>Hello, {username}</div>}
+        {username && <h5 className={styles.username}>Hello, {username}</h5>}
         
-        <a href="/logout" onClick={handleLogoutClick}>Logout</a>
+        <a href="/logout" onClick={handleLogoutClick}><p>Logout</p></a>
+        <a href="/all-entries" >
+        <p>All entries</p>
+      </a>
       </div>
       <div className={styles.navbarToggle} onClick={toggleMenu}>
         <i className={`fas ${isOpen ? 'fa-times' : 'fa-bars'}`}></i>

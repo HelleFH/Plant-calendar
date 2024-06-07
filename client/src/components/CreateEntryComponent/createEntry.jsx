@@ -42,16 +42,23 @@ const CreateEntryWithFileUpload = ({ isOpen, onClose, selectedDate }) => {
       formData.append('notes', entry.notes);
       formData.append('sunlight', entry.sunlight);
       formData.append('water', entry.water);
-      formData.append('date', entry.date); // Use formatted date
+      
+      // Set the time component of the date to midnight
+      const selectedDateMidnight = new Date(entry.date);
+      selectedDateMidnight.setHours(0, 0, 0, 0);
+      
+      // Use the midnight date for the form data
+      formData.append('date', selectedDateMidnight.toISOString());
+  
       formData.append('username', localStorage.getItem('username'));
       formData.append('userID', localStorage.getItem('userId'));
-
+  
       await axiosInstance.post('/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
-
+  
       setFile(null);
       setPreviewSrc('');
       setIsPreviewAvailable(false);
@@ -62,7 +69,6 @@ const CreateEntryWithFileUpload = ({ isOpen, onClose, selectedDate }) => {
       setErrorMsg('Error creating entry, please try again.');
     }
   };
-
   const onDrop = (files) => {
     const [uploadedFile] = files;
     setFile(uploadedFile);

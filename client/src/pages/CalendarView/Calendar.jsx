@@ -5,7 +5,6 @@ import useEntries from '../../components/useEntries';
 import useReminders from '../../components/useReminders';
 import CalendarEntry from '../../components/CalendarEntryComponent/CalendarEntry';
 import CalendarReminder from '../../components/CalendarReminder/CalendarReminder';
-import CreateEntryWithFileUpload from '../../components/CreateEntryComponent/createEntry';
 import styles from './CalendarView.module.scss';
 import Navbar from '../../components/Navbar/Navbar';
 import useFollowUpEntries from '../../components/useFollowUpEntries';
@@ -47,7 +46,14 @@ const CalendarComponent = () => {
   };
 
   const handleDateChange = (date) => {
-    setSelectedDate(selectedDate && selectedDate.getTime() === date.getTime() ? null : date);
+    // If date is null, set selectedDate to null
+    if (!date) {
+      setSelectedDate(null);
+      return;
+    }
+      const newDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  
+    setSelectedDate(newDate);
   };
 
   const handleNewEntryClick = () => {
