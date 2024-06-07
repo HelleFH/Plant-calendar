@@ -16,35 +16,29 @@
 .calendarContainer {
     @include page-container;
 
-
-    h4{    @include flex-row;
+    h3 {
+        @include flex-row;
         margin-top: 1em;
         background-color: $background-color;
         color: $text-color;
         padding: 0.5em;
         align-items: center;
         margin-bottom: 0.5em;
-        max-width:1200px;
-
-        
-     }
-
+        max-width: 1200px;
+    }
+    .FollowUpListContainer h5 {
+        display: none;
+    }
+}
+.ListsContainer {
+    width: 95%;
 }
 .backgroundContainer {
-   
     background-image: url(../../../public/images/bg.jpg);
     background-size: cover;
     @include flex-center;
     max-width: 500px;
     width: 100vw;
-
-
-   
-}
-
-.highlighted {
-    background-color: lighten($background-color, 40%);
-    color: $secondary-color;
 }
 
 .highlightedReminder {
@@ -73,7 +67,11 @@
     padding: 1em;
     align-items: center;
 }
-.entryListContainer {
+
+.EntryListContainer {
+    padding-bottom: 1em;
+}
+.EntryList {
     @include entrylist-container;
 }
 .tile {

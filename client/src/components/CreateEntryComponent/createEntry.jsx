@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Form } from 'react-bootstrap';
 import { useNavigate, Link } from 'react-router-dom';
 import ImageUpload from '../imageUpload';
@@ -18,12 +18,21 @@ const CreateEntryWithFileUpload = ({ isOpen, onClose, selectedDate }) => {
   const initialEntryState = {
     name: '',
     notes: '',
-    date: selectedDate,
+    date: selectedDate ? selectedDate.toISOString().split('T')[0] : '',
     sunlight: '',
     water: '',
   };
 
   const [entry, setEntry] = useState(initialEntryState);
+
+  useEffect(() => {
+    if (selectedDate) {
+      setEntry((prevEntry) => ({
+        ...prevEntry,
+        date: selectedDate.toISOString().split('T')[0],
+      }));
+    }
+  }, [selectedDate]);
 
   const createEntry = async () => {
     try {
@@ -33,17 +42,15 @@ const CreateEntryWithFileUpload = ({ isOpen, onClose, selectedDate }) => {
       formData.append('notes', entry.notes);
       formData.append('sunlight', entry.sunlight);
       formData.append('water', entry.water);
-      formData.append('date', selectedDate.toDateString()); // Use selectedDate
+      formData.append('date', entry.date); // Use formatted date
       formData.append('username', localStorage.getItem('username'));
       formData.append('userID', localStorage.getItem('userId'));
 
-
-       await axiosInstance.post('/upload', formData, {
+      await axiosInstance.post('/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
-
 
       setFile(null);
       setPreviewSrc('');

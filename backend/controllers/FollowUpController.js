@@ -11,7 +11,7 @@ cloudinary.config({
 
 const FollowUpController = async (req, res) => {
   try {
-    const { notes, userID, entryID, date } = req.body;
+    const { notes, userID, entryID, date, name } = req.body;
 
     // Check if userID exists
     if (!userID) {
@@ -35,6 +35,7 @@ const FollowUpController = async (req, res) => {
       const deletionToken = generateDeletionToken(); // Ensure this function exists and works correctly
 
       const followUpEntry = new FollowUpEntry({
+        name,
         notes,
         date, // Include date when creating the new entry
         cloudinaryUrl: result.secure_url,

@@ -32,13 +32,6 @@ const NewEntryModal = ({ isOpen, onClose, selectedDate }) => {
     fetchEntries();
   }, []);
 
-  const formatDate = (date) => {
-    const day = date.getDate().toString().padStart(2, '0');
-    const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-based
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
-  };
-
   const handleAddEntryClick = () => {
     setIsCreateEntryModalOpen(true);
   };
@@ -82,13 +75,13 @@ const NewEntryModal = ({ isOpen, onClose, selectedDate }) => {
       </div>
       <button className="primary-button" onClick={handleAddEntryClick}>Add Entry</button>
       <Link onClick={handleAddFollowUpClick}>
-        + Add Entry
+        + Add Follow-Up
       </Link>
 
       <CreateEntryWithFileUpload
         isOpen={isCreateEntryModalOpen}
         onClose={handleCloseModal}
-        selectedDate={formatDate(selectedDate)}
+        selectedDate={selectedDate}
       />
 
       {isCreateFollowUpModalOpen && selectedEntryDetails && (
@@ -99,7 +92,8 @@ const NewEntryModal = ({ isOpen, onClose, selectedDate }) => {
           name={selectedEntryDetails.name}
           sunlight={selectedEntryDetails.sunlight}
           water={selectedEntryDetails.water}
-          selectedDate={formatDate(selectedDate)}
+          selectedDate={selectedDate}
+          oldEntryName={selectedEntryDetails.name}
         />
       )}
     </CustomModal>

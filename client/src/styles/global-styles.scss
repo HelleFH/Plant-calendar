@@ -12,17 +12,13 @@
     font-family: "DM Sans", sans-serif;
 }
 body {
-    
-
+    background-color: lighten($primary-color, 40%);
 }
 
-
 #root {
-    max-width:1200px;
-    margin:0 auto;
+    max-width: 1200px;
+    margin: 0 auto;
     min-height: 100vh;
-    background-color: lighten($primary-color, 40%);
-
 }
 .react-calendar {
     border: 1px solid #ccc;
@@ -44,26 +40,49 @@ body {
     @include flex-center;
 }
 
-
 .highlighted {
-    background-color: lighten($background-color, 40%);
-    color: $secondary-color;
-  }
-
-  .highlightedFollowUp {background-color: #B85E39; color:$text-color;}
-  .highlightedReminder {
     position: relative;
-  }
+}
+.highlighted::before {
+    content: "\f06c";
+    font-family: "FontAwesome";
+    position: absolute;
+    right: 6px;
+    bottom: 0;
+    font-size: 12px;
+    color: $primary-color;
+
+}
+
+.highlightedFollowUp {
+    position: relative;
+}
+
+.highlightedFollowUp::after {
   
-  .highlightedReminder::before {
-    content: "\f0f3"; 
-    font-family: "FontAwesome"; 
+
+    content: "\f06c";
+    font-family: "FontAwesome";
+    position: absolute;
+    right: 5px;
+    top: 10px;
+    font-size: 12px;
+    color: $secondary-color;
+}
+
+.highlightedReminder {
+    position: relative;
+}
+
+.highlightedReminder::before {
+    content: "\f0f3";
+    font-family: "FontAwesome";
     position: absolute;
     right: 2px;
     bottom: 0;
     font-size: 8px;
     color: $background-color;
-  }
+}
 ul {
     list-style: none;
 }

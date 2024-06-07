@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const entrySchema = new mongoose.Schema({
+    name: { type: String, required: true },
     notes: { type: String, required: false },
     cloudinaryUrl: { type: String, required:false, },
     cloudinaryPublicId: { type: String, required: false }, 

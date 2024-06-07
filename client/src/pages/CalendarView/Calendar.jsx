@@ -88,72 +88,80 @@ const CalendarComponent = () => {
           {remindersError && <p>Error: {remindersError}</p>}
           {followUpEntriesError && <p>Error: {followUpEntriesError}</p>}
           <NewEntryModal
-          
+
             isOpen={isNewEntryModalOpen}
             onClose={handleCloseModal}
-            selectedDate={selectedDate}/>
-          <h4>Entries</h4>
+            selectedDate={selectedDate} />
+  {selectedDate && (
+          <h4>Entries for {selectedDate.toDateString()}</h4>
+      )}<div className={styles.ListsContainer}>
 
-          {entries.length > 0 && (
-            <ul className={styles.entryListContainer}>
-              {entries.map((entry, index) => (
-                <CalendarEntry
-                  className={styles.calendarEntry}
-                  key={index}
-                  entry={entry}
-                  selectedDate={selectedDate}
-                  onUpdateEntry={onUpdateEntry}
-                  onDeleteEntry={onDeleteEntry}
-                />
-              ))}
-            </ul>
-          )}
+            <div className={styles.EntryListContainer}>           
 
-          {followUpEntries.length > 0 && (
-            <ul className={styles.entryListContainer}>
-              {followUpEntries.map((followUpEntry, index) => (
-                <FollowUpEntry
-                  key={index}
-                  entry={followUpEntry}
-                  selectedDate={selectedDate}
-                  onUpdateEntry={onUpdateEntry}
-                  onDeleteEntry={onDeleteEntry}
-                />
-              ))}
-            </ul>
-          )}
+              {entries.length > 0 && (
+                <ul className={styles.EntryList}>
+                  {entries.map((entry, index) => (
+                    <CalendarEntry
+                      className={styles.calendarEntry}
+                      key={index}
+                      entry={entry}
+                      selectedDate={selectedDate}
+                      onUpdateEntry={onUpdateEntry}
+                      onDeleteEntry={onDeleteEntry}
+                    />
+                  ))}
+                </ul>
+              )}
+                              </div>
 
-          {reminders.length > 0 && (
-            <ul className={styles.reminderList}>
-              <h4>Reminders</h4>
-              {reminders.map((reminder, index) => (
-                <CalendarReminder
-                  className={styles.calendarReminder}
-                  key={index}
-                  reminder={reminder}
-                  selectedDate={selectedDate}
-                  setReminders={setReminders}
-                  onSelectDate={handleSelectDate}
-                />
-              ))}
-              <div className={styles.lineContainer}>
-                <hr className="long-line" />
-              </div>
-            </ul>
-          )}
+            <div className={styles.FollowUpListContainer}>
+              {followUpEntries.length > 0 && (
+                <ul className={styles.EntryList}>
+                  {followUpEntries.map((followUpEntry, index) => (
+                    <FollowUpEntry
+                      key={index}
+                      entry={followUpEntry}
+                      selectedDate={selectedDate}
+                      onUpdateEntry={onUpdateEntry}
+                      onDeleteEntry={onDeleteEntry}
+                    />
+                  ))}
+                </ul>
+              )}
+            </div>
+            <div className={styles.ReminderListContainer}>
+              {reminders.length > 0 && (
+                <ul className={styles.reminderList}>
+                  <h4>Reminders</h4>
+                  {reminders.map((reminder, index) => (
+                    <CalendarReminder
+                      className={styles.calendarReminder}
+                      key={index}
+                      reminder={reminder}
+                      selectedDate={selectedDate}
+                      setReminders={setReminders}
+                      onSelectDate={handleSelectDate}
+                    />
+                  ))}
+                  <div className={styles.lineContainer}>
+                    <hr className="long-line" />
+                  </div>
+                </ul>
 
-    
-        </div>
-      ) : (
-        <div className='flex-center margin-top'>
-          <p className="margin-bottom">Please log in to view the calendar.</p>
-          <a href="/login">
-            <button className='secondary-button'>Login</button>
-          </a>
-        </div>
+              )}
+            </div>
+            </div>
+          </div>
+          ) : (
+          <div className='flex-center margin-top'>
+            <p className="margin-bottom">Please log in to view the calendar.</p>
+            <a href="/login">
+              <button className='secondary-button'>Login</button>
+            </a>
+          </div>
       )}
-    </div>
-  );
+        </div>
+      );
 };
 
-export default CalendarComponent;
+      export default CalendarComponent;

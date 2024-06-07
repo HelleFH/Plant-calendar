@@ -5,12 +5,12 @@ import axiosInstance from '../axiosInstance';
 import { Form } from 'react-bootstrap';
 import ImageUpload from '../imageUpload';
 
-const CreateFollowUpEntry = ({ isOpen, onClose, oldEntryID, name, sunlight, water, selectedDate }) => {
+const CreateFollowUpEntry = ({ isOpen, onClose, oldEntryID, oldEntryName, name, sunlight, water, selectedDate }) => {
     const [file, setFile] = useState(null);
     const [followUpDate, setFollowUpDate] = useState('');
     const [previewSrc, setPreviewSrc] = useState('');
     const [isPreviewAvailable, setIsPreviewAvailable] = useState(false);
-    const [errorMsg, setErrorMsg] = useState('');
+    const [errorMsg, ] = useState('');
     const navigate = useNavigate();
 
     const initialEntryState = {
@@ -32,6 +32,8 @@ const CreateFollowUpEntry = ({ isOpen, onClose, oldEntryID, name, sunlight, wate
         try {
             const formData = new FormData();
             if (file) formData.append('file', file);
+            formData.append('name', oldEntryName); // Use entryID here
+
             formData.append('notes', entry.notes);
             formData.append('date', followUpDate);
             formData.append('userID', localStorage.getItem('userId'));

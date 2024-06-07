@@ -110,10 +110,12 @@ const CalendarEntry = ({ entry, onUpdateEntry, onDeleteEntry, selectedDate }) =>
 
   return (
     <li className={styles.CalendarEntry}>
+
       <div className="flex-row">
-        <p onClick={toggleExpand} className={styles.entryName}>
-          {entry.name}
-        </p>
+        <h4 onClick={toggleExpand} className={styles.entryName}>
+          {entry.name}      	
+
+        </h4>
         <i
           onClick={toggleExpand}
           className={`fas ${isExpanded ? 'fa-chevron-up' : 'fa-chevron-down'} ${styles.chevron}`}
@@ -172,35 +174,43 @@ const CalendarEntry = ({ entry, onUpdateEntry, onDeleteEntry, selectedDate }) =>
               <p>{entry.water}</p>
               <hr className="long-line margin-bottom"></hr>
             </div>
-
             {isCreateModalOpen && (
-             <CreateFollowUpEntry
-             isOpen={isCreateModalOpen}
-             onClose={handleCloseModal}
-             selectedDate={formattedSelectedDate}
-             oldEntryID={entry._id}
-             sunlight={entry.sunlight} 
-             water={entry.water}
-             name={entry.name} 
-         />
-         
-            )}
-                            <h4 className="margin-bottom">Other entries for this plant</h4>
+              <CreateFollowUpEntry
+                isOpen={isCreateModalOpen}
+                onClose={handleCloseModal}
+                selectedDate={formattedSelectedDate}
+                oldEntryID={entry._id}
+                sunlight={entry.sunlight}
+                water={entry.water}
+                name={entry.name}
+              />
 
-            {followUpEntries.length > 0 && (
-              <ul className={styles.entryListContainer}>
-                {followUpEntries.map((followUpEntry, index) => (
-                  <FollowUpEntry
-                    key={index}
-                    entry={followUpEntry}
-                    selectedDate={selectedDate}
-                    onUpdateEntry={handleUpdateEntry}
-                    onDeleteEntry={onDeleteEntry}
-                  />
-                ))}
-              </ul>
             )}
+            <div className={styles.followUpContainer}>
 
+            <h4>Other entries for {entry.name} </h4>
+            <div className={styles.FollowUpListContainer}>
+
+              {followUpEntries.length > 0 && (
+                <ul className={styles.EntryList}>
+                  {followUpEntries.map((followUpEntry, index) => (
+                    <FollowUpEntry
+                      key={index}
+                      entry={followUpEntry}
+                      selectedDate={selectedDate}
+                      onUpdateEntry={handleUpdateEntry}
+                      onDeleteEntry={onDeleteEntry}
+                    />
+                    
+                  ))}
+                </ul>
+                
+              )}
+                <Link className={styles.addEntryLink} onClick={toggleCreateModal}>
+              + Add Entry
+            </Link>
+            </div>
+            </div>
             <SetCalendarReminder
               isOpen={isReminderModalOpen}
               onClose={toggleReminderModal}
@@ -208,9 +218,7 @@ const CalendarEntry = ({ entry, onUpdateEntry, onDeleteEntry, selectedDate }) =>
               entryId={entry._id}
               username={username}
             />
-            <Link className={styles.addEntryLink} onClick={toggleCreateModal}>
-              + Add Entry
-            </Link>
+          
             <div className={styles.lineContainer}>
               <hr className="long-line"></hr>
             </div>

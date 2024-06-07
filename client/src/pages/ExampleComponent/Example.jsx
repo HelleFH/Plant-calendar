@@ -46,7 +46,7 @@ const Example = () => {
             <Navbar />
 <div className={styles.ExampleContainer}>
       {entries.length > 0 && (
-            <ul className={styles.entryListContainer}>
+            <ul className={styles.EntryList}>
               <h4>Entries</h4>
               {entries.map((entry, index) => (
                 <CalendarEntry

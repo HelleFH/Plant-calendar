@@ -2,105 +2,40 @@
 @import "../../styles/mixins";
 
 .CalendarEntry {
-    @include entry-item;
-
-    .entryName {
-        cursor: pointer;
-        font-size: $font-size-large;
-    }
-
-    .entryDetails {
-        overflow: scroll;
-        transition: height 0.3s ease-out;
-        height: 0;
-        @include flex-right;
-    }
-
-    .expanded {
-        display: flex;
-        height: auto; /* Set to auto to accommodate dynamic content */
-    }
-
-    img {
-        max-width: 100%;
-        height: auto;
-        border-radius: $border-radius;
-    };
-
-    h4{background-color: darken(#B85E39,30%) !important;
+  @include entry-item;
 }
+
+.EntryList {
+  @include entrylist-container;
 }
+.followUpContainer {
+  border: solid 4px $primary-color;
+  margin-top: 2em;
+  background-color: white;
+
+  .CalendarEntry {
+    padding: 0;
+  }
+  h4 {
+    padding: 1em;
+  }
+}
+
 .addEntryLink {
-    @include flex-row-right;
+  @include flex-row-right;
+  padding: 1em;
 }
-
-.entryListContainer {
-    @include entrylist-container;
-
+.FollowUpListContainer h4 {
+  display: none;
 }
 .lineContainer {
-    padding: 1em 0.5em 1em 0.5em;
+  padding: 1em 0.5em 1em 0.5em;
 }
+
 .editFormContainer {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    gap: 1em;
-    input {
-        height: 30px;
-        padding-left: 0.2em;
-    }
-    textarea {
-        padding: 0.2em;
-    }
+  @include form-container;
 }
 
 .EntryFormContainer {
-    font-size: $font-size-base;
-    @include flex-right;
-    gap: 1em;
-
-    p {
-        font-weight: 400;
-    }
-
-    label {
-        background-color: white;
-        width: 100%;
-        height: 40px;
-        margin-top: 0.3em;
-        display: flex;
-        align-items: center;
-        border-radius: $border-radius;
-        font-weight: 600 !important;
-    }
-
-    input {
-        background-color: white;
-        width: 100%;
-        padding: 0.2em;
-        height: 40px;
-        margin-top: 0.3em;
-        border: 2px solid $secondary-color;
-        font-size: $font-size-base;
-        border-radius: $border-radius;
-    }
-    textarea {
-        border: 2px solid $secondary-color;
-        border-radius: $border-radius;
-
-        font-size: $font-size-base;
-    }
-
-    input {
-        height: 40px;
-    }
-
-    div {
-        @include flex-column-space-evenly;
-    }
-
-    label {
-        font-weight: 600;
-    }
+  @include entry-form;
 }
