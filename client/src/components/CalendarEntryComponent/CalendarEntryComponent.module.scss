@@ -9,9 +9,9 @@
   @include entrylist-container;
 }
 .followUpContainer {
-  border: solid 4px $primary-color;
   margin-top: 2em;
-  background-color: white;
+  background-color: $text-color;
+  padding:1em;
 
   .CalendarEntry {
     padding: 0;

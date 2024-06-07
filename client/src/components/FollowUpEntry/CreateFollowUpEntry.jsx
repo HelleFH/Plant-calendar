@@ -10,7 +10,7 @@ const CreateFollowUpEntry = ({ isOpen, onClose, oldEntryID, oldEntryName, name, 
     const [followUpDate, setFollowUpDate] = useState('');
     const [previewSrc, setPreviewSrc] = useState('');
     const [isPreviewAvailable, setIsPreviewAvailable] = useState(false);
-    const [errorMsg, ] = useState('');
+    const [errorMsg, setErrorMsg] = useState('');
     const navigate = useNavigate();
 
     const initialEntryState = {

@@ -5,6 +5,8 @@
     @include entry-item;
 }
 
+h5 {}
+
 .EntryList {
     @include entrylist-container;
 }
@@ -17,7 +19,7 @@
 }
 .FollowUpHeader {
     @include flex-row;
-    width: 100%;
+
 }
 .editFormContainer {
     @include form-container;

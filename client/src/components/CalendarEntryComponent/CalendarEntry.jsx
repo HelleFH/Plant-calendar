@@ -180,6 +180,7 @@ const CalendarEntry = ({ entry, onUpdateEntry, onDeleteEntry, selectedDate }) =>
                 onClose={handleCloseModal}
                 selectedDate={formattedSelectedDate}
                 oldEntryID={entry._id}
+                oldEntryName={entry.name} // Pass the entry name here
                 sunlight={entry.sunlight}
                 water={entry.water}
                 name={entry.name}

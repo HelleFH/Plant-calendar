@@ -45,14 +45,14 @@ const FollowUpEntry = ({ entry, onUpdateEntry, onSelectDate, onDeleteEntry, sele
 
   return (
     <li className={styles.CalendarEntry}>
-      <div className={styles.FollowUpHeader}>
+      <div className='flex-row'>
         <h5 onClick={(e) => {e.preventDefault(); toggleExpand(); }}>{formatDate(entry.date)}</h5>
         <h4>Update for {entry.name}</h4>
         <i
           onClick={toggleExpand}
           className={`fas ${isExpanded ? 'fa-chevron-up' : 'fa-chevron-down'} ${styles.chevron}`}
         ></i>
-      </div>
+        </div>
 
       <div
         className={`${styles.entryDetails} ${isExpanded ? styles.expanded : ''}`}
