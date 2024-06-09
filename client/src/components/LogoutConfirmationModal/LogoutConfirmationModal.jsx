@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import styles from './LogoutConfirmationModalComponent.module.scss';
+import styles from './LogoutConfirmationModal.module.scss';
 import CustomModal from '../CustomModal/CustomModal';
 
 const LogoutConfirmationModal = ({ isOpen, onCancel, onConfirm }) => {

@@ -18,14 +18,12 @@ const handleUpdateFollowUp = async (id, editedEntry, file, selectedDate, onUpdat
         },
       });
 
-      // Prepare data for updating the entry
       const data = {
         notes: editedEntry.notes,
         date: selectedDate,
         cloudinaryUrl: uploadResponse.data.cloudinaryUrl,
       };
 
-      // Send PUT request to update the entry
       const updateResponse = await axiosInstance.put(`/entries/follow-up/${id}`, data);
       
       if (updateResponse.status === 200) {
@@ -33,7 +31,6 @@ const handleUpdateFollowUp = async (id, editedEntry, file, selectedDate, onUpdat
         await handleDeleteFollowUp(id);
         onDeleteEntry(id);
 
-        // Update the parent component with the new entry data
         onUpdateEntry(updateResponse.data);
       } else {
         console.error('Update failed with status:', updateResponse.status);
@@ -41,18 +38,17 @@ const handleUpdateFollowUp = async (id, editedEntry, file, selectedDate, onUpdat
       }
 
     } else {
-      // Prepare data for updating the entry if no new file is uploaded
+      // If no new file is uploaded
       const data = {
         notes: editedEntry.notes,
         date: selectedDate,
         cloudinaryUrl: editedEntry.cloudinaryUrl,
       };
 
-      // Send PUT request to update the entry
       const updateResponse = await axiosInstance.put(`/entries/follow-up/${id}`, data);
 
       if (updateResponse.status === 200) {
-        // Update the parent component with the new entry data
+
         onUpdateEntry(updateResponse.data);
       } else {
         console.error('Update failed with status:', updateResponse.status);
@@ -65,7 +61,7 @@ const handleUpdateFollowUp = async (id, editedEntry, file, selectedDate, onUpdat
     } else {
       console.error('Error updating entry:', error);
     }
-    throw error; // Throw the error for the caller to handle
+    throw error; 
   }
 };
 

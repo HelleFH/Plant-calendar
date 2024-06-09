@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import getRemindersByDateAndUsername from '../components/GetRemindersbyDateAndUsername';
 
 
-const useReminders = (selectedDate) => {
+const useReminders = (selectedDate, refresh) => {
   const [reminders, setReminders] = useState([]);
   const [highlightedReminderDates, setHighlightedReminderDates] = useState([]);
   const [error, setError] = useState(null);
@@ -10,8 +10,9 @@ const useReminders = (selectedDate) => {
   useEffect(() => {
     const fetchReminders = async (date) => {
       try {
+        
         const formattedDate = date.toISOString().split('T')[0];
-        const username = localStorage.getItem('username');
+        const username =  localStorage.getItem('username');
         const remindersData = await getRemindersByDateAndUsername(formattedDate, username);
         setReminders(remindersData);
       } catch (error) {
@@ -54,7 +55,7 @@ const useReminders = (selectedDate) => {
       fetchReminders(selectedDate);
       fetchAndSaveReminderDates();
     }
-  }, [selectedDate]);
+  }, [selectedDate, refresh]);
 
   return {
     reminders,

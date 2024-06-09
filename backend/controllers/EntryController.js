@@ -80,8 +80,19 @@ const getEntryById = async (req, res) => {
   }
 };
 
-
 const getEntriesByUserId = async (req, res) => {
+  try {
+      const { userID } = req.params;
+
+      res.json(entries);
+  } catch (error) {
+      console.error('Error in getting entries by userID:', error);
+      return res.status(500).json({ error: 'Internal server error.' });
+  }
+};
+
+
+const getSortedEntriesByUserId = async (req, res) => {
   try {
       // Extract userID and sorting criteria from request parameters and query parameters
       const { userID } = req.params;
@@ -106,10 +117,39 @@ const getEntriesByUserId = async (req, res) => {
   }
 };
 
+
+const getEntriesByDate = async (req, res) => {
+  try {
+      // Extract date and username from request parameters
+      const { date } = req.params;
+      const { userID } = req.query;
+
+      // Parse date string into JavaScript Date object
+      const searchDate = new Date(date);
+
+      // Get entries for the specified date and username
+      const entries = await Entry.find({ 
+          date: { 
+              $gte: searchDate, 
+              $lt: new Date(searchDate.getTime() + 24 * 60 * 60 * 1000) 
+          },
+          userID: userID // Add username as a condition
+      });
+
+      // Send entries as response
+      res.json(entries);
+  } catch (error) {
+      console.error('Error in getting entries by date:', error);
+      return res.status(500).json({ error: 'Internal server error.' });
+  }
+};
+
+
 module.exports = {
   deleteEntry,
   updateEntry,
   getEntryById,
-  getEntriesByUserId,
-
+  getSortedEntriesByUserId,
+  getEntriesByDate,
+  getEntriesByUserId
 };

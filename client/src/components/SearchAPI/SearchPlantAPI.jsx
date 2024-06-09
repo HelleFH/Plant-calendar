@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import styles from './SearchAPIComponent.module.scss';
+import styles from './SearchAPI.module.scss';
 import CustomModal from '../CustomModal/CustomModal';
 import { Link } from 'react-router-dom';
 

@@ -2,14 +2,14 @@ import React, { useState, useEffect } from 'react';
 import axiosInstance from '../axiosInstance';
 import moment from 'moment';
 import DeleteConfirmationModal from '../DeleteConfirmationModal/DeleteConfirmationModal';
-import handleDeleteReminder from '../HandleDeleteReminder';
 import { Link } from 'react-router-dom';
-import styles from './CalendarReminderComponent.module.scss';
+import styles from './CalendarReminder.module.scss';
 
 const CalendarReminder = ({
   reminder,
-  setReminders, // Add setReminders prop to update reminders state
   onSelectDate,
+  setRefresh,
+  onDeleteReminder
 }) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [idToDelete, setIdToDelete] = useState(null);
@@ -41,10 +41,12 @@ const CalendarReminder = ({
     }
   };
 
-  const handleDeleteReminderSuccess = (deletedReminderId) => {
-    setReminders((prevReminders) => prevReminders.filter((reminder) => reminder._id !== deletedReminderId));
+  const handleConfirmDelete = () => {
+    onDeleteReminder(reminder._id);
+    setShowDeleteModal(false);
+    setRefresh((prev) => !prev);
+    console.log('delete handled') // Trigger refresh
   };
-
   return (
     <li className={styles.ReminderItem}>
       {entryDetails && (
@@ -68,12 +70,10 @@ const CalendarReminder = ({
 
       {showDeleteModal && (
         <DeleteConfirmationModal
+        onConfirm={handleConfirmDelete}
           isOpen={showDeleteModal}
           onCancel={() => setShowDeleteModal(false)}
-          onConfirm={async () => {
-            await handleDeleteReminder(idToDelete, handleDeleteReminderSuccess);
-            setShowDeleteModal(false);
-          }}
+    
         />
       )}
     </li>

@@ -1,4 +1,3 @@
-// controllers/reminderController.js
 const { Reminder } = require('../models/ReminderModel');
 const { Entry } = require('../models/EntryModel');
 

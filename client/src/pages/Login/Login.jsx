@@ -3,7 +3,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa6";
 import { Link, useNavigate } from "react-router-dom";
 import axiosInstance from "../../components/axiosInstance";
 import { toast } from "react-toastify";
-import styles from './LoginComponent.module.scss';
+import styles from './Login.module.scss';
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);

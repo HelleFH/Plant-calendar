@@ -1,11 +1,11 @@
-import axiosInstance from './axiosInstance'; // Adjust the path as per your project structure
+import axiosInstance from './axiosInstance'; 
 
 const handleDeleteReminder = async (reminderId, onDeleteSuccess) => {
   try {
     await axiosInstance.delete(`/reminders/${reminderId}`);
     console.log('Reminder deleted successfully');
     if (onDeleteSuccess) {
-      onDeleteSuccess(reminderId); // Call the callback function
+      onDeleteSuccess(reminderId); 
     }
   } catch (error) {
     console.error('Error occurred while deleting reminder:', error);

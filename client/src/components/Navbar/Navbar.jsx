@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import styles from './NavbarComponent.module.scss';
-import LogoutConfirmationModal from '../LogoutConfirmationModalComponent/LogoutConfirmationModal';
+import styles from './Navbar.module.scss';
+import LogoutConfirmationModal from '../LogoutConfirmationModal/LogoutConfirmationModal';
 import { useNavigate } from 'react-router-dom';
 
 const Navbar = () => {

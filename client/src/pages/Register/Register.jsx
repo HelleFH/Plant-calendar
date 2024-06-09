@@ -5,7 +5,7 @@ import { FaEyeSlash } from "react-icons/fa6";
 import { Link, useNavigate } from "react-router-dom";
 import axiosInstance from "../../components/axiosInstance";
 import { toast } from "react-toastify";
-import styles from './RegisterComponent.module.scss';
+import styles from './Register.module.scss';
 
 
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import styles from './SetReminderComponent.module.scss';
+import styles from './SetReminder.module.scss';
 import { Link } from 'react-router-dom';
 import CustomModal from '../CustomModal/CustomModal';
 import axiosInstance from '../axiosInstance';

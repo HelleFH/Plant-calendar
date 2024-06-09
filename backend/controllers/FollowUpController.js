@@ -1,15 +1,10 @@
-const { FollowUpEntry } = require('../models/FollowUpModel'); // Check if this import is correct
+const { FollowUpEntry } = require('../models/FollowUpModel'); 
 const cloudinary = require('cloudinary').v2;
 const { generateDeletionToken } = require('../utils/tokenUtils');
 const mongoose = require('mongoose');
 
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
 
-const FollowUpController = async (req, res) => {
+const uploadFollowUpController = async (req, res) => {
   try {
     const { notes, userID, entryID, date, name } = req.body;
 
@@ -139,9 +134,36 @@ const updateFollowUp = async (req, res) => {
       res.status(500).json({ message: 'Internal server error' });
     }
   };
+
+  const getFollowUpEntriesByDate = async (req, res) => {
+    try {
+        // Extract date and username from request parameters
+        const { date } = req.params;
+        const { userID } = req.query;
+
+        // Parse date string into JavaScript Date object
+        const searchDate = new Date(date);
+
+        // Get entries for the specified date and username
+        const entries = await FollowUpEntry.find({ 
+            date: { 
+                $gte: searchDate, 
+                $lt: new Date(searchDate.getTime() + 24 * 60 * 60 * 1000) 
+            },
+            userID: userID // Add username as a condition
+        });
+
+        // Send entries as response
+        res.json(entries);
+    } catch (error) {
+        console.error('Error in getting entries by date:', error);
+        return res.status(500).json({ error: 'Internal server error.' });
+    }
+};
 module.exports = {
-  FollowUpController,
+  uploadFollowUpController,
   getFollowUpEntriesByEntryId,
   updateFollowUp,
-  deleteFollowUp
+  deleteFollowUp,
+  getFollowUpEntriesByDate
 };

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPause, faPlay } from '@fortawesome/free-solid-svg-icons';
-import styles from '../SliderComponent/SliderComponent.module.scss';
+import styles from '../SliderComponent/Slider.module.scss';
 
 const Slider = () => {
     const [quotes, setQuotes] = useState([]);

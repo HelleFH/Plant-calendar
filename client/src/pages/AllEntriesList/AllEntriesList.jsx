@@ -1,8 +1,8 @@
 import axiosInstance from '../../components/axiosInstance';
 import React, { useEffect, useState } from 'react';
-import CalendarEntry from '../../components/CalendarEntryComponent/CalendarEntry';
+import CalendarEntry from '../../components/CalendarEntry/CalendarEntry';
 import Navbar from '../../components/Navbar/Navbar';
-import styles from './AllEntriesListComponent.module.scss';
+import styles from './AllEntriesList.module.scss';
 
 const AllEntriesList = () => {
   const [entries, setEntries] = useState([]);
@@ -18,7 +18,7 @@ const AllEntriesList = () => {
 
         console.log("Fetched userID from localStorage: ", userID);
 
-        const response = await axiosInstance.get(`/entries/userID/${userID}?sortBy=${sortBy}`);
+        const response = await axiosInstance.get(`/entries/sorted/userID/${userID}?sortBy=${sortBy}`);
         setEntries(response.data);
       } catch (error) {
         console.error('Error fetching entries:', error);
@@ -61,7 +61,8 @@ const AllEntriesList = () => {
                 entry={entry}
                 onUpdateEntry={onUpdateEntry}
                 onDeleteEntry={onDeleteEntry}
-                selectedDate={entry.date} // Pass the entry date as selectedDate
+                selectedDate={entry.date}
+                 // Pass the entry date as selectedDate
               />
             ))}
           </ul>

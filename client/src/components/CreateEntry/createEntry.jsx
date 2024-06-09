@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Form } from 'react-bootstrap';
 import { useNavigate, Link } from 'react-router-dom';
 import ImageUpload from '../imageUpload';
-import SearchPlantAPI from '../SearchAPIComponent/SearchPlantAPI';
-import styles from './CreateEntryComponent.module.scss';
+import SearchPlantAPI from '../SearchAPI/SearchPlantAPI';
+import styles from './CreateEntry.module.scss';
 import CustomModal from '../CustomModal/CustomModal';
 import axiosInstance from '../axiosInstance';
 
-const CreateEntryWithFileUpload = ({ isOpen, onClose, selectedDate }) => {
+const CreateEntryWithFileUpload = ({ isOpen, onClose, selectedDate, setRefresh }) => {
   const [file, setFile] = useState(null);
   const [previewSrc, setPreviewSrc] = useState('');
   const [isPreviewAvailable, setIsPreviewAvailable] = useState(false);
@@ -63,7 +63,9 @@ const CreateEntryWithFileUpload = ({ isOpen, onClose, selectedDate }) => {
       setPreviewSrc('');
       setIsPreviewAvailable(false);
       onClose();  // Close the modal after creating the entry
-      navigate('/calendar');  // Navigate to the calendar page
+      navigate('/calendar');  
+      setRefresh((prev) => !prev);
+      // Navigate to the calendar page
     } catch (error) {
       console.error('Error creating entry:', error);
       setErrorMsg('Error creating entry, please try again.');
@@ -90,6 +92,7 @@ const CreateEntryWithFileUpload = ({ isOpen, onClose, selectedDate }) => {
     }
     try {
       await createEntry();
+
     } catch (error) {
       console.error('Error creating entry:', error);
     }

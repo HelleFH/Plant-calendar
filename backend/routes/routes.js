@@ -1,14 +1,12 @@
 const express = require("express");
 const router = express.Router();
- const { Entry } = require('../models/EntryModel');
-const { uploadController, getEntriesByDate, getFollowUpEntriesByDate } = require('../controllers/uploadController');
-const { login, register, getAllUsers, getUserIdByEmail } = require("../controllers/user");
 const multer = require('multer');
-const EntryController = require('../controllers/EntryController'); // Import entry controller
+
+const uploadController = require('../controllers/UploadController');
+const UserController = require("../controllers/UserController");
+const entryController = require('../controllers/EntryController');
 const reminderController = require('../controllers/ReminderController');
-const followUpEntryController = require('../controllers/FollowUpController');
-
-
+const followUpController = require('../controllers/FollowUpController');
 const upload = multer({
     storage: multer.memoryStorage(),
     limits: {
@@ -22,34 +20,33 @@ const upload = multer({
     },
 });
 
-router.post('/upload', upload.single('file'), uploadController);
-router.post('/upload/follow-up', upload.single('file'), followUpEntryController.FollowUpController);
-router.get('/entries/follow-up/:entryID', followUpEntryController.getFollowUpEntriesByEntryId);
-router.route("/login").post(login);
-router.route("/register").post(register);
-router.route("/users").get(getAllUsers);
-router.get('/entries/date/:date', getEntriesByDate); // Fetch entries by date
 
-router.get('/entries/follow-up/date/:date', getFollowUpEntriesByDate);
+router.post('/upload', upload.single('file'), uploadController.uploadController);
+router.post('/upload/follow-up', upload.single('file'), followUpController.uploadFollowUpController);
+
+router.get('/entries/follow-up/:entryID', followUpController.getFollowUpEntriesByEntryId);
+
+router.route("/login").post(UserController.login);
+router.route("/register").post(UserController.register);
+router.route("/users").get(UserController.getAllUsers);
+router.get('/users/:email', UserController.getUserIdByEmail);
+
+router.get('/entries/date/:date', entryController.getEntriesByDate);
+router.get('/entries/follow-up/date/:date', followUpController.getFollowUpEntriesByDate);
+router.get('/entries/:id', entryController.getEntryById);
+router.get('/entries/sorted/userID/:userID', entryController.getSortedEntriesByUserId);
+router.get('/entries/userID/:userID', entryController.getEntriesByUserId);
 
 
-router.delete('/entries/:id', EntryController.deleteEntry);
-router.delete('/entries/follow-up/:id', followUpEntryController.deleteFollowUp);
+router.delete('/entries/:id', entryController.deleteEntry);
+router.delete('/entries/follow-up/:id', followUpController.deleteFollowUp);
 
 router.delete('/reminders/:id', reminderController.deleteReminder);
-router.post('/reminders', reminderController.setReminder); // New route for setting reminders
 router.get('/reminders/date/:date', reminderController.getRemindersByDate);
- // New route for setting reminders
-router.get(`/entries/:id`, EntryController.getEntryById);
-router.put('/entries/:id', EntryController.updateEntry);
-
-router.put('/entries/follow-up/:id', followUpEntryController.updateFollowUp);
-
 router.get('/reminders/entry/:entryId', reminderController.getRemindersByEntryId);
-router.get('/users/:email', getUserIdByEmail);
+router.post('/reminders', reminderController.setReminder);
 
-router.get('/entries/userID/:userID', EntryController.getEntriesByUserId);
-
-
+router.put('/entries/:id', entryController.updateEntry);
+router.put('/entries/follow-up/:id', followUpController.updateFollowUp);
 
 module.exports = router;

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axiosInstance from './axiosInstance';// Import your Axios instance configured with base URL
+import axiosInstance from './axiosInstance';
 
 const EntryNamesByUserId = ({ userID }) => {
   const [entryNames, setEntryNames] = useState([]);
@@ -10,7 +10,6 @@ const EntryNamesByUserId = ({ userID }) => {
         const userID = localStorage.getItem('userId')
         const response = await axiosInstance.get(`entries/userID/${userID}/names`);
 
-        // Set the retrieved entry names in the state
         setEntryNames(response.data.entryNames);
       } catch (error) {
         console.error('Error fetching entry names:', error);

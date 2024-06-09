@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import styles from './DeleteConfirmationModalComponent.module.scss';
+import styles from './DeleteConfirmationModal.module.scss';
 import CustomModal from '../CustomModal/CustomModal';
 
 const DeleteConfirmationModal = ({ isOpen, onCancel, onConfirm }) => {

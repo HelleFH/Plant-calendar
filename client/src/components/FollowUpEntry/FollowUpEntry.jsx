@@ -3,19 +3,23 @@ import { Link } from 'react-router-dom';
 import ImageUpload from '../imageUpload';
 import moment from 'moment';
 import DeleteConfirmationModal from '../DeleteConfirmationModal/DeleteConfirmationModal';
-import handleUpdateFollowUp from '../HandleUpdateFollowUp';
-import handleDeleteFollowUp from '../HandleDeleteFollowUp';
-import styles from '../FollowUpEntry/FollowUpEntryComponent.module.scss';
+import styles from './FollowUpEntry.module.scss';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
-const FollowUpEntry = ({ entry, onUpdateEntry, onSelectDate, onDeleteEntry, selectedDate }) => {
+const FollowUpEntry = ({ 
+  entry, 
+  onUpdateEntry, 
+  onDeleteFollowUp, 
+  selectedDate, 
+  setRefresh 
+}) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [editedFollowUpEntry, setEditedFollowUpEntry] = useState(entry);
   const [file, setFile] = useState(null);
   const [previewSrc, setPreviewSrc] = useState(entry.cloudinaryUrl);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [idToDelete, setIdToDelete] = useState(null);
+  const [idToDelete, setIdToDelete] = useState(null); // Added state for idToDelete
 
   const contentRef = useRef(null);
 
@@ -43,16 +47,23 @@ const FollowUpEntry = ({ entry, onUpdateEntry, onSelectDate, onDeleteEntry, sele
     return moment(date).format('MMMM Do');
   };
 
+  const handleConfirmDelete = () => {
+    onDeleteFollowUp(idToDelete);
+    setShowDeleteModal(false);
+    setRefresh((prev) => !prev); // Trigger refresh
+    console.log('delete handled');
+  };
+
   return (
     <li className={styles.CalendarEntry}>
       <div className='flex-row'>
-        <h5 onClick={(e) => {e.preventDefault(); toggleExpand(); }}>{formatDate(entry.date)}</h5>
+        <h5 onClick={(e) => { e.preventDefault(); toggleExpand(); }}>{formatDate(entry.date)}</h5>
         <h4>Update for {entry.name}</h4>
         <i
           onClick={toggleExpand}
           className={`fas ${isExpanded ? 'fa-chevron-up' : 'fa-chevron-down'} ${styles.chevron}`}
         ></i>
-        </div>
+      </div>
 
       <div
         className={`${styles.entryDetails} ${isExpanded ? styles.expanded : ''}`}
@@ -75,10 +86,9 @@ const FollowUpEntry = ({ entry, onUpdateEntry, onSelectDate, onDeleteEntry, sele
             <input type="text" name="name" value={editedFollowUpEntry.name} onChange={handleChange} />
             <label>Notes:</label>
             <textarea name="notes" value={editedFollowUpEntry.notes} onChange={handleChange} />
-           
             <div className="flex-row-right">
               <Link onClick={() => setIsEditing(false)}>Cancel</Link>
-              <button className="secondary-button" onClick={() => handleUpdateFollowUp(entry._id, editedFollowUpEntry, file, selectedDate, onUpdateEntry, onDeleteEntry).then(() => setIsEditing(false))}>Save</button>
+              <button className="secondary-button" onClick={() => handleUpdateFollowUp(entry._id, editedFollowUpEntry, file, selectedDate, onUpdateEntry).then(() => setIsEditing(false))}>Save</button>
             </div>
           </div>
         ) : (
@@ -91,14 +101,13 @@ const FollowUpEntry = ({ entry, onUpdateEntry, onSelectDate, onDeleteEntry, sele
               <hr className="long-line"></hr>
               <label>Notes:</label>
               <p>{entry.notes}</p>
-             
               <hr className="long-line margin-bottom"></hr>
             </div>
             <div className="flex-row-right margin-top margin-bottom">
               <Link
                 className={styles.deleteButton}
                 onClick={() => {
-                  setIdToDelete(entry._id);
+                  setIdToDelete(entry._id); // Set idToDelete to entry._id
                   setShowDeleteModal(true);
                 }}
               >
@@ -106,12 +115,9 @@ const FollowUpEntry = ({ entry, onUpdateEntry, onSelectDate, onDeleteEntry, sele
               </Link>
               {showDeleteModal && (
                 <DeleteConfirmationModal
+                  onConfirm={handleConfirmDelete}
                   isOpen={showDeleteModal}
                   onCancel={() => setShowDeleteModal(false)}
-                  onConfirm={async () => {
-                    await handleDeleteFollowUp(entry._id, onDeleteEntry);
-                    setShowDeleteModal(false);
-                  }}
                 />
               )}
               <button className="primary-button" onClick={() => setIsEditing(true)}>Edit Entry</button>

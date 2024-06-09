@@ -3,18 +3,15 @@ import { Link } from 'react-router-dom';
 import ImageUpload from '../imageUpload';
 import DeleteConfirmationModal from '../DeleteConfirmationModal/DeleteConfirmationModal';
 import handleSubmitUpdate from '../HandleSubmitUpdate';
-import handleDeleteEntry from '../HandleDeleteEntry';
-import SetCalendarReminder from '../SetReminderComponent/SetCalendarReminder';
-import handleDeleteReminder from '../HandleDeleteReminder';
+import SetCalendarReminder from '../SetReminder/SetCalendarReminder';
 import moment from 'moment';
-import styles from '../CalendarEntryComponent/CalendarEntryComponent.module.scss';
+import styles from '../CalendarEntry/CalendarEntry.module.scss';
 import '@fortawesome/fontawesome-free/css/all.min.css'; // Make sure this is included
 import axiosInstance from '../axiosInstance';
 import CreateFollowUpEntry from '../FollowUpEntry/CreateFollowUpEntry';
 import FollowUpEntry from '../FollowUpEntry/FollowUpEntry';
-import useEntries from '../useEntries';
 
-const CalendarEntry = ({ entry, onUpdateEntry, onDeleteEntry, selectedDate }) => {
+const CalendarEntry = ({ entry, setEntries, onUpdateEntry, onDeleteFollowUp, onDeleteEntry, selectedDate, setRefresh }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [editedEntry, setEditedEntry] = useState(entry);
@@ -25,13 +22,11 @@ const CalendarEntry = ({ entry, onUpdateEntry, onDeleteEntry, selectedDate }) =>
   const [isReminderModalOpen, setIsReminderModalOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [followUpEntries, setFollowUpEntries] = useState([]);
-
   const [username, setUsername] = useState('');
   const [reminders, setReminders] = useState([]);
 
   const contentRef = useRef(null);
   const formattedSelectedDate = selectedDate instanceof Date ? selectedDate.toISOString() : selectedDate;
-
 
   useEffect(() => {
     const fetchFollowUpEntriesByEntryId = async () => {
@@ -74,6 +69,26 @@ const CalendarEntry = ({ entry, onUpdateEntry, onDeleteEntry, selectedDate }) =>
     setEditedEntry({ ...editedEntry, [e.target.name]: e.target.value });
   };
 
+  const handleDeleteReminder = async (deletedReminderId) => {
+    try {
+      await axiosInstance.delete(`reminders/${deletedReminderId}`);
+      setReminders((prevReminders) => prevReminders.filter((reminder) => reminder._id !== deletedReminderId));
+      setRefresh((prev) => !prev);
+    } catch (error) {
+      console.error('Error deleting reminder:', error);
+    }
+  };
+
+  const handleDeleteFollowUp = async (deletedFollowUpId) => {
+    try {
+      await axiosInstance.delete(`/entries/follow-up/${deletedFollowUpId}`);
+      setFollowUpEntries((prevFollowUpEntries) => prevFollowUpEntries.filter((entry) => entry._id !== deletedFollowUpId));
+      setRefresh((prev) => !prev);
+    } catch (error) {
+      console.error('Error deleting follow-up:', error);
+    }
+  };
+
   const onDrop = (acceptedFiles) => {
     const currentFile = acceptedFiles[0];
     setFile(currentFile);
@@ -108,13 +123,17 @@ const CalendarEntry = ({ entry, onUpdateEntry, onDeleteEntry, selectedDate }) =>
     );
   };
 
+  const handleConfirmDelete = () => {
+    onDeleteEntry(entry._id);
+    setShowDeleteModal(false);
+    setRefresh((prev) => !prev); // Trigger refresh
+  };
+
   return (
     <li className={styles.CalendarEntry}>
-
       <div className="flex-row">
         <h4 onClick={toggleExpand} className={styles.entryName}>
-          {entry.name}      	
-
+          {entry.name}
         </h4>
         <i
           onClick={toggleExpand}
@@ -159,16 +178,13 @@ const CalendarEntry = ({ entry, onUpdateEntry, onDeleteEntry, selectedDate }) =>
             <div className={styles.lineContainer}>
               <hr className="long-line"></hr>
               <h5 className='margin-top'>Created on {moment(entry.date).format('DD/MM/YYYY')}</h5>
-
             </div>
             {entry.cloudinaryUrl && <img className="margin-bottom" src={entry.cloudinaryUrl} alt={entry.name} />}
-
             <div className={styles.EntryFormContainer}>
               <hr className="long-line"></hr>
               <label>Notes:</label>
               <p>{entry.notes}</p>
               <hr className="long-line"></hr>
-
               <label>Sunlight:</label>
               <p>{entry.sunlight}</p>
               <hr className="long-line"></hr>
@@ -182,37 +198,32 @@ const CalendarEntry = ({ entry, onUpdateEntry, onDeleteEntry, selectedDate }) =>
                 onClose={handleCloseModal}
                 selectedDate={formattedSelectedDate}
                 oldEntryID={entry._id}
-                oldEntryName={entry.name} // Pass the entry name here
+                oldEntryName={entry.name}
                 sunlight={entry.sunlight}
                 water={entry.water}
                 name={entry.name}
               />
-
             )}
             <div className={styles.followUpContainer}>
-
-            <h4>Other entries for {entry.name} </h4>
-            <div className={styles.FollowUpListContainer}>
-
-              {followUpEntries.length > 0 && (
-                <ul className={styles.EntryList}>
-                  {followUpEntries.map((followUpEntry, index) => (
-                    <FollowUpEntry
-                      key={index}
-                      entry={followUpEntry}
-                      selectedDate={selectedDate}
-                      onUpdateEntry={handleUpdateEntry}
-                      onDeleteEntry={onDeleteEntry}
-                    />
-                    
-                  ))}
-                </ul>
-                
-              )}
+              <h4>Other entries for {entry.name} </h4>
+              <div className={styles.FollowUpListContainer}>
+                {followUpEntries.length > 0 && (
+                  <ul className={styles.EntryList}>
+                    {followUpEntries.map((followUpEntry, index) => (
+                      <FollowUpEntry
+                        key={index}
+                        entry={followUpEntry}
+                        selectedDate={selectedDate}
+                        onUpdateEntry={handleUpdateEntry}
+                        onDeleteFollowUp={handleDeleteFollowUp}
+                      />
+                    ))}
+                  </ul>
+                )}
                 <Link className={styles.addEntryLink} onClick={toggleCreateModal}>
-              + Add Entry
-            </Link>
-            </div>
+                  + Add Entry
+                </Link>
+              </div>
             </div>
             <SetCalendarReminder
               isOpen={isReminderModalOpen}
@@ -221,11 +232,33 @@ const CalendarEntry = ({ entry, onUpdateEntry, onDeleteEntry, selectedDate }) =>
               entryId={entry._id}
               username={username}
             />
-          
             <div className={styles.lineContainer}>
               <hr className="long-line"></hr>
             </div>
             <div className="margin-top flex-row">
+              <p>Reminders:</p>
+              <button className="secondary-button" onClick={toggleReminderModal}>
+                <i className="fas fa-bell"></i> Set Reminder
+              </button>
+            </div>
+            <ul className="flex-right margin-top">
+              {reminders.map((reminder) => (
+                <li className="flex-row" key={reminder._id}>
+                  <span>
+                    {moment(reminder.date).format('MMMM Do YYYY')} - {reminder.description}
+                  </span>
+                  <span>
+                    <i
+                      className="fas fa-trash"
+                      onClick={() => handleDeleteReminder(reminder._id)}
+                      style={{ cursor: 'pointer', marginLeft: '10px' }}
+                    ></i>
+                  </span>
+                </li>
+              ))}
+            </ul>
+
+                  <div className="margin-top flex-row">
               <p>Reminders:</p>
               <button className="secondary-button" onClick={toggleReminderModal}>
                 <i className="fas fa-bell"></i> Set Reminder
@@ -260,8 +293,8 @@ const CalendarEntry = ({ entry, onUpdateEntry, onDeleteEntry, selectedDate }) =>
               {showDeleteModal && (
                 <DeleteConfirmationModal
                   isOpen={showDeleteModal}
-                  onCancel={() => setShowDeleteModal(false)}
-                  onConfirm={() => handleDeleteEntry(idToDelete)}
+                  onConfirm={handleConfirmDelete}
+          onCancel={() => setShowDeleteModal(false)}
                 />
               )}
               <button className="primary-button" onClick={() => setIsEditing(true)}>
