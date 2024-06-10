@@ -114,6 +114,5 @@ module.exports = {
   deleteEntry,
   updateEntry,
   getEntryById,
-  getSortedEntriesByUserId,
   getEntriesByDate
 };
