@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const multer = require('multer');
 
-const uploadController = require('../controllers/UploadController');
+const uploadController = require('../controllers/uploadController');
 const UserController = require("../controllers/UserController");
 const entryController = require('../controllers/EntryController');
 const reminderController = require('../controllers/ReminderController');
