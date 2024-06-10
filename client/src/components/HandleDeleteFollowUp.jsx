@@ -1,6 +1,6 @@
 import axiosInstance from './axiosInstance'; 
 
-const handleDeleteFollowUp = async (entryId, onDeleteSuccess) => {
+const handleDeleteEntry = async (entryId, onDeleteSuccess) => {
   try {
     await axiosInstance.delete(`/entries/follow-up/${entryId}`);
     console.log('Entry deleted successfully:', entryId);
@@ -12,4 +12,4 @@ const handleDeleteFollowUp = async (entryId, onDeleteSuccess) => {
   }
 };
 
-export default handleDeleteFollowUp;
+export default handleDeleteEntry;

@@ -1,5 +1,5 @@
 import axiosInstance from './axiosInstance';
-import handleDeleteEntry from './HandleDeleteEntry'
+import { handleDeleteEntry } from './HandleDeleteEntry';
 
 const handleSubmitUpdate = async (id, editedEntry, file, selectedDate, onUpdateEntry, onDeleteEntry,) => {
   try {

@@ -80,6 +80,9 @@ const getEntryById = async (req, res) => {
   }
 };
 
+
+
+
 const getEntriesByDate = async (req, res) => {
   try {
       // Extract date and username from request parameters
@@ -111,5 +114,6 @@ module.exports = {
   deleteEntry,
   updateEntry,
   getEntryById,
+  getSortedEntriesByUserId,
   getEntriesByDate
 };

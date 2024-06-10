@@ -12,11 +12,13 @@ import FollowUpEntry from '../../components/FollowUpEntry/FollowUpEntry';
 import NewEntryModal from '../../components/NewEntryModal/NewEntryModal';
 import axiosInstance from '../../components/axiosInstance';
 
+
 const CalendarComponent = () => {
   const [loggedIn, setLoggedIn] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [isNewEntryModalOpen, setIsNewEntryModalOpen] = useState(false);
   const [refresh, setRefresh] = useState(false);
+  const [currentMonth, setCurrentMonth] = useState(new Date());
   const { entries, highlightedDates, error: entriesError, setEntries } = useEntries(selectedDate, refresh);
   const { followUpEntries, highlightedFollowUpDates, error: followUpEntriesError, setFollowUpEntries } = useFollowUpEntries(selectedDate, refresh);
   const { reminders, highlightedReminderDates, error: remindersError, setReminders } = useReminders(selectedDate, refresh);
@@ -25,6 +27,7 @@ const CalendarComponent = () => {
     const token = localStorage.getItem('auth');
     setLoggedIn(!!token);
   }, []);
+
 
   const tileClassName = ({ date }) => {
     const formattedDate = date.toDateString();
@@ -73,17 +76,11 @@ const CalendarComponent = () => {
   };
 
   const handleSelectDate = (date) => {
-    console.log('Date selected:', date);
     setSelectedDate(date);
   };
 
   const handleDateChange = (date) => {
-    if (!date) {
-      setSelectedDate(null);
-      return;
-    }
-    const newDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-    setSelectedDate(newDate);
+    setSelectedDate(date);
   };
 
   const handleNewEntryClick = () => {
@@ -92,7 +89,7 @@ const CalendarComponent = () => {
 
   const handleCloseModal = () => {
     setIsNewEntryModalOpen(false);
-    setRefresh((prev) => !prev); // Trigger refresh when modal is closed
+    setRefresh((prev) => !prev);
   };
 
   const onUpdateEntry = (updatedEntry) => {
@@ -101,13 +98,22 @@ const CalendarComponent = () => {
     );
   };
 
+  const handleMonthChange = ({ activeStartDate }) => {
+    setCurrentMonth(activeStartDate);
+  };
+
   return (
     <div>
       <Navbar />
       {loggedIn ? (
         <div className={styles.calendarContainer}>
           <div className={styles.backgroundContainer}>
-            <Calendar value={selectedDate} onChange={handleDateChange} tileClassName={tileClassName} />
+            <Calendar
+              value={selectedDate}
+              onChange={handleDateChange}
+              onActiveStartDateChange={handleMonthChange}
+              tileClassName={tileClassName}
+            />
             {selectedDate && (
               <div className={styles.addEntryContainer}>
                 <h4 className={styles.selectedDate}>{selectedDate.toDateString()}</h4>
@@ -118,16 +124,16 @@ const CalendarComponent = () => {
           {entriesError && <p>Error: {entriesError}</p>}
           {remindersError && <p>Error: {remindersError}</p>}
           {followUpEntriesError && <p>Error: {followUpEntriesError}</p>}
-          <NewEntryModal 
-            isOpen={isNewEntryModalOpen} 
-            setRefresh={setRefresh} 
-            onClose={handleCloseModal} 
-            selectedDate={selectedDate} 
-            refresh={refresh} // Pass refresh to ensure proper fetching
+          <NewEntryModal
+            isOpen={isNewEntryModalOpen}
+            setRefresh={setRefresh}
+            onClose={handleCloseModal}
+            selectedDate={selectedDate}
+            refresh={refresh}
           />
-       {selectedDate && (entries.length > 0 || followUpEntries.length > 0 || reminders.length > 0) && (
-  <h4>Entries for {selectedDate.toDateString()}</h4>
-)}
+          {selectedDate && (entries.length > 0 || followUpEntries.length > 0 || reminders.length > 0) && (
+            <h4>Entries for {selectedDate.toDateString()}</h4>
+          )}
           <div className={styles.ListsContainer}>
             <div className={styles.EntryListContainer}>
               {entries.length > 0 && (

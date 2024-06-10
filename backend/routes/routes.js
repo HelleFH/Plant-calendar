@@ -31,7 +31,7 @@ router.route("/register").post(UserController.register);
 router.route("/users").get(UserController.getAllUsers);
 router.get('/users/:email', UserController.getUserIdByEmail);
 
-router.get('/entries/sorted/date/:date', entryController.getEntriesByDate);
+router.get('/entries/date/:date', entryController.getEntriesByDate);
 router.get('/entries/follow-up/date/:date', followUpController.getFollowUpEntriesByDate);
 router.get('/entries/:id', entryController.getEntryById);
 

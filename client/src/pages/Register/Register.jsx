@@ -7,9 +7,6 @@ import axiosInstance from "../../components/axiosInstance";
 import { toast } from "react-toastify";
 import styles from './Register.module.scss';
 
-
-
-
 const Login = () => {
   const [ showPassword, setShowPassword ] = useState(false);
   const navigate = useNavigate();

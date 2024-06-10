@@ -48,7 +48,6 @@ const handleUpdateFollowUp = async (id, editedEntry, file, selectedDate, onUpdat
       const updateResponse = await axiosInstance.put(`/entries/follow-up/${id}`, data);
 
       if (updateResponse.status === 200) {
-
         onUpdateEntry(updateResponse.data);
       } else {
         console.error('Update failed with status:', updateResponse.status);
@@ -61,7 +60,7 @@ const handleUpdateFollowUp = async (id, editedEntry, file, selectedDate, onUpdat
     } else {
       console.error('Error updating entry:', error);
     }
-    throw error; 
+    throw error; // Throw the error for the caller to handle
   }
 };
 

@@ -36,6 +36,9 @@ const Navbar = () => {
 
   const handleConfirmLogout = () => {
     localStorage.removeItem('auth');
+    localStorage.removeItem("userId");
+    localStorage.removeItem("username");
+    
     setShowLogoutModal(false);
     navigate("/login"); // Redirect to the landing page
   };
@@ -59,13 +62,17 @@ const Navbar = () => {
 
   return (
     <nav className={styles.navbar} ref={navbarRef}>
-      <a href="/calendar" className={styles.navbarLogo}>
-        <h1>Calendar</h1>
+      <div className={styles.navbarLogo}></div>
+   
+      <a href="/calendar" className={styles.homeLink}>
+       <h1>Calendar</h1>
       </a>
+
       <div className={`${styles.navbarLinks} ${isOpen ? styles.navbarLinksOpen : ''}`}>
         {username && <p className={styles.username}>Hello, {username}</p>}
         
         <a href="/logout" onClick={handleLogoutClick}><p>Logout</p></a>
+      
         <a href="/all-entries" >
         <p>All entries</p>
       </a>

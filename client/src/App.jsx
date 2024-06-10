@@ -1,6 +1,6 @@
 
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import { HomeLayout, Login, Logout, Register, AllEntriesList} from "./pages";
+import { HomeLayout, Login, Register, AllEntriesList} from "./pages";
 import CalendarComponent from "./pages/CalendarView/Calendar";
 import { ToastContainer } from 'react-toastify';
 import './styles/main.scss';
@@ -33,10 +33,7 @@ const router = createBrowserRouter([
         path: "calendar",
         element: <CalendarComponent />,
       },
-      {
-        path: "logout",
-        element: <Logout />,
-      },
+  
    
 
     ],
