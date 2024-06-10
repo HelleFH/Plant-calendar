@@ -80,35 +80,6 @@ const getEntryById = async (req, res) => {
   }
 };
 
-const getSortedEntriesByUserId = async (req, res) => {
-  try {
-      // Extract userID and sorting criteria from request parameters and query parameters
-      const { userID } = req.params;
-      const { sortBy } = req.query;
-
-      // Define the sort options based on the sortBy parameter
-      let sortOptions = {};
-      if (sortBy === 'date') {
-          sortOptions = { date: 1 }; // Sort by date in ascending order
-      } else if (sortBy === 'name') {
-          sortOptions = { name: 1 }; // Sort by name in ascending order
-      }
-
-      // Get entries for the specified userID and apply sorting
-      const entries = await Entry.find({ userID }).sort(sortOptions);
-
-      // Send entries as response
-      res.json(entries);
-  } catch (error) {
-      console.error('Error in getting entries by userID:', error);
-      return res.status(500).json({ error: 'Internal server error.' });
-  }
-};
-
-
-
-
-
 const getEntriesByDate = async (req, res) => {
   try {
       // Extract date and username from request parameters
@@ -140,6 +111,5 @@ module.exports = {
   deleteEntry,
   updateEntry,
   getEntryById,
-  getSortedEntriesByUserId,
   getEntriesByDate
 };
