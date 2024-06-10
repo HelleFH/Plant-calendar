@@ -5,27 +5,34 @@
   @include flex-row;
   padding: 0 20px;
   background-color: $secondary-color;
-  color: $tertiary-color;
+  color: $text-color;
   height: 60px;
   h1 {
     color: $text-color !important;
+  }
+
+  .username {
+    color: darken($text-color, 10%);
   }
 }
 
 .navbarLogo {
   text-decoration: none;
-  font-size: 24px;
+  font-size: $font-size-large;
   font-weight: bold;
 }
 
 .navbarLinks {
   display: flex;
   gap: 20px;
-}
 
-.navbarLinks a {
-  color: $text-color;
-  text-decoration: none;
+  a {
+    color: $text-color;
+    text-decoration: none;
+  }
+  h5 {
+    color: darken($text-color, 5%);
+  }
 }
 
 .navbarToggle {
@@ -34,7 +41,7 @@
 }
 
 .navbarToggle i {
-  font-size: 24px;
+  font-size: $font-size-large;
 }
 
 @media (max-width: 768px) {

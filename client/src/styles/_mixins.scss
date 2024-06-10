@@ -19,11 +19,11 @@
   }
 }
 @mixin secondary-button {
-  @include button-styles($background-color, $tertiary-color);
+  @include button-styles($background-color, $text-color);
 }
 
 @mixin primary-button {
-  @include button-styles(darken($tertiary-color, 2%), $secondary-color);
+  @include button-styles(darken($text-color, 2%), $secondary-color);
 }
 
 @mixin box-shadow($shadow: $box-shadow) {

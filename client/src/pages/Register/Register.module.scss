@@ -8,6 +8,9 @@
     background-position: top center;
     background-size:contain;
 
+    h2, h4{color:$text-color !important;}
+
+
 
 }
 
@@ -16,7 +19,7 @@
     height: 60px;
     background-color: $secondary-color;
     width:100%;
-    color: $tertiary-color;
+    color: $text-color;
    @include flex-center;
    margin-top:0.5em;
    margin-bottom: 0.5em;
@@ -32,12 +35,25 @@
     margin-bottom: 2em;
     padding:1em;
     opacity: 0.99;
+    text-align: center;
+
 }
 .registerForm {
     display: flex;
     flex-direction: column;
     gap: 1em;
     margin: 1em 10% 1em 10%;
+
+    input {
+        outline: none;
+        border: none;
+        height: 35px;
+        border-radius: 20px;
+        width: 100%;
+        padding-left: 1em;
+        opacity: 0.9;
+    }
+
 }
 .loginLink {
     background-color: lighten($primary-color, 40%);
@@ -45,14 +61,7 @@
     text-align:center;
     padding-top:1em;
 }
-.registerForm input {
-    outline: none;
-    border: none;
-    height: 35px;
-    border-radius: 20px;
-    width: 100%;
-    padding-left: 1em;
-}
+.registerForm 
 
 .signupButton {
     @include primary-button;

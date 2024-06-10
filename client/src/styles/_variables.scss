@@ -1,25 +1,15 @@
 // Colors
 $primary-color: rgb(153, 163, 80);
 $secondary-color: rgb(18, 29, 10);
-$tertiary-color: rgb(247, 245, 233);
+$text-color: rgb(247, 245, 233);
 
 $background-color: rgb(74, 84, 46,0.97);
 $text-color: rgb(247, 245, 233);
-$border-color:rgb(74, 84, 46,0.9);
 
-
-$hover-color-primary: darken($background-color, 20%); // Darkened hover color for primary button
-$hover-color-secondary: darken($text-color, 30%); 
-
-
-// Fonts
 $font-family-base: 'Roboto', sans-serif;
 $font-size-base: 16px;
 $font-size-small: 14px;
 $font-size-large: 18px;
 
-
-
-// Borders
 $border-radius: 5px;
 $box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);

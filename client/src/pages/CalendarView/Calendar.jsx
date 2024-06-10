@@ -34,7 +34,7 @@ const CalendarComponent = () => {
       className += ' highlighted';
     }
     if (highlightedReminderDates && highlightedReminderDates.includes(formattedDate)) {
-      className += ' highlightedReminder';
+      className += ' highlightedReminder  ';
     }
     if (highlightedFollowUpDates && highlightedFollowUpDates.includes(formattedDate)) {
       className += ' highlightedFollowUp';
@@ -125,7 +125,9 @@ const CalendarComponent = () => {
             selectedDate={selectedDate} 
             refresh={refresh} // Pass refresh to ensure proper fetching
           />
-          {selectedDate && <h4>Entries for {selectedDate.toDateString()}</h4>}
+       {selectedDate && (entries.length > 0 || followUpEntries.length > 0 || reminders.length > 0) && (
+  <h4>Entries for {selectedDate.toDateString()}</h4>
+)}
           <div className={styles.ListsContainer}>
             <div className={styles.EntryListContainer}>
               {entries.length > 0 && (
@@ -164,7 +166,7 @@ const CalendarComponent = () => {
             <div className={styles.ReminderListContainer}>
               {reminders.length > 0 && (
                 <ul className={styles.reminderList}>
-                  <h4>Reminders</h4>
+                  <h4 className='margin-top margin-bottom'>Reminders</h4>
                   {reminders.map((reminder, index) => (
                     <CalendarReminder
                       className={styles.calendarReminder}

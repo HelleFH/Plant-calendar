@@ -63,7 +63,7 @@ const Navbar = () => {
         <h1>Calendar</h1>
       </a>
       <div className={`${styles.navbarLinks} ${isOpen ? styles.navbarLinksOpen : ''}`}>
-        {username && <h5 className={styles.username}>Hello, {username}</h5>}
+        {username && <p className={styles.username}>Hello, {username}</p>}
         
         <a href="/logout" onClick={handleLogoutClick}><p>Logout</p></a>
         <a href="/all-entries" >

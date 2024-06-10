@@ -42,19 +42,6 @@
     width: 100vw;
 }
 
-.highlightedReminder {
-    position: relative;
-}
-
-.highlightedReminder::before {
-    content: "\f0f3";
-    font-family: "FontAwesome";
-    position: absolute;
-    right: 2px;
-    bottom: 0;
-    font-size: 8px;
-    color: $background-color;
-}
 
 .addEntryContainer {
     @include flex-row;
@@ -102,5 +89,4 @@
 }
 .reminderList {
     @include flex-center;
-    width: 90%;
 }

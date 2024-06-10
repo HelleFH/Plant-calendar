@@ -72,24 +72,40 @@ const AllEntriesList = ({ setRefresh }) => {
                 Sort by Date
               </button>
             </div>
-            {Object.keys(groupedEntries).map((date, index) => (
-              <div key={index}>
-                <h5 className='margin-top'>{date}</h5>
-                <ul className={styles.EntryList}>
-                  {groupedEntries[date].map((entry) => (
-                    <CalendarEntry
-                      className={styles.calendarEntry}
-                      key={entry._id}
-                      entry={entry}
-                      onUpdateEntry={onUpdateEntry}
-                      selectedDate={entry.date}
-                      onDeleteEntry={handleDeleteEntry}
-                      setRefresh={setRefresh}
-                    />
-                  ))}
-                </ul>
-              </div>
-            ))}
+            {sortBy === 'date' ? (
+              Object.keys(groupedEntries).map((date, index) => (
+                <div key={index}>
+                  <h5 className='margin-top'>{date}</h5>
+                  <ul className={styles.EntryList}>
+                    {groupedEntries[date].map((entry) => (
+                      <CalendarEntry
+                        className={styles.calendarEntry}
+                        key={entry._id}
+                        entry={entry}
+                        onUpdateEntry={onUpdateEntry}
+                        selectedDate={entry.date}
+                        onDeleteEntry={handleDeleteEntry}
+                        setRefresh={setRefresh}
+                      />
+                    ))}
+                  </ul>
+                </div>
+              ))
+            ) : (
+              <ul className={styles.EntryList}>
+                {entries.map((entry) => (
+                  <CalendarEntry
+                    className={styles.calendarEntry}
+                    key={entry._id}
+                    entry={entry}
+                    onUpdateEntry={onUpdateEntry}
+                    selectedDate={entry.date}
+                    onDeleteEntry={handleDeleteEntry}
+                    setRefresh={setRefresh}
+                  />
+                ))}
+              </ul>
+            )}
           </div>
         )}
       </div>

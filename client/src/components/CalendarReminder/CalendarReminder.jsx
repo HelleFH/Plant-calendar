@@ -14,21 +14,7 @@ const CalendarReminder = ({
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [idToDelete, setIdToDelete] = useState(null);
   const [entryDetails, setEntryDetails] = useState(null);
-  
-  useEffect(() => {
-    const fetchEntryDetails = async () => {
-      try {
-        const response = await axiosInstance.get(`/entries/${reminder.entryId}`);
-        setEntryDetails(response.data);
-      } catch (error) {
-        console.error('Error fetching entry details:', error);
-      }
-    };
 
-    if (reminder.entryId) {
-      fetchEntryDetails();
-    }
-  }, [reminder.entryId]);
 
   const formatDate = (date) => {
     return moment(date).format('MMMM Do');
