@@ -34,7 +34,6 @@ router.get('/users/:email', UserController.getUserIdByEmail);
 router.get('/entries/date/:date', entryController.getEntriesByDate);
 router.get('/entries/follow-up/date/:date', followUpController.getFollowUpEntriesByDate);
 router.get('/entries/:id', entryController.getEntryById);
-router.get('/entries/userID/:userID', entryController.getEntriesByUserId);
 
 router.delete('/entries/:id', entryController.deleteEntry);
 router.delete('/entries/follow-up/:id', followUpController.deleteFollowUp);
