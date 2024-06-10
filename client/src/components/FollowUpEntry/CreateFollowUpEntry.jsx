@@ -5,7 +5,7 @@ import axiosInstance from '../axiosInstance';
 import { Form } from 'react-bootstrap';
 import ImageUpload from '../imageUpload';
 
-const CreateFollowUpEntry = ({ isOpen, onClose, oldEntryID, oldEntryName, name, handleAddFollowUpEntry }) => {
+const CreateFollowUpEntry = ({ isOpen, onClose, oldEntryID, oldEntryName, name, selectedDate, handleAddFollowUpEntry }) => {
     const [file, setFile] = useState(null);
     const [followUpDate, setFollowUpDate] = useState('');
     const [previewSrc, setPreviewSrc] = useState('');
@@ -19,11 +19,19 @@ const CreateFollowUpEntry = ({ isOpen, onClose, oldEntryID, oldEntryName, name, 
 
     const [entry, setEntry] = useState(initialEntryState);
 
+    // Capture the selectedDate prop if available
+    useEffect(() => {
+        if (selectedDate) {
+            setFollowUpDate(selectedDate);
+        }
+    }, [selectedDate]);
+
     const createEntry = async () => {
         try {
             const formData = new FormData();
             if (file) formData.append('file', file);
             formData.append('name', oldEntryName);
+
             formData.append('notes', entry.notes);
             formData.append('date', followUpDate); // Use followUpDate here
             formData.append('userID', localStorage.getItem('userId'));
@@ -36,7 +44,7 @@ const CreateFollowUpEntry = ({ isOpen, onClose, oldEntryID, oldEntryName, name, 
             });
 
             const newFollowUpEntry = response.data;
-            handleAddFollowUpEntry(newFollowUpEntry);
+            handleAddFollowUpEntry(newFollowUpEntry, followUpDate);
 
             setFile(null);
             setPreviewSrc('');

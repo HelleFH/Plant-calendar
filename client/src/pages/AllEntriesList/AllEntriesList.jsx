@@ -62,7 +62,6 @@ const AllEntriesList = () => {
                 onUpdateEntry={onUpdateEntry}
                 onDeleteEntry={onDeleteEntry}
                 selectedDate={entry.date}
-                 // Pass the entry date as selectedDate
               />
             ))}
           </ul>

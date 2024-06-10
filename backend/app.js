@@ -12,6 +12,12 @@ app.use("/api/v1", mainRouter);
 app.use(express.static('public'));
 
 const port = process.env.PORT || 3001;
+app.use(express.static(path.join(__dirname, 'client/build')));
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
+});
+
 
 const corsOptions = {
     origin: ['http://localhost:5173', 'https://plant-calendar-1.onrender.com'],

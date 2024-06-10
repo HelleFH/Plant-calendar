@@ -4,12 +4,13 @@ import CreateEntryWithFileUpload from '../CreateEntry/createEntry';
 import CustomModal from '../CustomModal/CustomModal';
 import CreateFollowUpEntry from '../FollowUpEntry/CreateFollowUpEntry';
 
-const NewEntryModal = ({ isOpen, onClose, selectedDate, setRefresh }) => {
+const NewEntryModal = ({ isOpen, onClose, selectedDate, setRefresh, refresh }) => {
   const [entries, setEntries] = useState([]);
   const [isCreateEntryModalOpen, setIsCreateEntryModalOpen] = useState(false);
   const [isCreateFollowUpModalOpen, setIsCreateFollowUpModalOpen] = useState(false);
   const [selectedEntry, setSelectedEntry] = useState('');
   const [selectedEntryDetails, setSelectedEntryDetails] = useState(null);
+  const [followUpEntries, setFollowUpEntries] = useState([]);
 
   useEffect(() => {
     const fetchEntries = async () => {
@@ -27,23 +28,26 @@ const NewEntryModal = ({ isOpen, onClose, selectedDate, setRefresh }) => {
     };
 
     fetchEntries();
-  }, []);
-
-  
+  }, [refresh]); // Ensure entries are fetched on refresh
 
   const handleAddEntryClick = () => {
     setIsCreateEntryModalOpen(true);
   };
 
-  const handleCloseModal = () => {
+  const handleAddFollowUpEntry = (newFollowUpEntry) => {
+    setFollowUpEntries((prevFollowUpEntries) => [...prevFollowUpEntries, newFollowUpEntry]);
+  };
+
+  const handleCloseEntryModal = () => {
     setIsCreateEntryModalOpen(false);
-    setRefresh((prev) => !prev);
+    setRefresh((prev) => !prev); // Trigger refresh when modal closes
+    onClose();
   };
 
   const handleCloseFollowUpModal = () => {
     setIsCreateFollowUpModalOpen(false);
-    setRefresh((prev) => !prev);
-
+    setRefresh((prev) => !prev); // Trigger refresh when modal closes
+    onClose();
   };
 
   const handleChange = (e) => {
@@ -73,18 +77,14 @@ const NewEntryModal = ({ isOpen, onClose, selectedDate, setRefresh }) => {
         </div>
         <CreateEntryWithFileUpload
           isOpen={isCreateEntryModalOpen}
-          onClose={handleCloseModal}
+          onClose={handleCloseEntryModal}
           selectedDate={selectedDate}
           setRefresh={setRefresh} 
         />
       </div>
       {isCreateFollowUpModalOpen && selectedEntryDetails && (
-
-
-
-
-        
         <CreateFollowUpEntry
+          handleAddFollowUpEntry={handleAddFollowUpEntry}
           isOpen={isCreateFollowUpModalOpen}
           onClose={handleCloseFollowUpModal}
           oldEntryID={selectedEntryDetails._id}
@@ -92,10 +92,8 @@ const NewEntryModal = ({ isOpen, onClose, selectedDate, setRefresh }) => {
           sunlight={selectedEntryDetails.sunlight}
           water={selectedEntryDetails.water}
           selectedDate={selectedDate}
-          
           oldEntryName={selectedEntryDetails.name}
           setRefresh={setRefresh} 
-
         />
       )}
     </CustomModal>

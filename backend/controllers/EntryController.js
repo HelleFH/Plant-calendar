@@ -80,18 +80,6 @@ const getEntryById = async (req, res) => {
   }
 };
 
-const getEntriesByUserId = async (req, res) => {
-  try {
-      const { userID } = req.params;
-
-      res.json(entries);
-  } catch (error) {
-      console.error('Error in getting entries by userID:', error);
-      return res.status(500).json({ error: 'Internal server error.' });
-  }
-};
-
-
 const getSortedEntriesByUserId = async (req, res) => {
   try {
       // Extract userID and sorting criteria from request parameters and query parameters
@@ -116,6 +104,9 @@ const getSortedEntriesByUserId = async (req, res) => {
       return res.status(500).json({ error: 'Internal server error.' });
   }
 };
+
+
+
 
 
 const getEntriesByDate = async (req, res) => {
@@ -150,6 +141,5 @@ module.exports = {
   updateEntry,
   getEntryById,
   getSortedEntriesByUserId,
-  getEntriesByDate,
-  getEntriesByUserId
+  getEntriesByDate
 };

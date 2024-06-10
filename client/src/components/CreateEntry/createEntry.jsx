@@ -7,7 +7,7 @@ import styles from './CreateEntry.module.scss';
 import CustomModal from '../CustomModal/CustomModal';
 import axiosInstance from '../axiosInstance';
 
-const CreateEntryWithFileUpload = ({ isOpen, onClose, selectedDate }) => {
+const CreateEntryWithFileUpload = ({ isOpen, onClose, selectedDate, setRefresh }) => {
   const [file, setFile] = useState(null);
   const [previewSrc, setPreviewSrc] = useState('');
   const [isPreviewAvailable, setIsPreviewAvailable] = useState(false);
@@ -61,8 +61,10 @@ const CreateEntryWithFileUpload = ({ isOpen, onClose, selectedDate }) => {
   
       setFile(null);
       setPreviewSrc('');
-      setIsPreviewAvailable(false);da
+      setIsPreviewAvailable(false)
       onCloseAndNavigate(); 
+      setRefresh((prev) => !prev);
+
       // Navigate to the calendar page
     } catch (error) {
       console.error('Error creating entry:', error);
