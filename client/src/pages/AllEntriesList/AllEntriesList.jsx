@@ -4,7 +4,7 @@ import CalendarEntry from '../../components/CalendarEntry/CalendarEntry';
 import Navbar from '../../components/Navbar/Navbar';
 import styles from './AllEntriesList.module.scss';
 
-const AllEntriesList = () => {
+const AllEntriesList = ({ setRefresh }) => {
   const [entries, setEntries] = useState([]);
   const [sortBy, setSortBy] = useState('name'); // Initial sort by name
 
@@ -34,17 +34,35 @@ const AllEntriesList = () => {
     );
   };
 
-  const onDeleteEntry = (entryId) => {
-    setEntries((prevEntries) => prevEntries.filter((entry) => entry._id !== entryId));
+  const handleDeleteEntry = async (deletedEntryId) => {
+    try {
+      await axiosInstance.delete(`entries/${deletedEntryId}`);
+      setEntries((prevEntries) => prevEntries.filter((entry) => entry._id !== deletedEntryId));
+      setRefresh((prev) => !prev);
+    } catch (error) {
+      console.error('Error deleting entry:', error);
+    }
   };
+
+  const groupEntriesByDate = (entries) => {
+    return entries.reduce((groupedEntries, entry) => {
+      const date = new Date(entry.date).toDateString();
+      if (!groupedEntries[date]) {
+        groupedEntries[date] = [];
+      }
+      groupedEntries[date].push(entry);
+      return groupedEntries;
+    }, {});
+  };
+
+  const groupedEntries = groupEntriesByDate(entries);
 
   return (
     <div>
       <Navbar />
       <div className={styles.AllEntriesListContainer}>
-
         {entries.length > 0 && (
-          <ul className={styles.EntryList}>
+          <div>
             <h1 className='margin-top'>All Entries</h1>
             <div className={styles.sortButtons}>
               <button className={sortBy === 'name' ? 'selected' : ''} onClick={() => setSortBy('name')}>
@@ -54,17 +72,25 @@ const AllEntriesList = () => {
                 Sort by Date
               </button>
             </div>
-            {entries.map((entry, index) => (
-              <CalendarEntry
-                className={styles.calendarEntry}
-                key={index}
-                entry={entry}
-                onUpdateEntry={onUpdateEntry}
-                onDeleteEntry={onDeleteEntry}
-                selectedDate={entry.date}
-              />
+            {Object.keys(groupedEntries).map((date, index) => (
+              <div key={index}>
+                <h5 className='margin-top'>{date}</h5>
+                <ul className={styles.EntryList}>
+                  {groupedEntries[date].map((entry) => (
+                    <CalendarEntry
+                      className={styles.calendarEntry}
+                      key={entry._id}
+                      entry={entry}
+                      onUpdateEntry={onUpdateEntry}
+                      selectedDate={entry.date}
+                      onDeleteEntry={handleDeleteEntry}
+                      setRefresh={setRefresh}
+                    />
+                  ))}
+                </ul>
+              </div>
             ))}
-          </ul>
+          </div>
         )}
       </div>
     </div>

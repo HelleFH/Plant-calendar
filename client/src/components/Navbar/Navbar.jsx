@@ -37,7 +37,7 @@ const Navbar = () => {
   const handleConfirmLogout = () => {
     localStorage.removeItem('auth');
     setShowLogoutModal(false);
-    navigate("/"); // Redirect to the landing page
+    navigate("/login"); // Redirect to the landing page
   };
 
   const handleClickOutside = (event) => {

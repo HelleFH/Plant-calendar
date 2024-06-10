@@ -35,6 +35,10 @@ body {
     font-weight: 500;
 }
 
+
+a {font-weight: 600;}
+
+button {border:none !important;}
 .calendar-container {
     max-width: 500px;
     @include flex-center;
@@ -97,7 +101,7 @@ h5 {
     color: $text-color;
 }
 .primary-button {
-    @include button-styles(darken($tertiary-color, 2%), $secondary-color);
+    @include button-styles($primary-color, $text-color);
 }
 .secondary-button {
     @include button-styles($background-color, $tertiary-color);

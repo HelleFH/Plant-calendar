@@ -110,8 +110,8 @@ const CalendarComponent = () => {
             <Calendar value={selectedDate} onChange={handleDateChange} tileClassName={tileClassName} />
             {selectedDate && (
               <div className={styles.addEntryContainer}>
-                <p className={styles.selectedDate}>{selectedDate.toDateString()}</p>
-                <button className={`primary-button ${styles.addEntryButton}`} onClick={handleNewEntryClick}>Add Entry</button>
+                <h4 className={styles.selectedDate}>{selectedDate.toDateString()}</h4>
+                <button className={`primary-button ${styles.addEntryButton}`} onClick={handleNewEntryClick}>+ Add Entry</button>
               </div>
             )}
           </div>
