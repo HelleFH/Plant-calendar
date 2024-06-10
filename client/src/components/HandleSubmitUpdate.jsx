@@ -1,6 +1,7 @@
 import axiosInstance from './axiosInstance';
+import handleDeleteEntry from './HandleDeleteEntry'
 
-const handleSubmitUpdate = async (id, editedEntry, file, selectedDate, onUpdateEntry, onDeleteEntry) => {
+const handleSubmitUpdate = async (id, editedEntry, file, selectedDate, onUpdateEntry, onDeleteEntry,) => {
   try {
     let uploadResponse;
 
@@ -55,6 +56,7 @@ const handleSubmitUpdate = async (id, editedEntry, file, selectedDate, onUpdateE
       const updateResponse = await axiosInstance.put(`/entries/${id}`, data);
 
       onUpdateEntry(updateResponse.data);
+
     }
   } catch (error) {
     console.error('Error updating entry:', error);

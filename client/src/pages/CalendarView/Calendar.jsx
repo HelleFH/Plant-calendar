@@ -66,7 +66,6 @@ const CalendarComponent = () => {
     try {
       await axiosInstance.delete(`/entries/follow-up/${deletedFollowUpId}`);
       setFollowUpEntries((prevFollowUpEntries) => prevFollowUpEntries.filter((entry) => entry._id !== deletedFollowUpId));
-      setRefresh((prev) => !prev);
     } catch (error) {
       console.error('Error deleting follow-up:', error);
     }
@@ -117,7 +116,13 @@ const CalendarComponent = () => {
           {entriesError && <p>Error: {entriesError}</p>}
           {remindersError && <p>Error: {remindersError}</p>}
           {followUpEntriesError && <p>Error: {followUpEntriesError}</p>}
-          <NewEntryModal isOpen={isNewEntryModalOpen} setRefresh={setRefresh} onClose={handleCloseModal} selectedDate={selectedDate} />
+          <NewEntryModal 
+          isOpen={isNewEntryModalOpen} 
+          setRefresh={setRefresh} 
+          onClose={handleCloseModal} 
+          selectedDate={selectedDate} 
+          />
+
           {selectedDate && <h4>Entries for {selectedDate.toDateString()}</h4>}
           <div className={styles.ListsContainer}>
             <div className={styles.EntryListContainer}>

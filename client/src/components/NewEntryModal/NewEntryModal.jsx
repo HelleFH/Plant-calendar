@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import CreateEntryWithFileUpload from '../CreateEntry/createEntry';
 import CustomModal from '../CustomModal/CustomModal';
 import CreateFollowUpEntry from '../FollowUpEntry/CreateFollowUpEntry';
-import styles from './NewEntryModal.module.scss';
 
 const NewEntryModal = ({ isOpen, onClose, selectedDate, setRefresh }) => {
   const [entries, setEntries] = useState([]);
@@ -38,6 +37,7 @@ const NewEntryModal = ({ isOpen, onClose, selectedDate, setRefresh }) => {
 
   const handleCloseModal = () => {
     setIsCreateEntryModalOpen(false);
+    setRefresh((prev) => !prev);
   };
 
   const handleCloseFollowUpModal = () => {
@@ -79,6 +79,11 @@ const NewEntryModal = ({ isOpen, onClose, selectedDate, setRefresh }) => {
         />
       </div>
       {isCreateFollowUpModalOpen && selectedEntryDetails && (
+
+
+
+
+        
         <CreateFollowUpEntry
           isOpen={isCreateFollowUpModalOpen}
           onClose={handleCloseFollowUpModal}
@@ -87,7 +92,10 @@ const NewEntryModal = ({ isOpen, onClose, selectedDate, setRefresh }) => {
           sunlight={selectedEntryDetails.sunlight}
           water={selectedEntryDetails.water}
           selectedDate={selectedDate}
+          
           oldEntryName={selectedEntryDetails.name}
+          setRefresh={setRefresh} 
+
         />
       )}
     </CustomModal>

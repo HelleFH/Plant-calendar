@@ -1,17 +1,17 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import ImageUpload from '../imageUpload';
 import moment from 'moment';
+import ImageUpload from '../imageUpload';
 import DeleteConfirmationModal from '../DeleteConfirmationModal/DeleteConfirmationModal';
 import styles from './FollowUpEntry.module.scss';
 import '@fortawesome/fontawesome-free/css/all.min.css';
+import handleSubmitUpdate from '../HandleSubmitUpdate';
 
-const FollowUpEntry = ({ 
-  entry, 
-  onUpdateEntry, 
-  onDeleteFollowUp, 
-  selectedDate, 
-  setRefresh 
+const FollowUpEntry = ({
+  entry,
+  onUpdateEntry,
+  onDeleteFollowUp,
+  setRefresh,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -19,9 +19,14 @@ const FollowUpEntry = ({
   const [file, setFile] = useState(null);
   const [previewSrc, setPreviewSrc] = useState(entry.cloudinaryUrl);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [idToDelete, setIdToDelete] = useState(null); // Added state for idToDelete
+  const [idToDelete, setIdToDelete] = useState(null);
 
   const contentRef = useRef(null);
+
+  // Update state when entry prop changes
+  useEffect(() => {
+    setEditedFollowUpEntry(entry);
+  }, [entry]);
 
   const handleChange = (e) => {
     setEditedFollowUpEntry({ ...editedFollowUpEntry, [e.target.name]: e.target.value });
@@ -47,11 +52,10 @@ const FollowUpEntry = ({
     return moment(date).format('MMMM Do');
   };
 
-  const handleConfirmDelete = () => {
-    onDeleteFollowUp(idToDelete);
+  const handleConfirmDelete = async () => {
+    await onDeleteFollowUp(idToDelete);
     setShowDeleteModal(false);
     setRefresh((prev) => !prev); // Trigger refresh
-    console.log('delete handled');
   };
 
   return (

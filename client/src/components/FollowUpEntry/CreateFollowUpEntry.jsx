@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import CustomModal from '../CustomModal/CustomModal';
 import axiosInstance from '../axiosInstance';
 import { Form } from 'react-bootstrap';
 import ImageUpload from '../imageUpload';
 
-const CreateFollowUpEntry = ({ isOpen, onClose, oldEntryID, oldEntryName, name, sunlight, water, selectedDate }) => {
+const CreateFollowUpEntry = ({ isOpen, onClose, oldEntryID, oldEntryName, name, handleAddFollowUpEntry }) => {
     const [file, setFile] = useState(null);
     const [followUpDate, setFollowUpDate] = useState('');
     const [previewSrc, setPreviewSrc] = useState('');
@@ -19,31 +19,24 @@ const CreateFollowUpEntry = ({ isOpen, onClose, oldEntryID, oldEntryName, name, 
 
     const [entry, setEntry] = useState(initialEntryState);
 
-    useEffect(() => {
-        console.log("Selected date:", selectedDate);
-        if (selectedDate) {
-            const dateObject = new Date(selectedDate);
-            const formattedDate = dateObject.toISOString().split('T')[0];
-            setFollowUpDate(formattedDate);
-        }
-    }, [selectedDate]);
-
     const createEntry = async () => {
         try {
             const formData = new FormData();
             if (file) formData.append('file', file);
-            formData.append('name', oldEntryName); // Use entryID here
-
+            formData.append('name', oldEntryName);
             formData.append('notes', entry.notes);
-            formData.append('date', followUpDate);
+            formData.append('date', followUpDate); // Use followUpDate here
             formData.append('userID', localStorage.getItem('userId'));
-            formData.append('entryID', oldEntryID); // Use entryID here
+            formData.append('entryID', oldEntryID);
 
-            await axiosInstance.post('/upload/follow-up', formData, {
+            const response = await axiosInstance.post('/upload/follow-up', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
             });
+
+            const newFollowUpEntry = response.data;
+            handleAddFollowUpEntry(newFollowUpEntry);
 
             setFile(null);
             setPreviewSrc('');
@@ -92,14 +85,11 @@ const CreateFollowUpEntry = ({ isOpen, onClose, oldEntryID, oldEntryName, name, 
 
     const handleCancel = () => {
         onClose();
-        navigate('/calendar');
     };
 
     return (
         <CustomModal isOpen={isOpen} onClose={onClose} title="Follow-Up Entry">
-                <h3>{name}</h3>
-              
-
+            <h3>{name}</h3>
             <Form onSubmit={handleEntrySubmit} encType="multipart/form-data">
                 {errorMsg && <p className="errorMsg">{errorMsg}</p>}
                 <ImageUpload

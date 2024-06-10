@@ -44,7 +44,6 @@ const CalendarReminder = ({
   const handleConfirmDelete = () => {
     onDeleteReminder(reminder._id);
     setShowDeleteModal(false);
-    setRefresh((prev) => !prev);
     console.log('delete handled') // Trigger refresh
   };
   return (
