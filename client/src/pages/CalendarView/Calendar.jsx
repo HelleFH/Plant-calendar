@@ -22,6 +22,8 @@ const CalendarComponent = () => {
   const { followUpEntries, highlightedFollowUpDates, error: followUpEntriesError, setFollowUpEntries } = useFollowUpEntries(selectedDate, refresh);
   const { reminders, highlightedReminderDates, error: remindersError, setReminders } = useReminders(selectedDate, refresh);
 
+  const userID = localStorage.getItem('userId')
+
   useEffect(() => {
     const token = localStorage.getItem('auth');
     setLoggedIn(!!token);
@@ -94,6 +96,7 @@ const CalendarComponent = () => {
     setEntries((prevEntries) =>
       prevEntries.map((entry) => (entry._id === updatedEntry._id ? updatedEntry : entry))
     );
+    setRefresh((prev) => !prev);
   };
 
   const handleMonthChange = ({ activeStartDate }) => {
@@ -147,6 +150,7 @@ const CalendarComponent = () => {
                       onDeleteFollowUp={handleDeleteFollowUp}
                       selectedDate={selectedDate}
                       setRefresh={setRefresh}
+                      userID ={userID}
                     />
                   ))}
                 </ul>

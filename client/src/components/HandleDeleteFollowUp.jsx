@@ -1,15 +1,13 @@
 import axiosInstance from './axiosInstance'; 
 
-const handleDeleteEntry = async (entryId, onDeleteSuccess) => {
+
+const handleDeleteFollowUp = async (deletedFollowUpId) => {
   try {
-    await axiosInstance.delete(`/entries/follow-up/${entryId}`);
-    console.log('Entry deleted successfully:', entryId);
-    if (onDeleteSuccess) {
-      onDeleteSuccess(entryId); 
-    }
+    await axiosInstance.delete(`/entries/follow-up/${deletedFollowUpId}`);
+    setFollowUpEntries((prevFollowUpEntries) => prevFollowUpEntries.filter((entry) => entry._id !== deletedFollowUpId));
   } catch (error) {
-    console.error('Error occurred while deleting entry:', error);
+    console.error('Error deleting follow-up:', error);
   }
 };
 
-export default handleDeleteEntry;
+export default handleDeleteFollowUp

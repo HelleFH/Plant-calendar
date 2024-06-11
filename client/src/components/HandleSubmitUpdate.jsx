@@ -1,7 +1,7 @@
 import axiosInstance from './axiosInstance';
-import { handleDeleteEntry } from './HandleDeleteEntry';
+import handleDeleteEntry from './HandleDeleteEntry';
 
-const handleSubmitUpdate = async (id, editedEntry, file, selectedDate, onUpdateEntry, onDeleteEntry,) => {
+const handleSubmitUpdate = async (id, editedEntry, file, selectedDate, onUpdateEntry, onDeleteEntry) => {
   try {
     let uploadResponse;
 
@@ -15,6 +15,7 @@ const handleSubmitUpdate = async (id, editedEntry, file, selectedDate, onUpdateE
       formData.append('water', editedEntry.water);
       formData.append('username', editedEntry.username);
       formData.append('date', editedEntry.date);
+      formData.append('userID', localStorage.getItem('userId'))
 
       uploadResponse = await axiosInstance.post(`/upload`, formData, {
         headers: {
@@ -30,19 +31,23 @@ const handleSubmitUpdate = async (id, editedEntry, file, selectedDate, onUpdateE
         water: editedEntry.water,
         date: selectedDate,
         username: editedEntry.username.toString(),
-        cloudinaryUrl: uploadResponse.data.cloudinaryUrl,
+        cloudinaryUrl: uploadResponse.data.cloudinaryUrl,      
+        userID:('userID', localStorage.getItem('userId')).toString()
+
       };
 
+      // Send PUT request to update the entry
       const updateResponse = await axiosInstance.put(`/entries/${id}`, data);
 
       // Delete the old entry
       await handleDeleteEntry(id);
       onDeleteEntry(id);
 
+      // Update the parent component with the new entry data
       onUpdateEntry(updateResponse.data);
 
     } else {
-      // If no new file is uploaded
+      // Prepare data for updating the entry if no new file is uploaded
       const data = {
         name: editedEntry.name,
         notes: editedEntry.notes,
@@ -53,14 +58,15 @@ const handleSubmitUpdate = async (id, editedEntry, file, selectedDate, onUpdateE
         cloudinaryUrl: editedEntry.cloudinaryUrl,
       };
 
+      // Send PUT request to update the entry
       const updateResponse = await axiosInstance.put(`/entries/${id}`, data);
 
+      // Update the parent component with the new entry data
       onUpdateEntry(updateResponse.data);
-
     }
   } catch (error) {
     console.error('Error updating entry:', error);
-    throw error; 
+    throw error; // Throw the error for the caller to handle
   }
 };
 

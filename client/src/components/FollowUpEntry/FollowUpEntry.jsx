@@ -6,6 +6,7 @@ import DeleteConfirmationModal from '../DeleteConfirmationModal/DeleteConfirmati
 import styles from './FollowUpEntry.module.scss';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import handleSubmitUpdate from '../HandleSubmitUpdate';
+import handleUpdateFollowUp from '../HandleUpdateFollowUp';
 
 const FollowUpEntry = ({
   entry,
