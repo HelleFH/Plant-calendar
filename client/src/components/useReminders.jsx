@@ -5,7 +5,8 @@ import getRemindersByDateAndUsername from '../components/GetRemindersbyDateAndUs
 const useReminders = (selectedDate, refresh) => {
   const [reminders, setReminders] = useState([]);
   const [highlightedReminderDates, setHighlightedReminderDates] = useState([]);
-  const [error, setError] = useState(null);
+  const [error, setError] =
+   useState(null);
 
   useEffect(() => {
     const fetchReminders = async (date) => {

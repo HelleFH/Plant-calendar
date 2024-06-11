@@ -12,7 +12,6 @@ import FollowUpEntry from '../../components/FollowUpEntry/FollowUpEntry';
 import NewEntryModal from '../../components/NewEntryModal/NewEntryModal';
 import axiosInstance from '../../components/axiosInstance';
 
-
 const CalendarComponent = () => {
   const [loggedIn, setLoggedIn] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -28,7 +27,6 @@ const CalendarComponent = () => {
     setLoggedIn(!!token);
   }, []);
 
-
   const tileClassName = ({ date }) => {
     const formattedDate = date.toDateString();
     let className = '';
@@ -40,7 +38,7 @@ const CalendarComponent = () => {
       className += ' highlightedReminder  ';
     }
     if (highlightedFollowUpDates && highlightedFollowUpDates.includes(formattedDate)) {
-      className += ' highlightedFollowUp';
+      className += ' highlightedFollowUpLeaf highlightedFollowUpLeafPlus ';
     }
     return className;
   };
@@ -100,6 +98,7 @@ const CalendarComponent = () => {
 
   const handleMonthChange = ({ activeStartDate }) => {
     setCurrentMonth(activeStartDate);
+    setSelectedDate(new Date(activeStartDate.getFullYear(), activeStartDate.getMonth(), 1));
   };
 
   return (
