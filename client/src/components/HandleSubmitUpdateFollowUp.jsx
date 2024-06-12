@@ -15,7 +15,7 @@ const handleSubmitUpdateFollowUp = async (id, entryID, editedFollowUpEntry, file
       formData.append('notes', editedFollowUpEntry.notes);
       formData.append('date', editedFollowUpEntry.selectedDate);
       formData.append('userID', localStorage.getItem('userId'));
-      formData.append('entryID', entryID.toString());
+      formData.append('entryID', entryID);
 
       uploadResponse = await axiosInstance.post(`/upload/follow-up`, formData, {
         headers: {
@@ -29,7 +29,7 @@ const handleSubmitUpdateFollowUp = async (id, entryID, editedFollowUpEntry, file
         notes: editedFollowUpEntry.notes,
         cloudinaryUrl: uploadResponse.data.cloudinaryUrl,      
         userID: localStorage.getItem('userId').toString(),
-        entryID: entryID?.toString(),
+        entryID: entryID,
       };
 
       // Send PUT request to update the entry
@@ -50,7 +50,7 @@ const handleSubmitUpdateFollowUp = async (id, entryID, editedFollowUpEntry, file
         date: selectedDate,
         cloudinaryUrl: editedFollowUpEntry.cloudinaryUrl,
         userID: localStorage.getItem('userId').toString(),
-        entryID: entryID?.toString(),
+        entryID: entryID,
       };
 
       // Send PUT request to update the entry

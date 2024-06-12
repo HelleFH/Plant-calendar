@@ -80,7 +80,7 @@ const deleteFollowUp = async (req, res) => {
 
 const updateFollowUp = async (req, res) => {
   const { id } = req.params;
-  const { name, notes, cloudinaryUrl } = req.body;
+  const { name, notes, cloudinaryUrl, date, entryID } = req.body;
 
   try {
     let existingFollowUpEntry = await FollowUpEntry.findById(id);
