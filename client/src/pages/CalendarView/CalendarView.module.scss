@@ -87,6 +87,6 @@
         color: white;
     }
 }
-.reminderList {
-    @include flex-center;
+.ReminderListContainer {
+    @include entrylist-container
 }

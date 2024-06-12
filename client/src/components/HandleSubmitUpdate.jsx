@@ -7,7 +7,7 @@ const handleSubmitUpdate = async (
   file, 
   selectedDate, 
   onUpdateEntry, 
-  onDeleteEntry) => {
+  onDeleteEntry,) => {
   try {
     let uploadResponse;
 
@@ -38,7 +38,7 @@ const handleSubmitUpdate = async (
         date: selectedDate,
         username: editedEntry.username.toString(),
         cloudinaryUrl: uploadResponse.data.cloudinaryUrl,      
-        userID:('userID', localStorage.getItem('userId')).toString()
+        userID:('userID', localStorage.getItem('userId'))
 
       };
 
@@ -62,6 +62,7 @@ const handleSubmitUpdate = async (
         date: selectedDate,
         username: editedEntry.username.toString(),
         cloudinaryUrl: editedEntry.cloudinaryUrl,
+        userID:localStorage.getItem('userId'),
       };
 
       // Send PUT request to update the entry

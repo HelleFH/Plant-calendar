@@ -29,8 +29,8 @@ const { id } = req.params;
 
 const updateEntry = async (req, res) => {
   const { id } = req.params;
-  const { name, notes, sunlight, water, cloudinaryUrl } = req.body;
-
+  const { name, notes, sunlight, water, cloudinaryUrl, userID } = req.body;
+console.log(userID)
   try {
     let existingEntry = await Entry.findById(id);
     if (!existingEntry) {
@@ -47,6 +47,7 @@ const updateEntry = async (req, res) => {
         cloudinaryUrl,
         date: existingEntry.date,
         username: existingEntry.username,
+        userID:existingEntry.userID,
       });
       return res.json({ message: 'Entry updated successfully', updatedEntry: existingEntry });
     }
@@ -56,7 +57,7 @@ const updateEntry = async (req, res) => {
     existingEntry.sunlight = sunlight;
     existingEntry.water = water;
     existingEntry.cloudinaryUrl = cloudinaryUrl;
-
+existingEntry.userID =userID,
     existingEntry = await existingEntry.save();
     
     res.json({ message: 'Entry updated successfully', updatedEntry: existingEntry });
@@ -113,6 +114,7 @@ const getSortedEntriesByUserId = async (req, res) => {
   try {
       // Extract userID and sorting criteria from request parameters and query parameters
       const { userID } = req.params;
+      console.log('requestID' , userID)
       const { sortBy } = req.query;
 
       // Define the sort options based on the sortBy parameter
@@ -133,6 +135,7 @@ const getSortedEntriesByUserId = async (req, res) => {
       return res.status(500).json({ error: 'Internal server error.' });
   }
 };
+
 module.exports = {
   deleteEntry,
   updateEntry,

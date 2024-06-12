@@ -4,7 +4,8 @@ import CalendarEntry from '../../components/CalendarEntry/CalendarEntry';
 import Navbar from '../../components/Navbar/Navbar';
 import styles from './AllEntriesList.module.scss';
 
-const AllEntriesList = ({ setRefresh }) => {
+const AllEntriesList = () => {
+  const [refresh, setRefresh] = useState(false);
   const [entries, setEntries] = useState([]);
   const [sortBy, setSortBy] = useState('name'); // Initial sort by name
 
@@ -34,27 +35,23 @@ const AllEntriesList = ({ setRefresh }) => {
     );
   };
 
-  const handleDeleteEntry = async (deletedEntryId) => {
-    try {
-      await axiosInstance.delete(`entries/${deletedEntryId}`);
-      setEntries((prevEntries) => prevEntries.filter((entry) => entry._id !== deletedEntryId));
-      setRefresh((prev) => !prev);
-    } catch (error) {
-      console.error('Error deleting entry:', error);
-    }
+  const onDeleteEntry = (entryId) => {
+    setEntries((prevEntries) => prevEntries.filter((entry) => entry._id !== entryId));
   };
 
+  // Utility function to group entries by date
   const groupEntriesByDate = (entries) => {
-    return entries.reduce((groupedEntries, entry) => {
+    return entries.reduce((acc, entry) => {
       const date = new Date(entry.date).toDateString();
-      if (!groupedEntries[date]) {
-        groupedEntries[date] = [];
+      if (!acc[date]) {
+        acc[date] = [];
       }
-      groupedEntries[date].push(entry);
-      return groupedEntries;
+      acc[date].push(entry);
+      return acc;
     }, {});
   };
 
+  // Group entries by date
   const groupedEntries = groupEntriesByDate(entries);
 
   return (
@@ -72,40 +69,40 @@ const AllEntriesList = ({ setRefresh }) => {
                 Sort by Date
               </button>
             </div>
-            {sortBy === 'date' ? (
-              Object.keys(groupedEntries).map((date, index) => (
-                <div key={index}>
-                  <h5 className='margin-top'>{date}</h5>
-                  <ul className={styles.EntryList}>
+            <ul className={styles.EntryList}>
+              {sortBy === 'date' ? (
+                Object.keys(groupedEntries).map((date) => (
+                  <div key={date}>
+                    <h4>{date}</h4>
                     {groupedEntries[date].map((entry) => (
                       <CalendarEntry
                         className={styles.calendarEntry}
                         key={entry._id}
                         entry={entry}
                         onUpdateEntry={onUpdateEntry}
+                        onDeleteEntry={onDeleteEntry}
                         selectedDate={entry.date}
-                        onDeleteEntry={handleDeleteEntry}
+                        setEntries={setEntries}
                         setRefresh={setRefresh}
                       />
                     ))}
-                  </ul>
-                </div>
-              ))
-            ) : (
-              <ul className={styles.EntryList}>
-                {entries.map((entry) => (
+                  </div>
+                ))
+              ) : (
+                entries.map((entry) => (
                   <CalendarEntry
                     className={styles.calendarEntry}
                     key={entry._id}
                     entry={entry}
                     onUpdateEntry={onUpdateEntry}
+                    onDeleteEntry={onDeleteEntry}
                     selectedDate={entry.date}
-                    onDeleteEntry={handleDeleteEntry}
+                    setEntries={setEntries}
                     setRefresh={setRefresh}
                   />
-                ))}
-              </ul>
-            )}
+                ))
+              )}
+            </ul>
           </div>
         )}
       </div>

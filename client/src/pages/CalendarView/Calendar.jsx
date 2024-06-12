@@ -117,6 +117,15 @@ const CalendarComponent = () => {
     setSelectedDate(new Date(activeStartDate.getFullYear(), activeStartDate.getMonth(), 1));
   };
 
+  useEffect(() => {
+    localStorage.setItem('selectedDate', selectedDate.toISOString());
+  }, [selectedDate]);
+
+  // Handler for "Go to Today" button
+  const goToToday = () => {
+    setSelectedDate(new Date());
+  };
+
   return (
     <div>
       <Navbar />
@@ -124,8 +133,8 @@ const CalendarComponent = () => {
         <div className={styles.calendarContainer}>
           <div className={styles.backgroundContainer}>
             <Calendar
-              value={selectedDate}
-              onChange={handleDateChange}
+                value={selectedDate}
+                onChange={setSelectedDate}
               onActiveStartDateChange={handleMonthChange}
               tileClassName={tileClassName}
             />
@@ -169,7 +178,7 @@ const CalendarComponent = () => {
                 </ul>
               )}
             </div>
-            <div className={styles.FollowUpListContainer}>
+            <div className={styles.EntryContainer}>
               {followUpEntries.length > 0 && (
                 <ul className={styles.EntryList}>
                   {followUpEntries.map((followUpEntry) => (
@@ -192,7 +201,7 @@ const CalendarComponent = () => {
             </div>
             <div className={styles.ReminderListContainer}>
               {reminders.length > 0 && (
-                <ul className={styles.reminderList}>
+                <ul className={styles.EntryList}>
                   <h4 className='margin-top margin-bottom'>Reminders</h4>
                   {reminders.map((reminder, index) => (
                     <CalendarReminder

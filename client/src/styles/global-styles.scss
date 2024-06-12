@@ -83,14 +83,12 @@ button {
     position: relative;
 }
 
-.highlightedReminder::before {
-    content: "\f0f3";
-    font-family: "FontAwesome";
-    position: absolute;
-    left: 10px;
-    bottom: 2px;
-    font-size: 8px;
-    color: $background-color;
+.highlightedReminder {
+    background-image: url(../assets/bell-icon.svg);
+    background-position: 5px 5px;
+    background-repeat: no-repeat;
+    background-size:17%;
+     color: $background-color;
 }
 ul {
     list-style: none;

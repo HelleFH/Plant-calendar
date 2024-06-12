@@ -17,6 +17,7 @@ const CalendarEntry = ({
   onDeleteEntry, 
   setRefresh, 
   followUpDate,
+  onUpdateFollowUpEntry,
  }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -232,7 +233,6 @@ const CalendarEntry = ({
                 <hr className="long-line"></hr>
                 <label>Water:</label>
                 <p>{entry.water}</p>
-                <hr className="long-line margin-bottom"></hr>
               </div>
               <hr className="long-line margin-bottom"></hr>
             </div>

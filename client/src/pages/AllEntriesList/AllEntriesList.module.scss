@@ -1,14 +1,19 @@
 @import "../../styles/variables";
 @import "../../styles/mixins";
 
-h5 {padding-bottom:0.5em;}
-
+h5 {
+    padding-bottom: 0.5em;
+}
 
 .EntryList {
     @include entrylist-container;
 
-    h1{    text-align:left;
-        width:100%;
+    h1 {
+        text-align: left;
+        width: 100%;
+    }
+     li {
+        margin-bottom: 0.5em;
     }
 }
 
@@ -17,20 +22,17 @@ h5 {padding-bottom:0.5em;}
     width: 95vw;
     max-width: 700px;
     margin: 0 auto;
-
 }
 .sortButtons {
     @include flex-row-center;
     gap: 0.5em;
-    padding-top:1.5em;
-    padding-bottom:1em;
+    padding-top: 1.5em;
+    padding-bottom: 1.5em;
 
- button {
-    background-color: $text-color;
-    border: 1px solid $secondary-color;
-    padding: 0.5em;
-    border-radius: $border-radius;
-
-
- }
+    button {
+        background-color: $text-color;
+        border: 1px solid $secondary-color;
+        padding: 0.5em;
+        border-radius: $border-radius;
+    }
 }
