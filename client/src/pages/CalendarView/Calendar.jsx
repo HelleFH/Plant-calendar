@@ -22,7 +22,7 @@ const CalendarComponent = () => {
   const { followUpEntries, highlightedFollowUpDates, error: followUpEntriesError, setFollowUpEntries } = useFollowUpEntries(selectedDate, refresh);
   const { reminders, highlightedReminderDates, error: remindersError, setReminders } = useReminders(selectedDate, refresh);
 
-  const userID = localStorage.getItem('userId')
+  const userID = localStorage.getItem('userId');
 
   useEffect(() => {
     const token = localStorage.getItem('auth');
@@ -98,7 +98,20 @@ const CalendarComponent = () => {
     );
     setRefresh((prev) => !prev);
   };
-
+  
+  const onUpdateFollowUpEntry = (updatedFollowUpEntry) => {
+    setFollowUpEntries((prevFollowUpEntries) =>
+      prevFollowUpEntries.map((followUpEntry) => (followUpEntry._id === updatedFollowUpEntry._id ? updatedFollowUpEntry : followUpEntry))
+    );
+    console.log(updatedFollowUpEntry._id)
+    setRefresh((prev) => !prev);
+  };
+  const handleUpdateFollowUpEntry = (updatedFollowUpEntry) => {
+    setFollowUpEntries((prevFollowUpEntries) =>
+      prevFollowUpEntries.map((followUpEntry) => (followUpEntry._id === updatedFollowUpEntry._id ? updatedFollowUpEntry : followUpEntry))
+    );
+    setRefresh((prev) => !prev);
+  };
   const handleMonthChange = ({ activeStartDate }) => {
     setCurrentMonth(activeStartDate);
     setSelectedDate(new Date(activeStartDate.getFullYear(), activeStartDate.getMonth(), 1));
@@ -150,7 +163,7 @@ const CalendarComponent = () => {
                       onDeleteFollowUp={handleDeleteFollowUp}
                       selectedDate={selectedDate}
                       setRefresh={setRefresh}
-                      userID ={userID}
+                      userID={userID}
                     />
                   ))}
                 </ul>
@@ -159,14 +172,19 @@ const CalendarComponent = () => {
             <div className={styles.FollowUpListContainer}>
               {followUpEntries.length > 0 && (
                 <ul className={styles.EntryList}>
-                  {followUpEntries.map((followUpEntry, index) => (
+                  {followUpEntries.map((followUpEntry) => (
                     <FollowUpEntry
-                      key={index}
-                      entry={followUpEntry}
-                      selectedDate={selectedDate}
-                      onUpdateEntry={onUpdateEntry}
+                      key={followUpEntry._id}
+                      followUpEntry={followUpEntry}
                       onDeleteFollowUp={handleDeleteFollowUp}
                       setRefresh={setRefresh}
+                      onUpdateFollowUpEntry={onUpdateFollowUpEntry}
+                      userID={userID}
+                      setFollowUpEntries={setFollowUpEntries}
+                      selectedDate={selectedDate}
+                      handleUpdateFollowUpEntry={handleUpdateFollowUpEntry}
+
+
                     />
                   ))}
                 </ul>

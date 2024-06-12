@@ -11,7 +11,13 @@ import CreateFollowUpEntry from '../FollowUpEntry/CreateFollowUpEntry';
 import FollowUpEntry from '../FollowUpEntry/FollowUpEntry';
 import handleSubmitUpdate from '../HandleSubmitUpdate';
 
-const CalendarEntry = ({ entry, setEntries, onDeleteEntry, setRefresh, followUpDate }) => {
+const CalendarEntry = ({ 
+  entry, 
+  setEntries, 
+  onDeleteEntry, 
+  setRefresh, 
+  followUpDate,
+ }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [editedEntry, setEditedEntry] = useState({ ...entry });
@@ -125,6 +131,16 @@ const CalendarEntry = ({ entry, setEntries, onDeleteEntry, setRefresh, followUpD
   const handleCloseModal = () => {
     setIsCreateModalOpen(false);
     fetchFollowUpEntriesByEntryId(); // Refetch follow-up entries
+  };
+  
+  const handleUpdateFollowUpEntry = (updatedFollowUpEntry) => {
+    setFollowUpEntries((prevFollowUpEntries) =>
+      prevFollowUpEntries.map((followUpEntry) => (followUpEntry.entryID == updatedFollowUpEntry.entryID ? updatedFollowUpEntry : followUpEntry))
+    );
+    console.log('Updated Entry ID:', updatedFollowUpEntry.entryID);
+
+    setEditedFollowUpEntry(updatedFollowUpEntry);
+    setRefresh((prev) => !prev);
   };
 
   const handleUpdateEntry = (updatedEntry) => {
@@ -243,13 +259,15 @@ const CalendarEntry = ({ entry, setEntries, onDeleteEntry, setRefresh, followUpD
                     {followUpEntries.map((followUpEntry, index) => (
                       <FollowUpEntry
                         key={index}
-                        entry={followUpEntry}
+                        followUpEntry={followUpEntry}
                         selectedDate={followUpDate}
-                        onUpdateEntry={handleUpdateEntry}
+                        onUpdateFollowUpEntry= {onUpdateFollowUpEntry}
                         onDeleteFollowUp={handleDeleteFollowUp}
-                        setEntries={setEntries} // Pass setEntries here
+                        setFollowUpEntries={setFollowUpEntries} // Pass setEntries here
                         setRefresh={setRefresh}
                         username={username}
+                        handleUpdateFollowUpEntry={handleUpdateFollowUpEntry}
+                        
                       />
                     ))}
                   </ul>

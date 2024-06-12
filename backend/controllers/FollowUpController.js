@@ -80,7 +80,7 @@ const deleteFollowUp = async (req, res) => {
 
 const updateFollowUp = async (req, res) => {
   const { id } = req.params;
-  const { notes, cloudinaryUrl } = req.body;
+  const { name, notes, cloudinaryUrl } = req.body;
 
   try {
     let existingFollowUpEntry = await FollowUpEntry.findById(id);
@@ -90,13 +90,12 @@ const updateFollowUp = async (req, res) => {
 
     if (cloudinaryUrl && existingFollowUpEntry.cloudinaryUrl !== cloudinaryUrl) {
       await FollowUpEntry.findByIdAndDelete(id);
-      existingEntry = await Entry.create({
-      
+      existingFollowUpEntry = await FollowUpEntry.create({
+      name: existingFollowUpEntry.name,
         notes,
-        
         cloudinaryUrl,
         date: existingFollowUpEntry.date,
-        username: existingFollowUpEntry.username,
+        userID: existingFollowUpEntry.userID,
         entryID: existingFollowUpEntry.entryID,
 
       });
@@ -105,6 +104,9 @@ const updateFollowUp = async (req, res) => {
 
     existingFollowUpEntry.notes = notes;
     existingFollowUpEntry.cloudinaryUrl = cloudinaryUrl;
+    existingFollowUpEntry.name = name;
+    existingFollowUpEntry.entryID = entryID;
+   existingFollowUpEntry.date =date;
 
     existingFollowUpEntry = await existingFollowUpEntry.save();
     
