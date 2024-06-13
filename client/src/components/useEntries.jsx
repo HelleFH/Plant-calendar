@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import getEntriesByDateAndId from './GetEntriesByDateAndId';
+import getEntriesByDateAndId from '../Utils/GetEntriesByDateAndId';
 
 const useEntries = (selectedDate, refresh) => {
   const [entries, setEntries] = useState([]);

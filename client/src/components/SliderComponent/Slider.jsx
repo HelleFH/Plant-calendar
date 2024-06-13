@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPause, faPlay } from '@fortawesome/free-solid-svg-icons';
 import styles from '../SliderComponent/Slider.module.scss';
+import quotesData from './quotes';
 
 const Slider = () => {
     const [quotes, setQuotes] = useState([]);
@@ -9,18 +10,9 @@ const Slider = () => {
     const [isPaused, setIsPaused] = useState(false);
 
     useEffect(() => {
-        const fetchQuotes = async () => {
-            try {
-                const response = await fetch('/data/quotes.json'); 
-                const data = await response.json();
-                setQuotes(data);
-                setCurrentQuoteIndex(Math.floor(Math.random() * data.length)); // Set random initial index
-            } catch (error) {
-                console.error('Error fetching quotes:', error);
-            }
-        };
-
-        fetchQuotes();
+        // Set the quotes from the imported data
+        setQuotes(quotesData);
+        setCurrentQuoteIndex(Math.floor(Math.random() * quotesData.length)); // Set random initial index
     }, []);
 
     useEffect(() => {
@@ -44,7 +36,7 @@ const Slider = () => {
             {quotes.length > 0 && (
                 <div className={styles.quote}>
                     <p className={styles.quoteText}>{quotes[currentQuoteIndex].quote}</p>
-                    <p className={styles.quoteAuthor} ><strong>- {quotes[currentQuoteIndex].author}</strong></p>
+                    <p className={styles.quoteAuthor}><strong>- {quotes[currentQuoteIndex].author}</strong></p>
                 </div>
             )}
             <FontAwesomeIcon

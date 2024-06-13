@@ -4,8 +4,8 @@ import moment from 'moment'; // Import moment to format dates
 import 'react-calendar/dist/Calendar.css';
 import useEntries from '../../components/useEntries';
 import useReminders from '../../components/useReminders';
-import CalendarEntry from '../../components/CalendarEntry/CalendarEntry';
-import CalendarReminder from '../../components/CalendarReminder/CalendarReminder';
+import CalendarEntry from '../../components/Entry/CalendarEntry';
+import CalendarReminder from '../../components/Reminder/CalendarReminder';
 import styles from './CalendarView.module.scss';
 import Navbar from '../../components/Navbar/Navbar';
 import useFollowUpEntries from '../../components/useFollowUpEntries';

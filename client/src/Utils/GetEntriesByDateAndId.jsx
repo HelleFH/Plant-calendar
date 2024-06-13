@@ -1,4 +1,4 @@
-import axiosInstance from "./axiosInstance";
+import axiosInstance from "../components/axiosInstance";
 
 
 const getEntriesByDateAndId = async (date, userID) => {

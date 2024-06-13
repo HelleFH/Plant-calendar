@@ -1,4 +1,4 @@
-import axiosInstance from './axiosInstance'; // Adjust the path as per your project structure
+import axiosInstance from '../components/axiosInstance'; // Adjust the path as per your project structure
 
 const handleDeleteEntry = async (entryId, onDeleteSuccess) => {
   try {

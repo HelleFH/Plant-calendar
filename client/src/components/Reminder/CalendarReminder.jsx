@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axiosInstance from '../axiosInstance';
 import moment from 'moment';
 import DeleteConfirmationModal from '../DeleteConfirmationModal/DeleteConfirmationModal';
-import handleDeleteReminder from '../HandleDeleteReminder';
+import handleDeleteReminder from '../../Utils/HandleDeleteReminder';
 import { Link } from 'react-router-dom';
 import styles from './CalendarReminder.module.scss';
 

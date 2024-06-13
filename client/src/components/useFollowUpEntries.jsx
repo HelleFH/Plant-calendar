@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import getFollowUpEntriesByDateAndId from './getFollowUpEntriesByDateAndId';
+import getFollowUpEntriesByDateAndId from '../Utils/getFollowUpEntriesByDateAndId';
 
 
 const useFollowUpEntries = (selectedDate, refresh) => {

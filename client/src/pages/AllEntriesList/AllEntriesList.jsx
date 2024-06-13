@@ -1,6 +1,6 @@
 import axiosInstance from '../../components/axiosInstance';
 import React, { useEffect, useState } from 'react';
-import CalendarEntry from '../../components/CalendarEntry/CalendarEntry';
+import CalendarEntry from '../../components/Entry/CalendarEntry';
 import Navbar from '../../components/Navbar/Navbar';
 import styles from './AllEntriesList.module.scss';
 

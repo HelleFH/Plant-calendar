@@ -2,14 +2,14 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import ImageUpload from '../imageUpload';
 import DeleteConfirmationModal from '../DeleteConfirmationModal/DeleteConfirmationModal';
-import SetCalendarReminder from '../SetReminder/SetCalendarReminder';
+import SetCalendarReminder from '../Reminder/SetCalendarReminder';
 import moment from 'moment';
-import styles from '../CalendarEntry/CalendarEntry.module.scss';
+import styles from './CalendarEntry.module.scss'
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import axiosInstance from '../axiosInstance';
 import CreateFollowUpEntry from '../FollowUpEntry/CreateFollowUpEntry';
 import FollowUpEntry from '../FollowUpEntry/FollowUpEntry';
-import handleSubmitUpdate from '../HandleSubmitUpdate';
+import handleSubmitUpdate from '../../Utils/HandleSubmitUpdate';
 
 const CalendarEntry = ({ 
   entry, 

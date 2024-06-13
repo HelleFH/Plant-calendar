@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axiosInstance from './axiosInstance';
+import axiosInstance from '../components/axiosInstance';
 
 const EntryNamesByUserId = ({ userID }) => {
   const [entryNames, setEntryNames] = useState([]);

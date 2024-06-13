@@ -1,4 +1,4 @@
-import axiosInstance from './axiosInstance';
+import axiosInstance from '../components/axiosInstance';
 import handleDeleteEntry from './HandleDeleteEntry';
 
 const handleSubmitUpdate = async (

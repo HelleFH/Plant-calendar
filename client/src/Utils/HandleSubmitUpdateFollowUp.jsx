@@ -1,4 +1,4 @@
-import axiosInstance from './axiosInstance';
+import axiosInstance from '../components/axiosInstance';
 import handleDeleteFollowUp from './HandleDeleteFollowUp';
 
 const handleSubmitUpdateFollowUp = async (id, entryID, entryDate, editedFollowUpEntry, file, selectedDate, onUpdateFollowUpEntry, onDeleteFollowUpEntry) => {

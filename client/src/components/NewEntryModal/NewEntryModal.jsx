@@ -1,7 +1,7 @@
 import axiosInstance from '../axiosInstance';
 import React, { useEffect, useState } from 'react';
 import moment from 'moment'; // Import moment to format dates
-import CreateEntryWithFileUpload from '../CreateEntry/createEntry';
+import CreateEntryWithFileUpload from '../Entry/createEntry';
 import CustomModal from '../CustomModal/CustomModal';
 import CreateFollowUpEntry from '../FollowUpEntry/CreateFollowUpEntry';
 

@@ -5,8 +5,8 @@ import ImageUpload from '../imageUpload';
 import DeleteConfirmationModal from '../DeleteConfirmationModal/DeleteConfirmationModal';
 import styles from './FollowUpEntry.module.scss';
 import '@fortawesome/fontawesome-free/css/all.min.css';
-import handleSubmitUpdateFollowUp from '../HandleSubmitUpdateFollowUp';
-import handleDeleteFollowUp from '../HandleDeleteFollowUp';
+import handleSubmitUpdateFollowUp from '../../Utils/HandleSubmitUpdateFollowUp';
+import handleDeleteFollowUp from '../../Utils/HandleDeleteFollowUp';
 const FollowUpEntry = ({
   followUpEntry,
   onDeleteFollowUp,

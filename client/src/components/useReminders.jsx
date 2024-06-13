@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import getRemindersByDateAndUsername from '../components/GetRemindersbyDateAndUsername';
+import getRemindersByDateAndUsername from '../Utils/GetRemindersbyDateAndUsername';
 
 
 const useReminders = (selectedDate, refresh) => {

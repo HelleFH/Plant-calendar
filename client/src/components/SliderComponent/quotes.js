@@ -1,4 +1,4 @@
-[
+const quotesData = [
     {
         "id": 1,
         "quote": "Gardening is the handiest excuse for being a philosopher.",
@@ -89,4 +89,6 @@
         "author": "Alfred Austin",
         "year": "-"
     }
-]
+];
+
+export default quotesData;
