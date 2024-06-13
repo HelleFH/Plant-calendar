@@ -7,6 +7,7 @@ h5 {
 
 .EntryList {
     @include entrylist-container;
+    align-items:center;
 
     h1 {
         text-align: left;
@@ -15,6 +16,7 @@ h5 {
      li {
         margin-bottom: 0.5em;
     }
+    > div {width:100%;}
 }
 
 .AllEntriesListContainer {

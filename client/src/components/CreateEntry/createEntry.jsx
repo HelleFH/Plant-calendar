@@ -43,11 +43,9 @@ const CreateEntryWithFileUpload = ({ isOpen, onClose, selectedDate, setRefresh }
       formData.append('sunlight', entry.sunlight);
       formData.append('water', entry.water);
       
-      // Set the time component of the date to midnight
       const selectedDateMidnight = new Date(entry.date);
       selectedDateMidnight.setHours(0, 0, 0, 0);
       
-      // Use the midnight date for the form data
       formData.append('date', selectedDateMidnight.toISOString());
   
       formData.append('username', localStorage.getItem('username'));

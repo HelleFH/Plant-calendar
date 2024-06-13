@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
 import ImageUpload from '../imageUpload';
@@ -11,8 +11,6 @@ const FollowUpEntry = ({
   followUpEntry,
   onDeleteFollowUp,
   setRefresh,
-  setFollowUpEntries,
-  entryID,
   handleUpdateFollowUpEntry
 }) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -55,10 +53,6 @@ const FollowUpEntry = ({
     setShowDeleteModal(false);
     setRefresh((prev) => !prev); // Trigger refresh
   };
-  const handleSelectedDateChange = (date) => {
-    setSelectedDate(date);
-  };
-
 
   return (
     <li className={styles.CalendarEntry}>

@@ -5,7 +5,7 @@ import Navbar from '../../components/Navbar/Navbar';
 import styles from './AllEntriesList.module.scss';
 
 const AllEntriesList = () => {
-  const [refresh, setRefresh] = useState(false);
+  const [setRefresh] = useState(false);
   const [entries, setEntries] = useState([]);
   const [sortBy, setSortBy] = useState('name'); // Initial sort by name
 

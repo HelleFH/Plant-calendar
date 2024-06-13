@@ -5,7 +5,7 @@ import axiosInstance from '../axiosInstance';
 import { Form } from 'react-bootstrap';
 import ImageUpload from '../imageUpload';
 
-const CreateFollowUpEntry = ({ isOpen, onClose, oldEntryID, oldEntryName, name, selectedDate, handleAddFollowUpEntry }) => {
+const CreateFollowUpEntry = ({ isOpen, onClose, oldEntryID, oldEntryName, oldEntryDate, name, selectedDate, handleAddFollowUpEntry }) => {
     const [file, setFile] = useState(null);
     const [followUpDate, setFollowUpDate] = useState('');
     const [previewSrc, setPreviewSrc] = useState('');
@@ -31,6 +31,7 @@ const CreateFollowUpEntry = ({ isOpen, onClose, oldEntryID, oldEntryName, name, 
             const formData = new FormData();
             if (file) formData.append('file', file);
             formData.append('name', oldEntryName);
+            formData.append('entryDate', oldEntryDate);
 
             formData.append('notes', entry.notes);
             formData.append('date', followUpDate); // Use followUpDate here

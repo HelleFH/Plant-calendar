@@ -60,6 +60,7 @@ const NewEntryModal = ({ isOpen, onClose, selectedDate, setRefresh, refresh }) =
 
   return (
     <CustomModal isOpen={isOpen} onClose={onClose} title="Choose an option">
+      
       <div className="flex-center">
         <button className="primary-button margin-bottom" onClick={handleAddEntryClick}>
           + Add New Entry

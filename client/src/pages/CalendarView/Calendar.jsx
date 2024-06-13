@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Calendar from 'react-calendar';
+import moment from 'moment'; // Import moment to format dates
 import 'react-calendar/dist/Calendar.css';
 import useEntries from '../../components/useEntries';
 import useReminders from '../../components/useReminders';
@@ -17,7 +18,7 @@ const CalendarComponent = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [isNewEntryModalOpen, setIsNewEntryModalOpen] = useState(false);
   const [refresh, setRefresh] = useState(false);
-  const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [setCurrentMonth] = useState(new Date());
   const { entries, highlightedDates, error: entriesError, setEntries } = useEntries(selectedDate, refresh);
   const { followUpEntries, highlightedFollowUpDates, error: followUpEntriesError, setFollowUpEntries } = useFollowUpEntries(selectedDate, refresh);
   const { reminders, highlightedReminderDates, error: remindersError, setReminders } = useReminders(selectedDate, refresh);
@@ -79,9 +80,6 @@ const CalendarComponent = () => {
     setSelectedDate(date);
   };
 
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
-  };
 
   const handleNewEntryClick = () => {
     setIsNewEntryModalOpen(true);
@@ -121,10 +119,6 @@ const CalendarComponent = () => {
     localStorage.setItem('selectedDate', selectedDate.toISOString());
   }, [selectedDate]);
 
-  // Handler for "Go to Today" button
-  const goToToday = () => {
-    setSelectedDate(new Date());
-  };
 
   return (
     <div>

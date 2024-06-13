@@ -8,7 +8,7 @@ import styles from './CalendarReminder.module.scss';
 
 const CalendarReminder = ({
   reminder,
-  setReminders, // Add setReminders prop to update reminders state
+  setReminders,
   onSelectDate,
 }) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);

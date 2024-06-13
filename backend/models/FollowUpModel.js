@@ -9,6 +9,8 @@ const entrySchema = new mongoose.Schema({
     date: { type: Date, required: true },
     userID: { type: String, required: true },
     entryID: { type: String, required: true }, 
+    entryDate: { type: String, required: true }, 
+
 });
 
 const FollowUpEntry = mongoose.model('FollowUpEntry', entrySchema);

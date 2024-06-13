@@ -1,7 +1,7 @@
 import axiosInstance from './axiosInstance'; 
 
 
-const handleDeleteFollowUp = async (deletedFollowUpId) => {
+const handleDeleteFollowUp = async (deletedFollowUpId, setFollowUpEntries) => {
   try {
     await axiosInstance.delete(`/entries/follow-up/${deletedFollowUpId}`);
     setFollowUpEntries((prevFollowUpEntries) => prevFollowUpEntries.filter((entry) => entry._id !== deletedFollowUpId));

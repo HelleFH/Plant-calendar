@@ -25,7 +25,7 @@ const CalendarEntry = ({
   const [file, setFile] = useState(null);
   const [previewSrc, setPreviewSrc] = useState(entry.cloudinaryUrl);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [idToDelete, setIdToDelete] = useState(null);
+  const [ setIdToDelete] = useState(null);
   const [isReminderModalOpen, setIsReminderModalOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [followUpEntries, setFollowUpEntries] = useState([]);
@@ -35,11 +35,6 @@ const CalendarEntry = ({
 
   const contentRef = useRef(null);
 
-  useEffect(() => {
-    if (entry._id) {
-      fetchFollowUpEntriesByEntryId();
-    }
-  }, [entry._id]);
 
   useEffect(() => {
     const storedUsername = localStorage.getItem('username');
@@ -134,15 +129,7 @@ const CalendarEntry = ({
     fetchFollowUpEntriesByEntryId(); // Refetch follow-up entries
   };
   
-  const handleUpdateFollowUpEntry = (updatedFollowUpEntry) => {
-    setFollowUpEntries((prevFollowUpEntries) =>
-      prevFollowUpEntries.map((followUpEntry) => (followUpEntry.entryID == updatedFollowUpEntry.entryID ? updatedFollowUpEntry : followUpEntry))
-    );
-    console.log('Updated Entry ID:', updatedFollowUpEntry.entryID);
 
-    setEditedFollowUpEntry(updatedFollowUpEntry);
-    setRefresh((prev) => !prev);
-  };
 
   const handleUpdateEntry = (updatedEntry) => {
     setEntries((prevEntries) =>
@@ -243,6 +230,7 @@ const CalendarEntry = ({
                 followUpDate={selectedDate}
                 oldEntryID={entry._id}
                 oldEntryName={entry.name} // Pass the entry name here
+                oldEntryDate={entry.date} // Pass the entry name here
                 sunlight={entry.sunlight}
                 water={entry.water}
                 name={entry.name}
@@ -266,7 +254,6 @@ const CalendarEntry = ({
                         setFollowUpEntries={setFollowUpEntries} // Pass setEntries here
                         setRefresh={setRefresh}
                         username={username}
-                        handleUpdateFollowUpEntry={handleUpdateFollowUpEntry}
                         
                       />
                     ))}
