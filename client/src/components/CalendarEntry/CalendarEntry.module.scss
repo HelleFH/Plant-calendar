@@ -5,28 +5,31 @@
   @include entry-item;
 }
 
-.EntryList {
+.FollowUpEntryList {
   @include entrylist-container;
+  h4 {
+    display: none;
+  }
+  h5:nth-child(2) {
+    display: none;
+  }
 }
 .followUpContainer {
   margin-top: 2em;
   background-color: $text-color;
-  padding:1em;
-  width:95%;
-  margin:0 auto;
+  padding: 1em;
+  width: 95%;
+  margin: 0 auto;
 
   .CalendarEntry {
     padding: 0;
-  }
-  h4 {
-    padding: 1em;
   }
 }
 
 .addEntryLink {
   @include flex-row-right;
 }
-.FollowUpListContainer h4 {
+.FollowUpListContainer h {
   display: none;
 }
 .lineContainer {

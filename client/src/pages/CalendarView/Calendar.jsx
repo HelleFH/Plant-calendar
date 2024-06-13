@@ -12,6 +12,8 @@ import useFollowUpEntries from '../../components/useFollowUpEntries';
 import FollowUpEntry from '../../components/FollowUpEntry/FollowUpEntry';
 import NewEntryModal from '../../components/NewEntryModal/NewEntryModal';
 import axiosInstance from '../../components/axiosInstance';
+import Slider from '../../components/SliderComponent/Slider';
+
 
 const CalendarComponent = () => {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -96,7 +98,7 @@ const CalendarComponent = () => {
     );
     setRefresh((prev) => !prev);
   };
-  
+
   const onUpdateFollowUpEntry = (updatedFollowUpEntry) => {
     setFollowUpEntries((prevFollowUpEntries) =>
       prevFollowUpEntries.map((followUpEntry) => (followUpEntry._id === updatedFollowUpEntry._id ? updatedFollowUpEntry : followUpEntry))
@@ -126,9 +128,10 @@ const CalendarComponent = () => {
       {loggedIn ? (
         <div className={styles.calendarContainer}>
           <div className={styles.backgroundContainer}>
+            <Slider />
             <Calendar
-                value={selectedDate}
-                onChange={setSelectedDate}
+              value={selectedDate}
+              onChange={setSelectedDate}
               onActiveStartDateChange={handleMonthChange}
               tileClassName={tileClassName}
             />
@@ -174,7 +177,7 @@ const CalendarComponent = () => {
             </div>
             <div className={styles.EntryContainer}>
               {followUpEntries.length > 0 && (
-                <ul className={styles.EntryList}>
+                <ul className={styles.calendarFollowUpList}>
                   {followUpEntries.map((followUpEntry) => (
                     <FollowUpEntry
                       key={followUpEntry._id}
@@ -186,6 +189,8 @@ const CalendarComponent = () => {
                       setFollowUpEntries={setFollowUpEntries}
                       selectedDate={selectedDate}
                       handleUpdateFollowUpEntry={handleUpdateFollowUpEntry}
+                      onSelectDate={handleSelectDate}
+
 
 
                     />

@@ -1,5 +1,6 @@
 import axiosInstance from '../axiosInstance';
 import React, { useEffect, useState } from 'react';
+import moment from 'moment'; // Import moment to format dates
 import CreateEntryWithFileUpload from '../CreateEntry/createEntry';
 import CustomModal from '../CustomModal/CustomModal';
 import CreateFollowUpEntry from '../FollowUpEntry/CreateFollowUpEntry';
@@ -60,13 +61,13 @@ const NewEntryModal = ({ isOpen, onClose, selectedDate, setRefresh, refresh }) =
 
   return (
     <CustomModal isOpen={isOpen} onClose={onClose} title="Choose an option">
-      
       <div className="flex-center">
         <button className="primary-button margin-bottom" onClick={handleAddEntryClick}>
           + Add New Entry
         </button>
         <div className="flex-center">
           <p className="margin-bottom">Or add an update for one of your plants:</p>
+          <p className="margin-bottom">Selected Date: {moment(selectedDate).format('MMMM Do YYYY')}</p>
           <select className="margin-bottom" value={selectedEntry} onChange={handleChange}>
             <option value="">Select Entry</option>
             {entries.map((entry) => (

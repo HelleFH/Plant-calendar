@@ -27,10 +27,9 @@
         max-width: 1200px;
     }
 
-    .FollowUpListContainer h5 {
-        display: none;
-    }
+
 }
+
 .ListsContainer {
     width: 95%;
 }
@@ -58,6 +57,7 @@
     h4 {color:$text-color;}
 
 }
+.calendarFollowUpList h5:first-child {display:none !important;}
 
 .EntryListContainer {
     padding-bottom: 1em;
@@ -90,3 +90,5 @@
 .ReminderListContainer {
     @include entrylist-container
 }
+
+

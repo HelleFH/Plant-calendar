@@ -4,8 +4,12 @@
 .CalendarEntry {
     @include entry-item;
 }
-
-h5 {}
+.viewEntryLink {
+    color: $secondary-color;
+    padding-left: 0.5em;
+    text-decoration: underline;
+    cursor: pointer;
+}
 
 .EntryList {
     @include entrylist-container;
@@ -14,15 +18,13 @@ h5 {}
     background-color: white;
     padding: 1em;
     height: auto;
-    overflow:scroll;
-
+    overflow: scroll;
 }
 .lineContainer {
     padding: 1em 0.5em 1em 0.5em;
 }
 .FollowUpHeader {
     @include flex-row;
-
 }
 .editFormContainer {
     @include form-container;

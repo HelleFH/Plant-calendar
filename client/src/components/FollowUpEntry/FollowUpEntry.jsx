@@ -11,7 +11,9 @@ const FollowUpEntry = ({
   followUpEntry,
   onDeleteFollowUp,
   setRefresh,
-  handleUpdateFollowUpEntry
+  handleUpdateFollowUpEntry,
+  onSelectDate,
+
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -20,7 +22,7 @@ const FollowUpEntry = ({
   const [previewSrc, setPreviewSrc] = useState(followUpEntry.cloudinaryUrl);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [idToDelete, setIdToDelete] = useState(null);
-  const [selectedDate, setSelectedDate] = useState(followUpEntry.date);
+  const [selectedDate] = useState(followUpEntry.date);
 
   const contentRef = useRef(null);
 
@@ -53,12 +55,21 @@ const FollowUpEntry = ({
     setShowDeleteModal(false);
     setRefresh((prev) => !prev); // Trigger refresh
   };
+  
+  const handleGoToDate = (event) => {
+    event.preventDefault();
+    if (onSelectDate && followUpEntry && followUpEntry.entryDate) {
+      onSelectDate(new Date(followUpEntry.entryDate));
+    }
+  };
 
   return (
     <li className={styles.CalendarEntry}>
       <div className='flex-row'>
         <h5 onClick={(e) => { e.preventDefault(); toggleExpand(); }}>{formatDate(followUpEntry.date)}</h5>
-        <h4>Update for {followUpEntry.name}</h4>
+        <div className='flex-row-center'>
+        <h4>Update for {followUpEntry.name}</h4><h6 onClick={handleGoToDate} className={styles.viewEntryLink}value={followUpEntry.entryDate}>(Go to Entry)</h6>
+        </div>
         <i
           onClick={toggleExpand}
           className={`fas ${isExpanded ? 'fa-chevron-up' : 'fa-chevron-down'} ${styles.chevron}`}
