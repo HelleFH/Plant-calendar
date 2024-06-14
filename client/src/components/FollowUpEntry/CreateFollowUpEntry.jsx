@@ -32,12 +32,11 @@ const CreateFollowUpEntry = ({ isOpen, onClose, oldEntryID, oldEntryName, oldEnt
             const formData = new FormData();
             if (file) formData.append('file', file);
             formData.append('name', oldEntryName);
-            formData.append('entryDate', oldEntryDate);
+            formData.append('entryDate', oldEntryDate); // only include it once
             formData.append('notes', entry.notes);
             formData.append('date', followUpDate);
             formData.append('userID', localStorage.getItem('userId'));
             formData.append('entryID', oldEntryID);
-            formData.append('entryDate', oldEntryDate);
 
             const response = await axiosInstance.post('/upload/follow-up', formData, {
                 headers: {

@@ -4,7 +4,7 @@ import ImageUpload from '../imageUpload';
 import DeleteConfirmationModal from '../DeleteConfirmationModal/DeleteConfirmationModal';
 import SetCalendarReminder from '../Reminder/SetCalendarReminder';
 import moment from 'moment';
-import styles from './CalendarEntry.module.scss'
+import styles from './CalendarEntry.module.scss';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import axiosInstance from '../axiosInstance';
 import CreateFollowUpEntry from '../FollowUpEntry/CreateFollowUpEntry';
@@ -14,20 +14,18 @@ import handleSubmitUpdate from '../../Utils/HandleSubmitUpdate';
 const CalendarEntry = ({
   entry,
   setEntries,
-  onDeleteEntry,
   setRefresh,
   followUpDate,
-  isModal
-
+  isModal,
+  onDeleteEntry,
 }) => {
-
   const [isEditing, setIsEditing] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [editedEntry, setEditedEntry] = useState({ ...entry });
   const [file, setFile] = useState(null);
   const [previewSrc, setPreviewSrc] = useState(entry.cloudinaryUrl);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [setIdToDelete] = useState(null);
+  const [idToDelete, setIdToDelete] = useState(null);
   const [isReminderModalOpen, setIsReminderModalOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [followUpEntries, setFollowUpEntries] = useState([]);
@@ -78,16 +76,6 @@ const CalendarEntry = ({
     setEditedEntry({ ...editedEntry, [e.target.name]: e.target.value });
   };
 
-  const handleDeleteEntry = async (deletedEntryId) => {
-    try {
-      await axiosInstance.delete(`entries/${deletedEntryId}`);
-      setEntries((prevEntries) => prevEntries.filter((entry) => entry._id !== deletedEntryId));
-      setRefresh((prev) => !prev);
-    } catch (error) {
-      console.error('Error deleting entry:', error);
-    }
-  };
-
   const handleDeleteReminder = async (deletedReminderId) => {
     try {
       await axiosInstance.delete(`reminders/${deletedReminderId}`);
@@ -106,12 +94,23 @@ const CalendarEntry = ({
       console.error('Error deleting follow-up:', error);
     }
   };
+
   const onUpdateFollowUpEntry = (updatedFollowUpEntry) => {
     setFollowUpEntries((prevFollowUpEntries) =>
       prevFollowUpEntries.map((followUpEntry) => (followUpEntry._id === updatedFollowUpEntry._id ? updatedFollowUpEntry : followUpEntry))
     );
-    console.log(updatedFollowUpEntry._id)
+    console.log(updatedFollowUpEntry._id);
     setRefresh((prev) => !prev);
+  };
+
+  const handleDeleteEntry = async (deletedEntryId) => {
+    try {
+      await axiosInstance.delete(`entries/${deletedEntryId}`);
+      setEntries((prevEntries) => prevEntries.filter((entry) => entry._id !== deletedEntryId));
+      setRefresh((prev) => !prev);
+    } catch (error) {
+      console.error('Error deleting entry:', error);
+    }
   };
 
   const onDrop = (acceptedFiles) => {
@@ -162,9 +161,8 @@ const CalendarEntry = ({
   };
 
   const handleConfirmDelete = () => {
-    onDeleteEntry(entry._id);
+    handleDeleteEntry(entry._id); // Call handleDeleteEntry directly
     setShowDeleteModal(false);
-    setRefresh((prev) => !prev); // Trigger refresh
   };
 
   const handleAddFollowUpEntry = (newFollowUpEntry) => {
@@ -184,7 +182,7 @@ const CalendarEntry = ({
         </h4>
         <i
           onClick={toggleExpand}
-className={`fas ${isExpanded ? 'fa-chevron-up' : 'fa-chevron-down'} ${styles.chevron} ${isModal ? styles.entryChevronModal : 'hidden'}`}
+          className={`fas ${isExpanded ? 'fa-chevron-up' : 'fa-chevron-down'} ${styles.chevron} ${isModal ? styles.entryChevronModal : 'hidden'}`}
         ></i>
       </div>
 
@@ -332,13 +330,6 @@ className={`fas ${isExpanded ? 'fa-chevron-up' : 'fa-chevron-down'} ${styles.che
               >
                 Delete
               </Link>
-              {showDeleteModal && (
-                <DeleteConfirmationModal
-                  isOpen={showDeleteModal}
-                  onConfirm={handleConfirmDelete}
-                  onCancel={() => setShowDeleteModal(false)}
-                />
-              )}
               <button className="primary-button" onClick={() => setIsEditing(true)}>
                 Edit
               </button>
@@ -346,6 +337,13 @@ className={`fas ${isExpanded ? 'fa-chevron-up' : 'fa-chevron-down'} ${styles.che
           </>
         )}
       </div>
+      {showDeleteModal && (
+        <DeleteConfirmationModal
+          isOpen={showDeleteModal}
+          onConfirm={handleConfirmDelete}
+          onCancel={() => setShowDeleteModal(false)}
+        />
+      )}
     </li>
   );
 };

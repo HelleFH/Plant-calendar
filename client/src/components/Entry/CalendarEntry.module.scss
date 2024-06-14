@@ -6,20 +6,17 @@
 }
 
 .FollowUpEntryList {
-  
-  @include entrylist-container;
+@include entrylist-container;
 
   h4 {
     display: none;
   }
-
 }
 
-.FollowUpEntryList .followUpEntry  
-  h5:nth-child(2),
-  h6{
-    display: none !important;
-  }
+.FollowUpEntryList .followUpEntry h5:nth-child(2),
+h6 {
+  display: none !important;
+}
 .entryChevronModal {
   display: none !important;
 }
@@ -54,7 +51,9 @@
     padding: 0;
   }
 }
-.expanded {height:auto;}
+.expanded {
+  height: auto;
+}
 .addEntryLink {
   @include flex-row-right;
 }

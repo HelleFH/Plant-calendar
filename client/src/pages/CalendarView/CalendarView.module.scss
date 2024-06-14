@@ -26,8 +26,6 @@
         margin-bottom: 0.5em;
         max-width: 1200px;
     }
-
-
 }
 
 .ListsContainer {
@@ -41,7 +39,6 @@
     width: 100vw;
 }
 
-
 .addEntryContainer {
     @include flex-row;
     background-color: $background-color;
@@ -54,15 +51,23 @@
     padding: 1em;
     align-items: center;
 
-    h4 {color:$text-color;}
-
+    h4 {
+        color: $text-color;
+    }
 }
-.calendarFollowUpList h5:first-child {display:none !important;}
-
+.calendarFollowUpList {
+    @include entrylist-container;
+    h5:first-child {
+        display: none !important;
+    }
+}
 .EntryListContainer {
     padding-bottom: 1em;
 }
 .EntryList {
+    @include entrylist-container;
+}
+.ReminderListContainer {
     @include entrylist-container;
 }
 .tile {
@@ -87,8 +92,3 @@
         color: white;
     }
 }
-.ReminderListContainer {
-    @include entrylist-container
-}
-
-

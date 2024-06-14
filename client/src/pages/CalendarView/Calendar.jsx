@@ -13,6 +13,7 @@ import FollowUpEntry from '../../components/FollowUpEntry/FollowUpEntry';
 import NewEntryModal from '../../components/NewEntryModal/NewEntryModal';
 import axiosInstance from '../../components/axiosInstance';
 import Slider from '../../components/SliderComponent/Slider';
+import handleDeleteEntry from '../../Utils/HandleDeleteEntry';
 
 
 const CalendarComponent = () => {
@@ -46,16 +47,6 @@ const CalendarComponent = () => {
       className += ' highlightedFollowUpLeaf highlightedFollowUpLeafPlus ';
     }
     return className;
-  };
-
-  const handleDeleteEntry = async (deletedEntryId) => {
-    try {
-      await axiosInstance.delete(`entries/${deletedEntryId}`);
-      setEntries((prevEntries) => prevEntries.filter((entry) => entry._id !== deletedEntryId));
-      setRefresh((prev) => !prev);
-    } catch (error) {
-      console.error('Error deleting entry:', error);
-    }
   };
 
   const handleDeleteReminder = async (deletedReminderId) => {
@@ -98,6 +89,7 @@ const CalendarComponent = () => {
     );
     setRefresh((prev) => !prev);
   };
+  
 
   const onUpdateFollowUpEntry = (updatedFollowUpEntry) => {
     setFollowUpEntries((prevFollowUpEntries) =>

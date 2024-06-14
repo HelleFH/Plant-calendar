@@ -9,6 +9,8 @@
     display: grid;
     grid-template-columns: 1fr 1fr 4fr 2fr;
     justify-items: center;
+    gap: 1em;
+    white-space: nowrap;
 
     i {
         grid-column: 1;
