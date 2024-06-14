@@ -15,13 +15,12 @@ import axiosInstance from '../../components/axiosInstance';
 import Slider from '../../components/SliderComponent/Slider';
 import handleDeleteEntry from '../../Utils/HandleDeleteEntry';
 
-
 const CalendarComponent = () => {
   const [loggedIn, setLoggedIn] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [isNewEntryModalOpen, setIsNewEntryModalOpen] = useState(false);
   const [refresh, setRefresh] = useState(false);
-  const [setCurrentMonth] = useState(new Date());
+  const [currentMonth, setCurrentMonth] = useState(new Date());
   const { entries, highlightedDates, error: entriesError, setEntries } = useEntries(selectedDate, refresh);
   const { followUpEntries, highlightedFollowUpDates, error: followUpEntriesError, setFollowUpEntries } = useFollowUpEntries(selectedDate, refresh);
   const { reminders, highlightedReminderDates, error: remindersError, setReminders } = useReminders(selectedDate, refresh);
@@ -41,10 +40,10 @@ const CalendarComponent = () => {
       className += ' highlighted';
     }
     if (highlightedReminderDates && highlightedReminderDates.includes(formattedDate)) {
-      className += ' highlightedReminder  ';
+      className += ' highlightedReminder';
     }
     if (highlightedFollowUpDates && highlightedFollowUpDates.includes(formattedDate)) {
-      className += ' highlightedFollowUpLeaf highlightedFollowUpLeafPlus ';
+      className += ' highlightedFollowUpLeaf highlightedFollowUpLeafPlus';
     }
     return className;
   };
@@ -73,7 +72,6 @@ const CalendarComponent = () => {
     setSelectedDate(date);
   };
 
-
   const handleNewEntryClick = () => {
     setIsNewEntryModalOpen(true);
   };
@@ -89,30 +87,31 @@ const CalendarComponent = () => {
     );
     setRefresh((prev) => !prev);
   };
-  
 
   const onUpdateFollowUpEntry = (updatedFollowUpEntry) => {
     setFollowUpEntries((prevFollowUpEntries) =>
       prevFollowUpEntries.map((followUpEntry) => (followUpEntry._id === updatedFollowUpEntry._id ? updatedFollowUpEntry : followUpEntry))
     );
-    console.log(updatedFollowUpEntry._id)
     setRefresh((prev) => !prev);
   };
+
   const handleUpdateFollowUpEntry = (updatedFollowUpEntry) => {
     setFollowUpEntries((prevFollowUpEntries) =>
       prevFollowUpEntries.map((followUpEntry) => (followUpEntry._id === updatedFollowUpEntry._id ? updatedFollowUpEntry : followUpEntry))
     );
     setRefresh((prev) => !prev);
   };
+
   const handleMonthChange = ({ activeStartDate }) => {
     setCurrentMonth(activeStartDate);
-    setSelectedDate(new Date(activeStartDate.getFullYear(), activeStartDate.getMonth(), 1));
+    const firstDayOfMonth = new Date(activeStartDate.getFullYear(), activeStartDate.getMonth(), 1);
+    setSelectedDate(firstDayOfMonth);
+    setRefresh((prev) => !prev); // Trigger refresh to fetch entries
   };
 
   useEffect(() => {
     localStorage.setItem('selectedDate', selectedDate.toISOString());
   }, [selectedDate]);
-
 
   return (
     <div>
@@ -149,7 +148,6 @@ const CalendarComponent = () => {
           )}
           <div className={styles.ListsContainer}>
             <div className={styles.EntryListContainer}>
-              
               {entries.length > 0 && (
                 <ul className={styles.EntryList}>
                   {entries.map((entry) => (
@@ -183,9 +181,6 @@ const CalendarComponent = () => {
                       selectedDate={selectedDate}
                       handleUpdateFollowUpEntry={handleUpdateFollowUpEntry}
                       onSelectDate={handleSelectDate}
-
-
-
                     />
                   ))}
                 </ul>

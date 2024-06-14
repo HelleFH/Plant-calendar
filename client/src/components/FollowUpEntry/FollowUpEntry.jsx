@@ -71,7 +71,7 @@ const FollowUpEntry = ({
       <div className='flex-row'>
         <h5 onClick={(e) => { e.preventDefault(); toggleExpand(); }}>{formatDate(followUpEntry.date)}</h5>
         <div className='flex-row-center'>
-        <h4>Update for {followUpEntry.name}</h4> <h6>{followUpEntry.entryDate}</h6>             <h5 onClick={handleViewEntryClick} className={styles.nameLink}>(View original entry)</h5>
+        <h4>Update for {followUpEntry.name}</h4> <h6>{followUpEntry.entryDate}</h6>             <Link onClick={handleViewEntryClick} className={styles.nameLink}>(View original entry)</Link>
 
         </div>
       

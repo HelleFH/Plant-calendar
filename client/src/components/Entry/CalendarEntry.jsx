@@ -280,7 +280,7 @@ const CalendarEntry = ({
               />
             )}
             <div className={styles.followUpContainer}>
-              <h4>Other entries for {entry.name} </h4>
+              <h4 className='margin-bottom'>Updates for {entry.name} </h4>
               <div className={styles.FollowUpListContainer}>
                 {followUpEntries.length > 0 && (
                   <ul className={styles.FollowUpEntryList}>
@@ -303,7 +303,7 @@ const CalendarEntry = ({
                 )}
 
                 <Link className={styles.addEntryLink} onClick={toggleCreateModal}>
-                  + Add Entry
+                  + Add an Update
                 </Link>
               </div>
             </div>

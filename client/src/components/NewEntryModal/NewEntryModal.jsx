@@ -63,11 +63,10 @@ const NewEntryModal = ({ isOpen, onClose, selectedDate, setRefresh, refresh }) =
     <CustomModal isOpen={isOpen} onClose={onClose} title= {moment(selectedDate).format('MMMM Do YYYY')} >
       <div className="flex-center">
         <button className="primary-button margin-bottom" onClick={handleAddEntryClick}>
-          + Add New Entry
+          + Add New Plant
         </button>
         <div className="flex-center">
           <p className="margin-bottom">Or add an update for one of your plants:</p>
-          <p className="margin-bottom">Selected Date: {moment(selectedDate).format('MMMM Do YYYY')}</p>
           <select className="margin-bottom" value={selectedEntry} onChange={handleChange}>
             <option value="">Select Entry</option>
             {entries.map((entry) => (

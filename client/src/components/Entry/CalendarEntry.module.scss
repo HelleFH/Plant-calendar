@@ -6,7 +6,7 @@
 }
 
 .FollowUpEntryList {
-@include entrylist-container;
+  @include entrylist-container;
 
   h4 {
     display: none;
@@ -43,21 +43,22 @@ h6 {
 .followUpContainer {
   margin-top: 2em;
   background-color: $text-color;
-  padding: 1em;
-  width: 95%;
+  padding: 0.5em;
   margin: 0 auto;
 
   .CalendarEntry {
     padding: 0;
-  
   }
-  h5:nth-child(3) {display:none !important;}
+  h5:nth-child(3) {
+    display: none !important;
+  }
 }
 .expanded {
   height: auto;
 }
 .addEntryLink {
   @include flex-row-right;
+  padding: 0.5em 0.5em 0.5em 0;
 }
 .FollowUpListContainer .FollowUpEntry button:first-child {
   display: none;

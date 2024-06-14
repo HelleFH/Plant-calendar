@@ -32,7 +32,6 @@
     width: 95%;
 }
 .backgroundContainer {
-    background-image: url(../../../public/images/bg.jpg);
     background-size: cover;
     @include flex-center;
     max-width: 500px;
