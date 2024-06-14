@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import CustomModal from '../CustomModal/CustomModal';
 import axiosInstance from '../axiosInstance';
 
-const SetCalendarReminder = ({ isOpen, onClose, entryId }) => {
+const SetCalendarReminder = ({ isOpen, onClose, entryID }) => {
   const [reminderDate, setReminderDate] = useState('');
   const [reminderTime, setReminderTime] = useState('');
   const [reminderDescription, setReminderDescription] = useState('');
@@ -23,17 +23,17 @@ const SetCalendarReminder = ({ isOpen, onClose, entryId }) => {
   useEffect(() => {
     const fetchEntryDetails = async () => {
       try {
-        const response = await axiosInstance.get(`/entries/${entryId}`);
+        const response = await axiosInstance.get(`/entries/${entryID}`);
         setEntryDetails(response.data); // Assuming the response contains entry details
       } catch (error) {
         console.error('Error fetching entry details:', error);
       }
     };
 
-    if (entryId) {
+    if (entryID) {
       fetchEntryDetails();
     }
-  }, [entryId]);
+  }, [entryID]);
 
   const handleAddReminder = async () => {
     try {
@@ -41,7 +41,7 @@ const SetCalendarReminder = ({ isOpen, onClose, entryId }) => {
         date: reminderDate,
         time: reminderTime,
         description: reminderDescription,
-        entryId,
+        entryID,
         username, // Include the username
       };
 

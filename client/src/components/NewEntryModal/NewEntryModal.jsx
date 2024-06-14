@@ -60,7 +60,7 @@ const NewEntryModal = ({ isOpen, onClose, selectedDate, setRefresh, refresh }) =
   };
 
   return (
-    <CustomModal isOpen={isOpen} onClose={onClose} title="Choose an option">
+    <CustomModal isOpen={isOpen} onClose={onClose} title= {moment(selectedDate).format('MMMM Do YYYY')} >
       <div className="flex-center">
         <button className="primary-button margin-bottom" onClick={handleAddEntryClick}>
           + Add New Entry
@@ -90,6 +90,8 @@ const NewEntryModal = ({ isOpen, onClose, selectedDate, setRefresh, refresh }) =
           isOpen={isCreateFollowUpModalOpen}
           onClose={handleCloseFollowUpModal}
           oldEntryID={selectedEntryDetails._id}
+          oldEntryDate={selectedEntryDetails.date}
+
           name={selectedEntryDetails.name}
           sunlight={selectedEntryDetails.sunlight}
           water={selectedEntryDetails.water}

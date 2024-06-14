@@ -2,14 +2,14 @@ const { Reminder } = require('../models/ReminderModel');
 const { Entry } = require('../models/EntryModel');
 
 const setReminder = async (req, res) => {
-  const { date, time, description, entryId, username } = req.body;
+  const { date, time, description, entryID, username } = req.body;
 
-  if (!date || !time || !description || !entryId) {
+  if (!date || !time || !description || !entryID) {
     return res.status(400).json({ error: 'All fields are required.' });
   }
 
   try {
-    const entry = await Entry.findById(entryId);
+    const entry = await Entry.findById(entryID);
     if (!entry) {
       return res.status(404).json({ error: 'Entry not found.' });
     }
@@ -18,7 +18,7 @@ const setReminder = async (req, res) => {
       date,
       time,
       description,
-      entryId,
+      entryID,
       username,
     });
 
@@ -59,8 +59,8 @@ const getRemindersByDate = async (req, res) => {
 
 const getRemindersByEntryId = async (req, res) => {
   try {
-      const entryId = req.params.entryId;
-      const reminders = await Reminder.find({ entryId });
+      const entryID = req.params.entryID;
+      const reminders = await Reminder.find({ entryID });
       res.status(200).json(reminders);
   } catch (error) {
       console.error('Error fetching reminders by entry ID:', error);

@@ -14,6 +14,9 @@
 .EntryList {
     @include entrylist-container;
 }
+.nameLink {
+    cursor: pointer;
+}
 .expanded {
     background-color: white;
     padding: 1em;

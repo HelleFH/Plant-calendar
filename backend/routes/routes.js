@@ -20,10 +20,6 @@ const upload = multer({
     },
 });
 
-
-
-//User routes
-
 router.post("/login", UserController.login);
 router.post("/register", UserController.register);
 router.get("/users", UserController.getAllUsers);
@@ -39,10 +35,12 @@ router.get('/entries/date/:date', entryController.getEntriesByDate);
 router.get('/entries/follow-up/date/:date', followUpController.getFollowUpEntriesByDate);
 router.get('/entries/:id', entryController.getEntryById);
 router.get('/entries/follow-up/:entryID', followUpController.getFollowUpEntriesByEntryId);
+router.get('/entries/by-follow-up/:entryID', entryController.getEntryByEntryID);
+
 
 router.get(`/entries/sorted/userID/:userID`, entryController.getSortedEntriesByUserId);
 router.get('/reminders/date/:date', reminderController.getRemindersByDate);
-router.get('/reminders/entry/:entryId', reminderController.getRemindersByEntryId);
+router.get('/reminders/entry/:entryID', reminderController.getRemindersByEntryId);
 
 
 router.delete('/entries/:id', entryController.deleteEntry);

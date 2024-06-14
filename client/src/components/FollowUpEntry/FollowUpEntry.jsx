@@ -7,12 +7,13 @@ import styles from './FollowUpEntry.module.scss';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import handleSubmitUpdateFollowUp from '../../Utils/HandleSubmitUpdateFollowUp';
 import handleDeleteFollowUp from '../../Utils/HandleDeleteFollowUp';
+import ViewEntryModal from '../ViewEntryModal/ViewEntryModal';
 const FollowUpEntry = ({
   followUpEntry,
   onDeleteFollowUp,
   setRefresh,
   handleUpdateFollowUpEntry,
-  onSelectDate,
+
 
 }) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -23,6 +24,8 @@ const FollowUpEntry = ({
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [idToDelete, setIdToDelete] = useState(null);
   const [selectedDate] = useState(followUpEntry.date);
+  const [isViewEntryModalOpen, setIsViewEntryModalOpen] = useState(false);
+
 
   const contentRef = useRef(null);
 
@@ -56,20 +59,22 @@ const FollowUpEntry = ({
     setRefresh((prev) => !prev); // Trigger refresh
   };
   
-  const handleGoToDate = (event) => {
-    event.preventDefault();
-    if (onSelectDate && followUpEntry && followUpEntry.entryDate) {
-      onSelectDate(new Date(followUpEntry.entryDate));
-    }
+  const handleViewEntryClick = () => {
+    setIsViewEntryModalOpen(true);
   };
 
+  const handleCloseModal = () => {
+    setIsViewEntryModalOpen(false);
+  };
   return (
     <li className={styles.CalendarEntry}>
       <div className='flex-row'>
         <h5 onClick={(e) => { e.preventDefault(); toggleExpand(); }}>{formatDate(followUpEntry.date)}</h5>
         <div className='flex-row-center'>
-        <h4>Update for {followUpEntry.name}</h4><h6 onClick={handleGoToDate} className={styles.viewEntryLink}value={followUpEntry.entryDate}>(Go to Entry)</h6>
+        <h4>Update for <span onClick={handleViewEntryClick} className={styles.nameLink}>{followUpEntry.name}</span></h4><h6>{followUpEntry.entryDate}</h6> 
         </div>
+      
+
         <i
           onClick={toggleExpand}
           className={`fas ${isExpanded ? 'fa-chevron-up' : 'fa-chevron-down'} ${styles.chevron}`}
@@ -99,7 +104,7 @@ const FollowUpEntry = ({
               <Link onClick={() => setIsEditing(false)}>Cancel</Link>
               <button className="secondary-button" 
                 onClick={() => {
-                  handleSubmitUpdateFollowUp(followUpEntry._id, followUpEntry.entryID, editedFollowUpEntry, file, selectedDate, handleUpdateFollowUpEntry, handleDeleteFollowUp);
+                  handleSubmitUpdateFollowUp(followUpEntry._id, followUpEntry.entryID, followUpEntry.name, followUpEntry.entryDate, editedFollowUpEntry, file, selectedDate, handleUpdateFollowUpEntry, handleDeleteFollowUp);
                   setIsEditing(false);
                 }}>Save</button>
             </div>
@@ -135,6 +140,11 @@ const FollowUpEntry = ({
               )}
               <button className="primary-button" onClick={() => setIsEditing(true)}>Edit Entry</button>
             </div>
+            <ViewEntryModal
+        isOpen={isViewEntryModalOpen}
+        onClose={handleCloseModal}
+        entryID={followUpEntry.entryID} // Pass entryID to fetch specific details
+      />
           </>
         )}
       </div>

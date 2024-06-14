@@ -6,16 +6,43 @@
 }
 
 .FollowUpEntryList {
+  
   @include entrylist-container;
+
   h4 {
     display: none;
   }
-  h5:nth-child(2),h6 {
-    display: none;
-  }
+
 }
 
+.FollowUpEntryList .followUpEntry  
+  h5:nth-child(2),
+  h6{
+    display: none !important;
+  }
+.entryChevronModal {
+  display: none !important;
+}
+.expanded {
+  background-color: white;
+  padding: 1em;
+  height: auto !important;
+  overflow: scroll;
+}
 
+.entryDetails {
+  overflow: hidden;
+  transition: height 0.3s ease-out;
+  height: 0;
+  @include flex-right;
+}
+
+.entryDetailsModal {
+  height: fit-content !important;
+  overflow: visible !important;
+  display: block;
+  min-height: 300px !important;
+}
 .followUpContainer {
   margin-top: 2em;
   background-color: $text-color;
@@ -27,11 +54,11 @@
     padding: 0;
   }
 }
-
+.expanded {height:auto;}
 .addEntryLink {
   @include flex-row-right;
 }
-.FollowUpListContainer h {
+.FollowUpListContainer .FollowUpEntry button:first-child {
   display: none;
 }
 .lineContainer {

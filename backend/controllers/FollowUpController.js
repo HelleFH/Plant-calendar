@@ -38,7 +38,8 @@ const uploadFollowUpController = async (req, res) => {
         cloudinaryPublicId: result.public_id,
         cloudinaryDeleteToken: deletionToken,
         userID: userID,
-        entryID: entryID, // Include the entryID retrieved from the request body
+        entryID: entryID,
+        entryDate: entryDate, // Include the entryID retrieved from the request body
       });
 
       await followUpEntry.save();

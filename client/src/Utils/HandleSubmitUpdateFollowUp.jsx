@@ -1,7 +1,7 @@
 import axiosInstance from '../components/axiosInstance';
 import handleDeleteFollowUp from './HandleDeleteFollowUp';
 
-const handleSubmitUpdateFollowUp = async (id, entryID, entryDate, editedFollowUpEntry, file, selectedDate, onUpdateFollowUpEntry, onDeleteFollowUpEntry) => {
+const handleSubmitUpdateFollowUp = async (id, entryID, name, entryDate, editedFollowUpEntry, file, selectedDate, onUpdateFollowUpEntry, onDeleteFollowUpEntry) => {
   try {
     console.log('entryID', entryID)
 
@@ -31,8 +31,8 @@ const handleSubmitUpdateFollowUp = async (id, entryID, entryDate, editedFollowUp
         notes: editedFollowUpEntry.notes,
         cloudinaryUrl: uploadResponse.data.cloudinaryUrl,      
         userID: localStorage.getItem('userId').toString(),
-        entryID: entryID,
-        entryDate: entryDate,
+        entryID: editedFollowUpEntry.entryID,
+        entryDate: editedFollowUpEntry.entryDate,
 
       };
 
@@ -54,8 +54,8 @@ const handleSubmitUpdateFollowUp = async (id, entryID, entryDate, editedFollowUp
         date: selectedDate,
         cloudinaryUrl: editedFollowUpEntry.cloudinaryUrl,
         userID: localStorage.getItem('userId').toString(),
-        entryID: entryID,
-        entryDate: entryDate,
+        entryID: editedFollowUpEntry.entryID,
+        entryDate: editedFollowUpEntry.entryDate,
 
       };
 

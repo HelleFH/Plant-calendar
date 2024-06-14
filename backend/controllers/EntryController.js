@@ -1,5 +1,7 @@
 const { Entry } = require('../models/EntryModel');
 const cloudinary = require('cloudinary').v2;
+const mongoose = require('mongoose');
+
 
 
 const deleteEntry = async (req, res) => {
@@ -82,8 +84,6 @@ const getEntryById = async (req, res) => {
 };
 
 
-
-
 const getEntriesByDate = async (req, res) => {
   try {
       // Extract date and username from request parameters
@@ -136,10 +136,34 @@ const getSortedEntriesByUserId = async (req, res) => {
   }
 };
 
+const getEntryByEntryID = async (req, res) => {
+  const { entryID } = req.params;
+
+  // Validate entryID to ensure it's a valid ObjectId
+  if (!mongoose.Types.ObjectId.isValid(entryID)) {
+      return res.status(400).json({ error: 'Invalid entryID.' });
+  }
+
+  try {
+      // Find the normal entry by _id (assuming entryID is the _id of NormalEntry)
+      const entry = await Entry.findById(entryID);
+
+      if (!entry) {
+          return res.status(404).json({ error: 'Normal entry not found.' });
+      }
+
+      res.json(entry);
+  } catch (error) {
+      console.error('Error fetching normal entry by entryID:', error);
+      res.status(500).json({ error: 'Internal server error.' });
+  }
+};
+
 module.exports = {
   deleteEntry,
   updateEntry,
   getEntryById,
   getEntriesByDate,
   getSortedEntriesByUserId,
+  getEntryByEntryID
 };

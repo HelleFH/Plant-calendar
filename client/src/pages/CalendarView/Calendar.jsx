@@ -157,6 +157,7 @@ const CalendarComponent = () => {
           )}
           <div className={styles.ListsContainer}>
             <div className={styles.EntryListContainer}>
+              
               {entries.length > 0 && (
                 <ul className={styles.EntryList}>
                   {entries.map((entry) => (

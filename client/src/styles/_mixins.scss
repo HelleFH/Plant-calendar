@@ -111,11 +111,7 @@ gap:1em;
     @include flex-right;
   }
 
-  .expanded {
-    height: auto;
-overflow:scroll;
-    display: flex;
-  }
+
 
   img {
     max-width: 100%;

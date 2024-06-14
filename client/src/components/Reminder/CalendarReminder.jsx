@@ -5,6 +5,7 @@ import DeleteConfirmationModal from '../DeleteConfirmationModal/DeleteConfirmati
 import handleDeleteReminder from '../../Utils/HandleDeleteReminder';
 import { Link } from 'react-router-dom';
 import styles from './CalendarReminder.module.scss';
+import ViewEntryModal from '../ViewEntryModal/ViewEntryModal';
 
 const CalendarReminder = ({
   reminder,
@@ -14,35 +15,46 @@ const CalendarReminder = ({
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [idToDelete, setIdToDelete] = useState(null);
   const [entryDetails, setEntryDetails] = useState(null);
+  const [isViewEntryModalOpen, setIsViewEntryModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchEntryDetails = async () => {
       try {
-        const response = await axiosInstance.get(`/entries/${reminder.entryId}`);
+        const response = await axiosInstance.get(`/entries/${reminder.entryID}`);
         setEntryDetails(response.data);
       } catch (error) {
         console.error('Error fetching entry details:', error);
       }
     };
 
-    if (reminder.entryId) {
+    if (reminder.entryID) {
       fetchEntryDetails();
     }
-  }, [reminder.entryId]);
+  }, [reminder.entryID]);
 
   const formatDate = (date) => {
     return moment(date).format('MMMM Do');
   };
 
-  const handleGoToDate = (event) => {
-    event.preventDefault();
-    if (onSelectDate && entryDetails && entryDetails.date) {
-      onSelectDate(new Date(entryDetails.date));
-    }
+  const handleDeleteReminderSuccess = (deletedReminderID) => {
+    setReminders((prevReminders) => prevReminders.filter((reminder) => reminder._id !== deletedReminderID));
   };
 
-  const handleDeleteReminderSuccess = (deletedReminderId) => {
-    setReminders((prevReminders) => prevReminders.filter((reminder) => reminder._id !== deletedReminderId));
+  const handleViewEntryClick = () => {
+    setIsViewEntryModalOpen(true);
+  };
+
+  const handleCloseViewEntryModal = () => {
+    setIsViewEntryModalOpen(false);
+  };
+
+  const handleDeleteModalOpen = () => {
+    setIdToDelete(reminder._id);
+    setShowDeleteModal(true);
+  };
+
+  const handleDeleteModalClose = () => {
+    setShowDeleteModal(false);
   };
 
   return (
@@ -50,40 +62,31 @@ const CalendarReminder = ({
       {entryDetails ? (
         <>
           <i className="fas fa-xs fa-bell"></i>
-          <p>
-            {entryDetails.name} (
-            <Link to="#" onClick={handleGoToDate}>
-              {formatDate(entryDetails.date)}
-            </Link>
-            ): <span>{reminder.description}</span>
-          </p>
+          <h3 onClick={handleViewEntryClick}>{entryDetails.name}</h3>
+          <p>{reminder.description}</p>
         </>
       ) : (
-        <p></p> // Display a loading state while fetching entry details
+        <p>Loading...</p> // Display a loading state while fetching entry details
       )}
 
-      <div
-        onClick={() => {
-          setIdToDelete(reminder._id);
-          setShowDeleteModal(true);
-        }}
-      >
-        <i
-          className="fas fa-trash"
-          style={{ cursor: 'pointer', marginLeft: '10px' }}
-        ></i>
+      <div onClick={handleDeleteModalOpen}>
+        <i className="fas fa-trash" style={{ cursor: 'pointer', marginLeft: '10px' }}></i>
       </div>
 
-      {showDeleteModal && (
-        <DeleteConfirmationModal
-          isOpen={showDeleteModal}
-          onCancel={() => setShowDeleteModal(false)}
-          onConfirm={async () => {
-            await handleDeleteReminder(idToDelete, handleDeleteReminderSuccess);
-            setShowDeleteModal(false);
-          }}
-        />
-      )}
+      <ViewEntryModal
+        isOpen={isViewEntryModalOpen}
+        onClose={handleCloseViewEntryModal}
+        entryID={reminder.entryID} // Pass entryID to fetch specific details
+      />
+
+      <DeleteConfirmationModal
+        isOpen={showDeleteModal}
+        onCancel={handleDeleteModalClose}
+        onConfirm={async () => {
+          await handleDeleteReminder(idToDelete, handleDeleteReminderSuccess);
+          handleDeleteModalClose();
+        }}
+      />
     </li>
   );
 };

@@ -11,13 +11,16 @@ import CreateFollowUpEntry from '../FollowUpEntry/CreateFollowUpEntry';
 import FollowUpEntry from '../FollowUpEntry/FollowUpEntry';
 import handleSubmitUpdate from '../../Utils/HandleSubmitUpdate';
 
-const CalendarEntry = ({ 
-  entry, 
-  setEntries, 
-  onDeleteEntry, 
-  setRefresh, 
+const CalendarEntry = ({
+  entry,
+  setEntries,
+  onDeleteEntry,
+  setRefresh,
   followUpDate,
- }) => {
+  isModal
+
+}) => {
+
   const [isEditing, setIsEditing] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [editedEntry, setEditedEntry] = useState({ ...entry });
@@ -139,7 +142,7 @@ const CalendarEntry = ({
     setIsCreateModalOpen(false);
     fetchFollowUpEntriesByEntryId(); // Refetch follow-up entries
   };
-  
+
   const handleUpdateFollowUpEntry = (updatedFollowUpEntry) => {
     setFollowUpEntries((prevFollowUpEntries) =>
       prevFollowUpEntries.map((followUpEntry) => (followUpEntry.entryID == updatedFollowUpEntry.entryID ? updatedFollowUpEntry : followUpEntry))
@@ -181,12 +184,12 @@ const CalendarEntry = ({
         </h4>
         <i
           onClick={toggleExpand}
-          className={`fas ${isExpanded ? 'fa-chevron-up' : 'fa-chevron-down'} ${styles.chevron}`}
+className={`fas ${isExpanded ? 'fa-chevron-up' : 'fa-chevron-down'} ${styles.chevron} ${isModal ? styles.entryChevronModal : 'hidden'}`}
         ></i>
       </div>
 
       <div
-        className={` ${styles.entryDetails} ${isExpanded ? styles.expanded : ''}`}
+        className={`${styles.entryDetails} ${isExpanded ? styles.expanded : ''} ${isModal ? styles.entryDetailsModal : ''}`}
         ref={contentRef}
         style={
           isExpanded
@@ -228,7 +231,7 @@ const CalendarEntry = ({
         ) : (
           <>
             <div className="margin-top">
-              <img src={entry.cloudinaryUrl} alt={entry.name} className={styles.entryImage} />
+              <img src={entry.cloudinaryUrl} alt={entry.name} className="margin-bottom" />
               <div className={styles.EntryFormContainer}>
                 <hr className="long-line"></hr>
                 <label>Notes:</label>
@@ -241,7 +244,6 @@ const CalendarEntry = ({
                 <p>{entry.water}</p>
                 <hr className="long-line margin-bottom"></hr>
               </div>
-              <hr className="long-line margin-bottom"></hr>
             </div>
             {isCreateModalOpen && (
               <CreateFollowUpEntry
@@ -250,6 +252,8 @@ const CalendarEntry = ({
                 followUpDate={selectedDate}
                 oldEntryID={entry._id}
                 oldEntryName={entry.name} // Pass the entry name here
+                oldEntryDate={entry.date} // Pass the entry name here
+
                 sunlight={entry.sunlight}
                 water={entry.water}
                 name={entry.name}
@@ -268,13 +272,14 @@ const CalendarEntry = ({
                         key={index}
                         followUpEntry={followUpEntry}
                         selectedDate={followUpDate}
-                        onUpdateFollowUpEntry= {onUpdateFollowUpEntry}
+                        onUpdateFollowUpEntry={onUpdateFollowUpEntry}
                         onDeleteFollowUp={handleDeleteFollowUp}
                         setFollowUpEntries={setFollowUpEntries} // Pass setEntries here
                         setRefresh={setRefresh}
                         username={username}
                         handleUpdateFollowUpEntry={handleUpdateFollowUpEntry}
-                        
+                        className={styles.followUpEntry}
+
                       />
                     ))}
                   </ul>
