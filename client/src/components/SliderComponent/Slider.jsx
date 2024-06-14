@@ -39,11 +39,13 @@ const Slider = () => {
                     <p className={styles.quoteAuthor}><strong>- {quotes[currentQuoteIndex].author}</strong></p>
                 </div>
             )}
+            <div className={styles.pauseButtonContainer}>
             <FontAwesomeIcon
                 icon={isPaused ? faPlay : faPause}
                 className={styles.pause}
                 onClick={togglePause}
             />
+            </div>
         </div>
     );
 };

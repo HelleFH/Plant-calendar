@@ -4,15 +4,14 @@
     position: fixed;
     inset: 0px;
     background-color: rgba(0, 0, 0, 0.5);
-
 }
 .thumbnailContainer {
     display: flex;
     justify-content: center;
     margin-top: 10px;
-  }
-  
-  .thumbnail {
+}
+
+.thumbnail {
     width: 50px;
     height: 50px;
     margin: 0 5px;
@@ -20,16 +19,18 @@
     opacity: 0.6;
     transition: opacity 0.3s;
     object-fit: contain;
-  }
-  
-  .thumbnail:hover,
-  .activeThumbnail {
+}
+
+.thumbnail:hover,
+.activeThumbnail {
     opacity: 1;
     border: 2px solid #000;
-  }
+}
 
-  svg {color:black;}
-  
+svg {
+    color: black;
+}
+
 .imageGallery {
     @include flex-center;
 }
