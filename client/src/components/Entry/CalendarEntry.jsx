@@ -10,6 +10,7 @@ import axiosInstance from '../axiosInstance';
 import CreateFollowUpEntry from '../FollowUpEntry/CreateFollowUpEntry';
 import FollowUpEntry from '../FollowUpEntry/FollowUpEntry';
 import handleSubmitUpdate from '../../Utils/HandleSubmitUpdate';
+import ImageGalleryModal from '../ImageGalleryModal/ImageGalleryModal';
 
 const CalendarEntry = ({
   entry,
@@ -24,10 +25,13 @@ const CalendarEntry = ({
   const [editedEntry, setEditedEntry] = useState({ ...entry });
   const [file, setFile] = useState(null);
   const [previewSrc, setPreviewSrc] = useState(entry.cloudinaryUrl);
+  const [cloudinaryUrls, setCloudinaryUrls] = useState([]); // New state for Cloudinary URLs
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [idToDelete, setIdToDelete] = useState(null);
   const [isReminderModalOpen, setIsReminderModalOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isImageGalleryModalOpen, setIsImageGalleryModalOpen] = useState(false);
+
   const [followUpEntries, setFollowUpEntries] = useState([]);
   const [username, setUsername] = useState('');
   const [reminders, setReminders] = useState([]);
@@ -67,10 +71,14 @@ const CalendarEntry = ({
     try {
       const response = await axiosInstance.get(`entries/follow-up/${entry._id}`);
       setFollowUpEntries(response.data);
+      const followUpUrls = response.data.map(entry => entry.cloudinaryUrl); // Extract Cloudinary URLs
+      setCloudinaryUrls(followUpUrls); // Update state
     } catch (error) {
       console.error('Error fetching follow-up entries by entry ID:', error);
     }
   };
+
+
 
   const handleChange = (e) => {
     setEditedEntry({ ...editedEntry, [e.target.name]: e.target.value });
@@ -90,6 +98,7 @@ const CalendarEntry = ({
     try {
       await axiosInstance.delete(`/entries/follow-up/${deletedFollowUpId}`);
       setFollowUpEntries((prevFollowUpEntries) => prevFollowUpEntries.filter((entry) => entry._id !== deletedFollowUpId));
+      fetchFollowUpEntriesByEntryId(); // Refetch follow-up entries
     } catch (error) {
       console.error('Error deleting follow-up:', error);
     }
@@ -99,7 +108,7 @@ const CalendarEntry = ({
     setFollowUpEntries((prevFollowUpEntries) =>
       prevFollowUpEntries.map((followUpEntry) => (followUpEntry._id === updatedFollowUpEntry._id ? updatedFollowUpEntry : followUpEntry))
     );
-    console.log(updatedFollowUpEntry._id);
+    fetchFollowUpEntriesByEntryId(); // Refetch follow-up entries
     setRefresh((prev) => !prev);
   };
 
@@ -129,6 +138,10 @@ const CalendarEntry = ({
     setIsReminderModalOpen(!isReminderModalOpen);
   };
 
+  const toggleImageGalleryModal = () => {
+    setIsImageGalleryModalOpen(!isImageGalleryModalOpen);
+  };
+
   const toggleCreateModal = () => {
     setIsCreateModalOpen(!isCreateModalOpen);
   };
@@ -144,11 +157,8 @@ const CalendarEntry = ({
 
   const handleUpdateFollowUpEntry = (updatedFollowUpEntry) => {
     setFollowUpEntries((prevFollowUpEntries) =>
-      prevFollowUpEntries.map((followUpEntry) => (followUpEntry.entryID == updatedFollowUpEntry.entryID ? updatedFollowUpEntry : followUpEntry))
+      prevFollowUpEntries.map((followUpEntry) => (followUpEntry.entryID === updatedFollowUpEntry.entryID ? updatedFollowUpEntry : followUpEntry))
     );
-    console.log('Updated Entry ID:', updatedFollowUpEntry.entryID);
-
-    setEditedFollowUpEntry(updatedFollowUpEntry);
     setRefresh((prev) => !prev);
   };
 
@@ -173,6 +183,9 @@ const CalendarEntry = ({
   const handleSelectedDateChange = (date) => {
     setSelectedDate(date);
   };
+
+  const urls = [entry.cloudinaryUrl, ...cloudinaryUrls]; // Combine initial and follow-up URLs
+
 
   return (
     <li className={styles.CalendarEntry}>
@@ -229,10 +242,16 @@ const CalendarEntry = ({
         ) : (
           <>
             <div className="margin-top">
-              <img src={entry.cloudinaryUrl} alt={entry.name} className="margin-bottom" />
+
+              <h5 className='margin-bottom padding-bottom'>Added on  {moment(entry.date).format('MMMM Do YYYY')}</h5>
+              <img src={entry.cloudinaryUrl} alt={entry.name}  />
+              <Link onClick={toggleImageGalleryModal} className='padding-bottom'><h5>View All Images for {entry.name}</h5></Link>
+
               <div className={styles.EntryFormContainer}>
+
                 <hr className="long-line"></hr>
                 <label>Notes:</label>
+
                 <p>{entry.notes}</p>
                 <hr className="long-line"></hr>
                 <label>Sunlight:</label>
@@ -242,6 +261,7 @@ const CalendarEntry = ({
                 <p>{entry.water}</p>
                 <hr className="long-line margin-bottom"></hr>
               </div>
+
             </div>
             {isCreateModalOpen && (
               <CreateFollowUpEntry
@@ -251,7 +271,6 @@ const CalendarEntry = ({
                 oldEntryID={entry._id}
                 oldEntryName={entry.name} // Pass the entry name here
                 oldEntryDate={entry.date} // Pass the entry name here
-
                 sunlight={entry.sunlight}
                 water={entry.water}
                 name={entry.name}
@@ -333,6 +352,12 @@ const CalendarEntry = ({
               <button className="primary-button" onClick={() => setIsEditing(true)}>
                 Edit
               </button>
+              <ImageGalleryModal
+                entryID={entry._id}
+                onClose={toggleImageGalleryModal}
+                isOpen={isImageGalleryModalOpen}
+                urls={urls}
+              />
             </div>
           </>
         )}

@@ -10,6 +10,7 @@
     padding: 0px;
     margin: 0px;
     font-family: "DM Sans", sans-serif;
+    scroll-behavior: smooth;
 }
 body {
     background-color: lighten($primary-color, 40%);
@@ -48,7 +49,6 @@ button {
     @include flex-center;
 }
 
-
 .highlighted {
     position: relative;
 }
@@ -62,8 +62,6 @@ button {
     color: $primary-color;
 }
 
-
-
 .highlightedFollowUpLeaf {
     position: relative;
 }
@@ -75,7 +73,7 @@ button {
     right: 5px;
     top: 0;
     font-size: 8px;
-    width:17px;
+    width: 17px;
     color: darken($primary-color, 20%);
 }
 
@@ -87,8 +85,8 @@ button {
     background-image: url(../assets/bell-icon.svg);
     background-position: 5px 5px;
     background-repeat: no-repeat;
-    background-size:17%;
-     color: $background-color;
+    background-size: 17%;
+    color: $background-color;
 }
 ul {
     list-style: none;
@@ -158,4 +156,8 @@ h5 {
 }
 .margin-bottom {
     margin-bottom: 1em;
+}
+
+.padding-bottom {
+    padding-bottom: 1em;
 }

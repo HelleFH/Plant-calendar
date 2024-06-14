@@ -49,7 +49,9 @@ h6 {
 
   .CalendarEntry {
     padding: 0;
+  
   }
+  h5:nth-child(3) {display:none !important;}
 }
 .expanded {
   height: auto;
@@ -70,4 +72,5 @@ h6 {
 
 .EntryFormContainer {
   @include entry-form;
+  margin-top: 1em;
 }

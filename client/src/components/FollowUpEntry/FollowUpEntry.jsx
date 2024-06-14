@@ -71,7 +71,8 @@ const FollowUpEntry = ({
       <div className='flex-row'>
         <h5 onClick={(e) => { e.preventDefault(); toggleExpand(); }}>{formatDate(followUpEntry.date)}</h5>
         <div className='flex-row-center'>
-        <h4>Update for <span onClick={handleViewEntryClick} className={styles.nameLink}>{followUpEntry.name}</span></h4><h6>{followUpEntry.entryDate}</h6> 
+        <h4>Update for {followUpEntry.name}</h4> <h6>{followUpEntry.entryDate}</h6>             <h5 onClick={handleViewEntryClick} className={styles.nameLink}>(View original entry)</h5>
+
         </div>
       
 
@@ -111,9 +112,12 @@ const FollowUpEntry = ({
           </div>
         ) : (
           <>
+
+          
             <div className={styles.lineContainer}>
               <hr className="long-line"></hr>
             </div>
+
             {followUpEntry.cloudinaryUrl && <img className="margin-top margin-bottom" src={followUpEntry.cloudinaryUrl} alt={followUpEntry.name} />}
             <div className={styles.EntryFormContainer}>
               <hr className="long-line"></hr>
