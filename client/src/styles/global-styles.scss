@@ -26,14 +26,12 @@ html {
 }
 .react-calendar {
     border: 1px solid #ccc;
-    border-radius: 6px;
     box-shadow: $box-shadow;
     padding: 10px;
     margin: 2em 0 2em 0;
     background-color: rgb(241, 239, 230, 0.99);
     width: 100%;
     max-width: 350px;
-    border-radius: $border-radius;
     font-weight: 500;
 }
 
@@ -113,6 +111,8 @@ h5 {
 .width-100 {
     width: 100%;
 }
+
+.modalContent {display:none;}
 .flex-center {
     display: flex;
     justify-content: center;
@@ -161,3 +161,4 @@ h5 {
 .padding-bottom {
     padding-bottom: 1em;
 }
+.padding {padding:1em;}

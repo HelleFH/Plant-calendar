@@ -12,16 +12,13 @@
 }
 
 
-.nameLink {
+.iconLink {
     cursor: pointer;
-    padding-left:0.5em;
+    padding-left:0.7em;
     color:$secondary-color;
 }
-.expanded {
-    background-color: white;
-    padding: 1em;
-    height: auto;
-    overflow: scroll;
+.expanded { @include expanded
+ 
 }
 .lineContainer {
     padding: 1em 0.5em 1em 0.5em;

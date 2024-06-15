@@ -5,7 +5,7 @@
   color: $color;
   padding: 0.5em 1em;
   border-radius: 1px;
-  border:none;
+  border: none;
   cursor: pointer;
   transition: background-color 0.3s ease;
   font-weight: 600;
@@ -48,10 +48,10 @@
   align-items: center;
   flex-direction: column;
   width: 100%;
-  max-width:700px;
-  margin:0 auto;
+  max-width: 700px;
+  margin: 0 auto;
   text-align: left;
-gap:1em;
+  gap: 1em;
 }
 
 @mixin flex-center {
@@ -93,15 +93,12 @@ gap:1em;
   text-align: center;
 }
 @mixin entry-item {
-  padding:1em;
-  margin-bottom:1em;
+  margin-bottom: 1em;
   width: 100%;
   list-style: none;
   color: $secondary-color;
   margin: 0 auto;
   background-color: white;
-
-
 
 
   .entryDetails {
@@ -111,15 +108,17 @@ gap:1em;
     @include flex-right;
   }
 
-
-
   img {
     max-width: 100%;
     height: auto;
-    border-radius: $border-radius;
   }
 }
 
+@mixin expanded {
+  background-color: white;
+  height: auto;
+  overflow: scroll;
+}
 @mixin form-container {
   display: flex;
   flex-direction: column;

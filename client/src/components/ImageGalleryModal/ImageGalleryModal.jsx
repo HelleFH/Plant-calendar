@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import CustomModal from '../CustomModal/CustomModal';
-import styles from './ImageGalleryModal.module.scss';
-import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import { FaChevronLeft, FaChevronRight, FaTimes } from 'react-icons/fa'; // Import FaTimes for close icon
 import { useSwipeable } from 'react-swipeable';
+import Modal from 'react-modal';
+import * as styles from './ImageGalleryModal.module.scss'; // Import all styles
 
 const ImageGalleryModal = ({ isOpen, onClose, urls }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -35,47 +35,85 @@ const ImageGalleryModal = ({ isOpen, onClose, urls }) => {
   }
 
   return (
-    <div className={styles.galleryModal}>
-      <CustomModal
-        isOpen={isOpen}
-        onRequestClose={onClose}
-        className={styles.modalOverlay}
-        contentLabel="Images"
-        title="Images"
-        onClose={onClose}
+    <Modal
+      isOpen={isOpen}
+      onRequestClose={onClose}
+      shouldCloseOnOverlayClick={true}
+      className={styles.modalOverlay}
+      style={{
+        overlay: {
+          position: 'fixed',
+          inset: '0px',
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        
+        },
+        content: {
+          padding: '0',
+          height: 'fit-content',
+          width: '100%',
+          position: 'absolute',
+          backgroundColor: 'white',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          maxWidth: '500px',
+          margin: '0 auto',
+          borderRadius:'0px'
+           // Center horizontally
+        },
+      }}
+    >
+      {/* Close button */}
+      <button
+        className={styles.closeButton}
+        style={{
+          position: 'absolute',
+          top: '10px',
+          right: '10px',
+          background: 'none',
+          border: 'none',
+          cursor: 'pointer',
+          fontSize: '1.5rem',
+          color: '#333', // Adjust color as needed
+          zIndex: '1000', // Ensure the close button is above the modal content
+        }}
+        onClick={onClose}
       >
-        <div className={styles.imageGallery}>
-          <button className={`${styles.navBtn} ${styles.leftNav}`} onClick={goToPrevious}>
-            <FaChevronLeft />
-          </button>
-          <div className={styles.imagesContainer} {...swipeHandlers}>
-            {urls.length > 0 && (
-              <a href={urls[currentIndex]} target="_blank" rel="noopener noreferrer">
-                <img
-                  src={urls[currentIndex]}
-                  alt={`Image ${currentIndex}`}
-                  className={styles.image}
-                />
-              </a>
-            )}
-          </div>
-          <button className={`${styles.navBtn} ${styles.rightNav}`} onClick={goToNext}>
-            <FaChevronRight />
-          </button>
+        <FaTimes />
+      </button>
+
+      <div className={styles.imageGallery}>
+        <button className={`${styles.navBtn} ${styles.leftNav}`} onClick={goToPrevious}>
+          <FaChevronLeft />
+        </button>
+        <div className={styles.imagesContainer} {...swipeHandlers}>
+          {urls.length > 0 && (
+            <a href={urls[currentIndex]} target="_blank" rel="noopener noreferrer">
+              <img
+                src={urls[currentIndex]}
+                alt={`Image ${currentIndex}`}
+                className={styles.image}
+              />
+            </a>
+          )}
         </div>
-        <div className={styles.thumbnailContainer}>
-          {urls.map((url, index) => (
-            <img
-              key={index}
-              src={url}
-              alt={`Thumbnail ${index}`}
-              className={`${styles.thumbnail} ${index === currentIndex ? styles.activeThumbnail : ''}`}
-              onClick={() => handleThumbnailClick(index)}
-            />
-          ))}
-        </div>
-      </CustomModal>
-    </div>
+        <button className={`${styles.navBtn} ${styles.rightNav}`} onClick={goToNext}>
+          <FaChevronRight />
+        </button>
+      </div>
+
+      <div className={styles.thumbnailContainer}>
+        {urls.map((url, index) => (
+          <img
+            key={index}
+            src={url}
+            alt={`Thumbnail ${index}`}
+            className={`${styles.thumbnail} ${index === currentIndex ? styles.activeThumbnail : ''}`}
+            onClick={() => handleThumbnailClick(index)}
+          />
+        ))}
+      </div>
+    </Modal>
   );
 };
 

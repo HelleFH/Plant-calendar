@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import axiosInstance from '../axiosInstance';
-import moment from 'moment';
 import DeleteConfirmationModal from '../DeleteConfirmationModal/DeleteConfirmationModal';
 import handleDeleteReminder from '../../Utils/HandleDeleteReminder';
-import { Link } from 'react-router-dom';
 import styles from './CalendarReminder.module.scss';
 import ViewEntryModal from '../ViewEntryModal/ViewEntryModal';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEllipsisH } from '@fortawesome/free-solid-svg-icons';
+
 
 const CalendarReminder = ({
   reminder,
   setReminders,
-  onSelectDate,
 }) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [idToDelete, setIdToDelete] = useState(null);
@@ -32,9 +32,6 @@ const CalendarReminder = ({
     }
   }, [reminder.entryID]);
 
-  const formatDate = (date) => {
-    return moment(date).format('MMMM Do');
-  };
 
   const handleDeleteReminderSuccess = (deletedReminderID) => {
     setReminders((prevReminders) => prevReminders.filter((reminder) => reminder._id !== deletedReminderID));
@@ -59,14 +56,18 @@ const CalendarReminder = ({
 
   return (
     <li className={styles.ReminderItem}>
-      {entryDetails ? (
+      <i className="fas fa-xs fa-bell margin-bottom"></i>
+      {entryDetails && (
         <>
-          <i className="fas fa-xs fa-bell"></i>
-          <h3 onClick={handleViewEntryClick}>{entryDetails.name}</h3>
+          <h3>{entryDetails.name}</h3>
+          <FontAwesomeIcon
+            onClick={handleViewEntryClick}
+            icon={faEllipsisH}
+            className={styles.iconLink}
+            style={{ cursor: 'pointer' }}
+          />
           <p>{reminder.description}</p>
         </>
-      ) : (
-        <p>Loading...</p> // Display a loading state while fetching entry details
       )}
 
       <div onClick={handleDeleteModalOpen}>

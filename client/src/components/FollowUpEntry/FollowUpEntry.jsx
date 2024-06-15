@@ -8,6 +8,9 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 import handleSubmitUpdateFollowUp from '../../Utils/HandleSubmitUpdateFollowUp';
 import handleDeleteFollowUp from '../../Utils/HandleDeleteFollowUp';
 import ViewEntryModal from '../ViewEntryModal/ViewEntryModal';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEllipsisH } from '@fortawesome/free-solid-svg-icons';
+
 const FollowUpEntry = ({
   followUpEntry,
   onDeleteFollowUp,
@@ -58,7 +61,7 @@ const FollowUpEntry = ({
     setShowDeleteModal(false);
     setRefresh((prev) => !prev); // Trigger refresh
   };
-  
+
   const handleViewEntryClick = () => {
     setIsViewEntryModalOpen(true);
   };
@@ -68,13 +71,19 @@ const FollowUpEntry = ({
   };
   return (
     <li className={styles.CalendarEntry}>
-      <div className='flex-row'>
+      <div className='flex-row padding'>
         <h5 onClick={(e) => { e.preventDefault(); toggleExpand(); }}>{formatDate(followUpEntry.date)}</h5>
         <div className='flex-row-center'>
-        <h4>Update for {followUpEntry.name}</h4> <h6>{followUpEntry.entryDate}</h6>             <Link onClick={handleViewEntryClick} className={styles.nameLink}>(View original entry)</Link>
+          <h4>Update for {followUpEntry.name}</h4>         
+          <FontAwesomeIcon 
+          onClick={handleViewEntryClick} icon={faEllipsisH} className={styles.iconLink} 
+          style={{ cursor: 'pointer'}} // Apply style.iconLink if provided
+        
+          />
+          <h6>{followUpEntry.entryDate}</h6>
 
         </div>
-      
+
 
         <i
           onClick={toggleExpand}
@@ -103,7 +112,7 @@ const FollowUpEntry = ({
             <textarea name="notes" value={editedFollowUpEntry.notes} onChange={handleChange} />
             <div className="flex-row-right">
               <Link onClick={() => setIsEditing(false)}>Cancel</Link>
-              <button className="secondary-button" 
+              <button className="secondary-button"
                 onClick={() => {
                   handleSubmitUpdateFollowUp(followUpEntry._id, followUpEntry.entryID, followUpEntry.name, followUpEntry.entryDate, editedFollowUpEntry, file, selectedDate, handleUpdateFollowUpEntry, handleDeleteFollowUp);
                   setIsEditing(false);
@@ -113,10 +122,8 @@ const FollowUpEntry = ({
         ) : (
           <>
 
-          
-            <div className={styles.lineContainer}>
+
               <hr className="long-line"></hr>
-            </div>
 
             {followUpEntry.cloudinaryUrl && <img className="margin-top margin-bottom" src={followUpEntry.cloudinaryUrl} alt={followUpEntry.name} />}
             <div className={styles.EntryFormContainer}>
@@ -145,10 +152,10 @@ const FollowUpEntry = ({
               <button className="primary-button" onClick={() => setIsEditing(true)}>Edit Entry</button>
             </div>
             <ViewEntryModal
-        isOpen={isViewEntryModalOpen}
-        onClose={handleCloseModal}
-        entryID={followUpEntry.entryID} // Pass entryID to fetch specific details
-      />
+              isOpen={isViewEntryModalOpen}
+              onClose={handleCloseModal}
+              entryID={followUpEntry.entryID} // Pass entryID to fetch specific details
+            />
           </>
         )}
       </div>

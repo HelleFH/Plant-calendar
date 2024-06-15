@@ -11,9 +11,11 @@
   h4 {
     display: none;
   }
+  svg {
+    display: none !important;
+  }
 }
 
-.FollowUpEntryList .followUpEntry h5:nth-child(2),
 h6 {
   display: none !important;
 }
@@ -21,16 +23,14 @@ h6 {
   display: none !important;
 }
 .expanded {
-  background-color: white;
-  padding: 1em;
-  height: auto !important;
-  overflow: scroll;
+  @include expanded;
 }
 
 .entryDetails {
   overflow: hidden;
   transition: height 0.3s ease-out;
   height: 0;
+  padding:0 0.5em;
   @include flex-right;
 }
 
@@ -44,18 +44,13 @@ h6 {
   margin-top: 2em;
   background-color: $text-color;
   padding: 0.5em;
-  margin: 0 auto;
+  width: 100%;
 
   .CalendarEntry {
     padding: 0;
   }
-  h5:nth-child(3) {
-    display: none !important;
-  }
 }
-.expanded {
-  height: auto;
-}
+
 .addEntryLink {
   @include flex-row-right;
   padding: 0.5em 0.5em 0.5em 0;

@@ -189,7 +189,7 @@ const CalendarEntry = ({
 
   return (
     <li className={styles.CalendarEntry}>
-      <div className="flex-row">
+      <div className="flex-row padding">
         <h4 onClick={toggleExpand} className={styles.entryName}>
           {entry.name}
         </h4>
@@ -314,9 +314,7 @@ const CalendarEntry = ({
               entryId={entry._id}
               username={username}
             />
-            <div className={styles.lineContainer}>
               <hr className="long-line"></hr>
-            </div>
             <div className="margin-top flex-row">
               <p>Reminders:</p>
               <button className="secondary-button" onClick={toggleReminderModal}>

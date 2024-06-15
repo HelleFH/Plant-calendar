@@ -72,9 +72,7 @@ const SearchPlantAPI = ({ isOpen, onSelectPlant, closeModal }) => {
               <span><h4>Sunlight: </h4>{Array.isArray(plant.sunlight) ? plant.sunlight.join(', ') : plant.sunlight}</span>
               <span><h4>Water:</h4> {plant.watering}</span>
               <button className={styles.selectButton} onClick={() => handleSelectPlant(plant)}>Select</button>
-              <div className={styles.lineContainer}>
                 <hr className="long-line"></hr>
-              </div>
             </div>
           ))}
         </div>

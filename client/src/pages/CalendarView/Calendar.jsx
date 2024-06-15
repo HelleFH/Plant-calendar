@@ -202,9 +202,7 @@ const CalendarComponent = () => {
                       setRefresh={setRefresh}
                     />
                   ))}
-                  <div className={styles.lineContainer}>
                     <hr className="long-line" />
-                  </div>
                 </ul>
               )}
             </div>

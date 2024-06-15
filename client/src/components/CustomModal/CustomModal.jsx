@@ -14,7 +14,7 @@ const CustomModal = ({ isOpen, onClose, title, children }) => {
     >
       <div className={styles.modalContent}>
         <div className={styles.modalHeader}>
-          <h2>{title}</h2>
+          <h4>{title}</h4>
           <span
             className={styles.modalClose}
             type="button"
@@ -24,9 +24,7 @@ const CustomModal = ({ isOpen, onClose, title, children }) => {
             <i className="fas fa-times"></i>
           </span>
         </div>
-        <div className={styles.lineContainer}>
           <hr className="long-line"></hr>
-        </div>
         <div>{children}</div>
       </div>
     </Modal>

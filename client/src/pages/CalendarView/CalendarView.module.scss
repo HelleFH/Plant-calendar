@@ -45,7 +45,6 @@
     width: 100vw;
     max-width: 500px;
     color: rgb(247, 245, 233);
-    border-radius: 5px;
     margin-bottom: 1em;
     padding: 1em;
     align-items: center;
@@ -72,7 +71,6 @@
 .tile {
     background: white;
     color: $text-color;
-    border-radius: $border-radius;
     padding: 1em;
 
     &:enabled:hover,
