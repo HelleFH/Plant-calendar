@@ -1,15 +1,15 @@
-import axiosInstance from '../components/axiosInstance'; // Adjust the path as per your project structure
+// handleDeleteEntry.js
+import axiosInstance from "../components/axiosInstance";
 
-const handleDeleteEntry = async (entryId, onDeleteSuccess) => {
+const handleDeleteEntry = async (deletedEntryId, setEntries, setRefresh) => {
   try {
-    await axiosInstance.delete(`/entries/${entryID}`);
-    console.log(entryId)
-    console.log('Entry deleted successfully:', entryId);
-    if (onDeleteSuccess) {
-      onDeleteSuccess(entryId); // Call the callback function
-    }
+    await axiosInstance.delete(`entries/${deletedEntryId}`);
+    setEntries((prevEntries) =>
+      prevEntries.filter((entry) => entry._id !== deletedEntryId)
+    );
+    setRefresh((prev) => !prev);
   } catch (error) {
-    console.error('Error occurred while deleting entry:', error);
+    console.error('Error deleting entry:', error);
   }
 };
 

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import ImageUpload from '../imageUpload';
 import DeleteConfirmationModal from '../DeleteConfirmationModal/DeleteConfirmationModal';
-import SetCalendarReminder from '../Reminder/SetCalendarReminder';
+import NewCalendarReminder from '../Reminder/SetCalendarReminder';
 import moment from 'moment';
 import styles from './CalendarEntry.module.scss';
 import '@fortawesome/fontawesome-free/css/all.min.css';
@@ -11,37 +11,39 @@ import CreateFollowUpEntry from '../FollowUpEntry/CreateFollowUpEntry';
 import FollowUpEntry from '../FollowUpEntry/FollowUpEntry';
 import handleSubmitUpdate from '../../Utils/HandleSubmitUpdate';
 import ImageGalleryModal from '../ImageGalleryModal/ImageGalleryModal';
-
+import handleDeleteEntry from '../../Utils/HandleDeleteEntry';
+import Reminder from '../Reminder/Reminder';
 const CalendarEntry = ({
   entry,
   setEntries,
   setRefresh,
   followUpDate,
   isModal,
-  onDeleteEntry,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [editedEntry, setEditedEntry] = useState({ ...entry });
   const [file, setFile] = useState(null);
   const [previewSrc, setPreviewSrc] = useState(entry.cloudinaryUrl);
-  const [cloudinaryUrls, setCloudinaryUrls] = useState([]); // New state for Cloudinary URLs
+  const [cloudinaryUrls, setCloudinaryUrls] = useState([]);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [idToDelete, setIdToDelete] = useState(null);
+  const [IdToDelete, setIdToDelete] = useState(null);
   const [isReminderModalOpen, setIsReminderModalOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isImageGalleryModalOpen, setIsImageGalleryModalOpen] = useState(false);
 
   const [followUpEntries, setFollowUpEntries] = useState([]);
-  const [username, setUsername] = useState('');
   const [reminders, setReminders] = useState([]);
-  const [selectedDate, setSelectedDate] = useState(entry.date); // Initialize selectedDate with entry.date
+
+  const [username, setUsername] = useState('');
+  const [selectedDate, setSelectedDate] = useState(entry.date);
 
   const contentRef = useRef(null);
 
   useEffect(() => {
     if (entry._id) {
       fetchFollowUpEntriesByEntryId();
+      fetchRemindersByEntryId();
     }
   }, [entry._id]);
 
@@ -52,33 +54,25 @@ const CalendarEntry = ({
     }
   }, []);
 
-  useEffect(() => {
-    const fetchRemindersByEntryId = async () => {
-      try {
-        const response = await axiosInstance.get(`reminders/entry/${entry._id}`);
-        setReminders(response.data);
-      } catch (error) {
-        console.error('Error fetching reminders by entry ID:', error);
-      }
-    };
-
-    if (entry._id) {
-      fetchRemindersByEntryId();
-    }
-  }, [entry._id]);
-
-  const fetchFollowUpEntriesByEntryId = async () => {
+  const fetchRemindersByEntryId = async () => {
     try {
-      const response = await axiosInstance.get(`entries/follow-up/${entry._id}`);
-      setFollowUpEntries(response.data);
-      const followUpUrls = response.data.map(entry => entry.cloudinaryUrl); // Extract Cloudinary URLs
-      setCloudinaryUrls(followUpUrls); // Update state
+      const response = await axiosInstance.get(`reminders/entry/${entry._id}`);
+      setReminders(response.data);
     } catch (error) {
       console.error('Error fetching follow-up entries by entry ID:', error);
     }
   };
 
-
+  const fetchFollowUpEntriesByEntryId = async () => {
+    try {
+      const response = await axiosInstance.get(`entries/follow-up/${entry._id}`);
+      setFollowUpEntries(response.data);
+      const followUpUrls = response.data.map((entry) => entry.cloudinaryUrl);
+      setCloudinaryUrls(followUpUrls);
+    } catch (error) {
+      console.error('Error fetching follow-up entries by entry ID:', error);
+    }
+  };
 
   const handleChange = (e) => {
     setEditedEntry({ ...editedEntry, [e.target.name]: e.target.value });
@@ -87,8 +81,10 @@ const CalendarEntry = ({
   const handleDeleteReminder = async (deletedReminderId) => {
     try {
       await axiosInstance.delete(`reminders/${deletedReminderId}`);
-      setReminders((prevReminders) => prevReminders.filter((reminder) => reminder._id !== deletedReminderId));
-      setRefresh((prev) => !prev);
+      setReminders((prevReminders) =>
+        prevReminders.filter((reminder) => reminder._id !== deletedReminderId)
+      );
+      fetchRemindersByEntryId();
     } catch (error) {
       console.error('Error deleting reminder:', error);
     }
@@ -97,8 +93,10 @@ const CalendarEntry = ({
   const handleDeleteFollowUp = async (deletedFollowUpId) => {
     try {
       await axiosInstance.delete(`/entries/follow-up/${deletedFollowUpId}`);
-      setFollowUpEntries((prevFollowUpEntries) => prevFollowUpEntries.filter((entry) => entry._id !== deletedFollowUpId));
-      fetchFollowUpEntriesByEntryId(); // Refetch follow-up entries
+      setFollowUpEntries((prevFollowUpEntries) =>
+        prevFollowUpEntries.filter((entry) => entry._id !== deletedFollowUpId)
+      );
+      fetchFollowUpEntriesByEntryId();
     } catch (error) {
       console.error('Error deleting follow-up:', error);
     }
@@ -106,21 +104,16 @@ const CalendarEntry = ({
 
   const onUpdateFollowUpEntry = (updatedFollowUpEntry) => {
     setFollowUpEntries((prevFollowUpEntries) =>
-      prevFollowUpEntries.map((followUpEntry) => (followUpEntry._id === updatedFollowUpEntry._id ? updatedFollowUpEntry : followUpEntry))
+      prevFollowUpEntries.map((followUpEntry) =>
+        followUpEntry._id === updatedFollowUpEntry._id
+          ? updatedFollowUpEntry
+          : followUpEntry
+      )
     );
-    fetchFollowUpEntriesByEntryId(); // Refetch follow-up entries
+    fetchFollowUpEntriesByEntryId();
     setRefresh((prev) => !prev);
   };
 
-  const handleDeleteEntry = async (deletedEntryId) => {
-    try {
-      await axiosInstance.delete(`entries/${deletedEntryId}`);
-      setEntries((prevEntries) => prevEntries.filter((entry) => entry._id !== deletedEntryId));
-      setRefresh((prev) => !prev);
-    } catch (error) {
-      console.error('Error deleting entry:', error);
-    }
-  };
 
   const onDrop = (acceptedFiles) => {
     const currentFile = acceptedFiles[0];
@@ -152,44 +145,47 @@ const CalendarEntry = ({
 
   const handleCloseModal = () => {
     setIsCreateModalOpen(false);
-    fetchFollowUpEntriesByEntryId(); // Refetch follow-up entries
+    fetchFollowUpEntriesByEntryId();
   };
 
   const handleUpdateFollowUpEntry = (updatedFollowUpEntry) => {
     setFollowUpEntries((prevFollowUpEntries) =>
-      prevFollowUpEntries.map((followUpEntry) => (followUpEntry.entryID === updatedFollowUpEntry.entryID ? updatedFollowUpEntry : followUpEntry))
+      prevFollowUpEntries.map((followUpEntry) =>
+        followUpEntry.entryID === updatedFollowUpEntry.entryID
+          ? updatedFollowUpEntry
+          : followUpEntry
+      )
     );
-    setRefresh((prev) => !prev);
-  };
-
-  const handleUpdateEntry = (updatedEntry) => {
-    setEntries((prevEntries) =>
-      prevEntries.map((entry) => (entry._id === updatedEntry._id ? updatedEntry : entry))
-    );
-    setEditedEntry(updatedEntry);
     setRefresh((prev) => !prev);
   };
 
   const handleConfirmDelete = () => {
-    handleDeleteEntry(entry._id); // Call handleDeleteEntry directly
+    handleDeleteEntry(entry._id, setEntries, setRefresh);
     setShowDeleteModal(false);
   };
 
   const handleAddFollowUpEntry = (newFollowUpEntry) => {
-    setFollowUpEntries((prevFollowUpEntries) => [...prevFollowUpEntries, newFollowUpEntry]);
-    fetchFollowUpEntriesByEntryId(); // Refetch follow-up entries
+    setFollowUpEntries((prevFollowUpEntries) => [
+      ...prevFollowUpEntries,
+      newFollowUpEntry,
+    ]);
+    fetchFollowUpEntriesByEntryId();
+  };
+
+  const handleAddReminder = (newReminder) => {
+    setReminders((prevReminders) => [...prevReminders, newReminder]);
+    fetchRemindersByEntryId();
   };
 
   const handleSelectedDateChange = (date) => {
     setSelectedDate(date);
   };
 
-  const urls = [entry.cloudinaryUrl, ...cloudinaryUrls]; // Combine initial and follow-up URLs
-
+  const urls = [entry.cloudinaryUrl, ...cloudinaryUrls];
 
   return (
     <li className={styles.CalendarEntry}>
-      <div className="flex-row padding">
+      <div className="flex-row">
         <h4 onClick={toggleExpand} className={styles.entryName}>
           {entry.name}
         </h4>
@@ -242,16 +238,15 @@ const CalendarEntry = ({
         ) : (
           <>
             <div className="margin-top">
-
-              <h5 className='margin-bottom padding-bottom'>Added on  {moment(entry.date).format('MMMM Do YYYY')}</h5>
-              <img src={entry.cloudinaryUrl} alt={entry.name}  />
-              <Link onClick={toggleImageGalleryModal} className='padding-bottom'><h5>View All Images for {entry.name}</h5></Link>
+              <h5 className="margin-bottom padding-bottom">Added on {moment(entry.date).format('MMMM Do YYYY')}</h5>
+              <img src={entry.cloudinaryUrl} alt={entry.name} />
+              <Link onClick={toggleImageGalleryModal} className={styles.galleryLink}>
+                <h5>View All Images for {entry.name}</h5>
+              </Link>
 
               <div className={styles.EntryFormContainer}>
-
                 <hr className="long-line"></hr>
                 <label>Notes:</label>
-
                 <p>{entry.notes}</p>
                 <hr className="long-line"></hr>
                 <label>Sunlight:</label>
@@ -261,7 +256,6 @@ const CalendarEntry = ({
                 <p>{entry.water}</p>
                 <hr className="long-line margin-bottom"></hr>
               </div>
-
             </div>
             {isCreateModalOpen && (
               <CreateFollowUpEntry
@@ -269,78 +263,22 @@ const CalendarEntry = ({
                 onClose={handleCloseModal}
                 followUpDate={selectedDate}
                 oldEntryID={entry._id}
-                oldEntryName={entry.name} // Pass the entry name here
-                oldEntryDate={entry.date} // Pass the entry name here
+                oldEntryName={entry.name}
+                oldEntryDate={entry.date}
                 sunlight={entry.sunlight}
                 water={entry.water}
                 name={entry.name}
                 handleAddFollowUpEntry={handleAddFollowUpEntry}
-                selectedDate={selectedDate} // Here, selectedDate is passed as a prop
-                handleSelectedDateChange={handleSelectedDateChange} // Pass the function as a prop
+                selectedDate={selectedDate}
+                handleSelectedDateChange={handleSelectedDateChange}
               />
             )}
-            <div className={styles.followUpContainer}>
-              <h4 className='margin-bottom'>Updates for {entry.name} </h4>
-              <div className={styles.FollowUpListContainer}>
-                {followUpEntries.length > 0 && (
-                  <ul className={styles.FollowUpEntryList}>
-                    {followUpEntries.map((followUpEntry, index) => (
-                      <FollowUpEntry
-                        key={index}
-                        followUpEntry={followUpEntry}
-                        selectedDate={followUpDate}
-                        onUpdateFollowUpEntry={onUpdateFollowUpEntry}
-                        onDeleteFollowUp={handleDeleteFollowUp}
-                        setFollowUpEntries={setFollowUpEntries} // Pass setEntries here
-                        setRefresh={setRefresh}
-                        username={username}
-                        handleUpdateFollowUpEntry={handleUpdateFollowUpEntry}
-                        className={styles.followUpEntry}
 
-                      />
-                    ))}
-                  </ul>
-                )}
-
-                <Link className={styles.addEntryLink} onClick={toggleCreateModal}>
-                  + Add an Update
-                </Link>
-              </div>
-            </div>
-            <SetCalendarReminder
-              isOpen={isReminderModalOpen}
-              onClose={toggleReminderModal}
-              date={selectedDate}
-              entryId={entry._id}
-              username={username}
-            />
-              <hr className="long-line"></hr>
-            <div className="margin-top flex-row">
-              <p>Reminders:</p>
-              <button className="secondary-button" onClick={toggleReminderModal}>
-                <i className="fas fa-bell"></i> Set Reminder
-              </button>
-            </div>
-            <ul className="flex-right margin-top">
-              {reminders.map((reminder) => (
-                <li className="flex-row" key={reminder._id}>
-                  <span>
-                    {moment(reminder.date).format('MMMM Do YYYY')} - {reminder.description}
-                  </span>
-                  <span>
-                    <i
-                      className="fas fa-trash"
-                      onClick={() => handleDeleteReminder(reminder._id)}
-                      style={{ cursor: 'pointer', marginLeft: '10px' }}
-                    ></i>
-                  </span>
-                </li>
-              ))}
-            </ul>
             <div className="flex-row-right margin-top margin-bottom">
               <Link
                 className={styles.deleteButton}
-                onClick={() => {
+                onClick={(e) => {
+                  e.preventDefault();
                   setIdToDelete(entry._id);
                   setShowDeleteModal(true);
                 }}
@@ -357,6 +295,72 @@ const CalendarEntry = ({
                 urls={urls}
               />
             </div>
+            <div className={styles.followUpContainer}>
+
+              <div className={styles.FollowUpListContainer}>
+                <div className="flex-row">
+                  <h4>Updates for {entry.name}</h4>
+                  <button className={`primary-button ${styles.followUpButton}`} onClick={toggleCreateModal}>
+                    + Add an Update
+                  </button>
+                </div>
+                {followUpEntries.length > 0 && (
+                  <ul className={styles.FollowUpEntryList}>
+                    {followUpEntries.map((followUpEntry, index) => (
+                      <FollowUpEntry
+                        key={index}
+                        followUpEntry={followUpEntry}
+                        selectedDate={followUpDate}
+                        onUpdateFollowUpEntry={onUpdateFollowUpEntry}
+                        onDeleteFollowUp={handleDeleteFollowUp}
+                        setFollowUpEntries={setFollowUpEntries}
+                        setRefresh={setRefresh}
+                        handleUpdateFollowUpEntry={handleUpdateFollowUpEntry}
+                        className={styles.followUpEntry}
+                      />
+                    ))}
+                  </ul>
+                )}
+
+              </div>
+            </div>
+            <NewCalendarReminder
+              isOpen={isReminderModalOpen}
+              onClose={toggleReminderModal}
+              date={selectedDate}
+              entryID={entry._id}
+              handleAddReminder={handleAddReminder}
+              name={entry.name}
+            />
+
+
+            <div className={styles.followUpContainer}>
+              <div className='flex-row'>
+                <h4>Reminders</h4>
+                <button className={`secondary-button ${styles.reminderButton}`} onClick={toggleReminderModal}>
+                  <i className="fas fa-bell"></i> Set Reminder
+                </button>
+
+              </div>
+              <div className={styles.ReminderListContainer}>
+                {reminders.length > 0 && (
+                  <ul className={styles.EntryList}>
+                    {reminders.map((reminder, index) => (
+                      <Reminder
+                        className={styles.calendarReminder}
+                        key={index}
+                        reminder={reminder}
+                        selectedDate={selectedDate}
+                        setReminders={setReminders}
+                        onDeleteReminder={handleDeleteReminder}
+                        setRefresh={setRefresh}
+                      />
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </div>
+
           </>
         )}
       </div>

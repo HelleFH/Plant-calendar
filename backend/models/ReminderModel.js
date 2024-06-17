@@ -2,11 +2,12 @@
 const mongoose = require('mongoose');
 
 const reminderSchema = new mongoose.Schema({
-  date: { type: Date, required: true }, // Add date field
-  time: { type: String, required: true },
-  description: { type: String, required: true },
-  username: { type: String, required: true },
-  entryId: { type: mongoose.Schema.Types.ObjectId, ref: 'Entry', required: true },
+  name: { type: String, required: true }, // Corrected type to String
+  date: { type: Date, required: true }, // Date field
+  time: { type: String, required: true }, // Marked as required for consistency
+  description: { type: String, required: true }, // Marked as required for consistency
+  userID: { type: String, required: true },
+  entryID: { type: String, required: true },
 });
 
 const Reminder = mongoose.model('Reminder', reminderSchema);

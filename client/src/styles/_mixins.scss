@@ -25,6 +25,27 @@
 @mixin primary-button {
   @include button-styles(darken($text-color, 2%), $secondary-color);
 }
+@mixin text-button {
+  margin-top: 10px; /* Adjust as needed */
+  background-color: white;
+  border: 1px solid #ccc;
+  padding: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  position: absolute;
+  cursor: pointer;
+  right: 0;
+  margin-bottom: 4em;
+
+  @media (min-width: 768px) and (max-width:1200px){
+    right: 15%;
+  }
+  
+  @media (min-width: 1200px) {
+    right: 25%;
+  }
+
+}
 
 @mixin box-shadow($shadow: $box-shadow) {
   box-shadow: $shadow;
@@ -99,7 +120,7 @@
   color: $secondary-color;
   margin: 0 auto;
   background-color: white;
-
+  padding:1em;
 
   .entryDetails {
     overflow: hidden;
@@ -117,7 +138,7 @@
 @mixin expanded {
   background-color: white;
   height: auto;
-  overflow: scroll;
+  overflow: scroll !important;
 }
 @mixin form-container {
   display: flex;

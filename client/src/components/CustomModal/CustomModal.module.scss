@@ -13,11 +13,11 @@
 }
 .modalHeader h4 {
     margin: auto;
-    
 }
-.galleryModal .modalHeader {display:none !important;}
 
 .modalContent {
+    display:flex;
+    flex-direction: column;
     background-color: white;
     position: absolute;
     inset: 50% auto auto 50%;
@@ -29,10 +29,10 @@
     transform: translate(-50%, -50%);
     background-color: lighten($primary-color, 60%);
     max-width: 500px;
-    max-height:95vh;
-    @include flex-right;
+    max-height: 95vh;
+    width:95vw;
+    margin:0 auto;
 }
-.galleryModal .modalHeader {display: none;}
 
 .modalClose {
     font-size: 20px;

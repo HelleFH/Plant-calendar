@@ -1,14 +1,13 @@
 import axiosInstance from '../components/axiosInstance'; 
 
-const handleDeleteReminder = async (reminderId, onDeleteSuccess) => {
+
+const handleDeleteReminder = async (deletedReminderId) => {
   try {
-    await axiosInstance.delete(`/reminders/${reminderId}`);
-    console.log('Reminder deleted successfully');
-    if (onDeleteSuccess) {
-      onDeleteSuccess(reminderId); 
-    }
-  } catch (error) {
-    console.error('Error occurred while deleting reminder:', error);
+    await axiosInstance.delete(`reminders/${deletedReminderId}`);
+    setReminders((prevReminders) => prevReminders.filter((reminder) => reminder._id !== deletedReminderId));
+fetchRemindersByEntryId()    
+} catch (error) {
+    console.error('Error deleting reminder:', error);
   }
 };
 

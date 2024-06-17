@@ -2,19 +2,19 @@ import React, { useState, useEffect } from 'react';
 import Calendar from 'react-calendar';
 import moment from 'moment'; // Import moment to format dates
 import 'react-calendar/dist/Calendar.css';
-import useEntries from '../../components/useEntries';
-import useReminders from '../../components/useReminders';
+import useEntries from '../../components/Entry/useEntries';
+import useReminders from '../../components/Reminder/useReminders';
+import useFollowUpEntries from '../../components/FollowUpEntry/useFollowUpEntries';
 import CalendarEntry from '../../components/Entry/CalendarEntry';
-import CalendarReminder from '../../components/Reminder/CalendarReminder';
+import Reminder from '../../components/Reminder/Reminder';
 import styles from './CalendarView.module.scss';
 import Navbar from '../../components/Navbar/Navbar';
-import useFollowUpEntries from '../../components/useFollowUpEntries';
 import FollowUpEntry from '../../components/FollowUpEntry/FollowUpEntry';
 import NewEntryModal from '../../components/NewEntryModal/NewEntryModal';
-import axiosInstance from '../../components/axiosInstance';
 import Slider from '../../components/SliderComponent/Slider';
 import handleDeleteEntry from '../../Utils/HandleDeleteEntry';
-
+import handleDeleteFollowUp from '../../Utils/HandleDeleteFollowUp';
+import handleDeleteReminder from '../../Utils/HandleDeleteReminder';
 const CalendarComponent = () => {
   const [loggedIn, setLoggedIn] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -48,25 +48,6 @@ const CalendarComponent = () => {
     return className;
   };
 
-  const handleDeleteReminder = async (deletedReminderId) => {
-    try {
-      await axiosInstance.delete(`reminders/${deletedReminderId}`);
-      setReminders((prevReminders) => prevReminders.filter((reminder) => reminder._id !== deletedReminderId));
-      setRefresh((prev) => !prev);
-    } catch (error) {
-      console.error('Error deleting reminder:', error);
-    }
-  };
-
-  const handleDeleteFollowUp = async (deletedFollowUpId) => {
-    try {
-      await axiosInstance.delete(`/entries/follow-up/${deletedFollowUpId}`);
-      setFollowUpEntries((prevFollowUpEntries) => prevFollowUpEntries.filter((entry) => entry._id !== deletedFollowUpId));
-      setRefresh((prev) => !prev);
-    } catch (error) {
-      console.error('Error deleting follow-up:', error);
-    }
-  };
 
   const handleSelectDate = (date) => {
     setSelectedDate(date);
@@ -146,8 +127,6 @@ const CalendarComponent = () => {
           {selectedDate && (entries.length > 0 || followUpEntries.length > 0 || reminders.length > 0) && (
             <h4>Entries for {selectedDate.toDateString()}</h4>
           )}
-          <div className={styles.ListsContainer}>
-            <div className={styles.EntryListContainer}>
               {entries.length > 0 && (
                 <ul className={styles.EntryList}>
                   {entries.map((entry) => (
@@ -157,7 +136,6 @@ const CalendarComponent = () => {
                       setEntries={setEntries}
                       onUpdateEntry={onUpdateEntry}
                       onDeleteEntry={handleDeleteEntry}
-                      onDeleteFollowUp={handleDeleteFollowUp}
                       selectedDate={selectedDate}
                       setRefresh={setRefresh}
                       userID={userID}
@@ -165,8 +143,6 @@ const CalendarComponent = () => {
                   ))}
                 </ul>
               )}
-            </div>
-            <div className={styles.EntryContainer}>
               {followUpEntries.length > 0 && (
                 <ul className={styles.calendarFollowUpList}>
                   {followUpEntries.map((followUpEntry) => (
@@ -185,13 +161,11 @@ const CalendarComponent = () => {
                   ))}
                 </ul>
               )}
-            </div>
-            <div className={styles.ReminderListContainer}>
               {reminders.length > 0 && (
                 <ul className={styles.EntryList}>
-                  <h4 className='margin-top margin-bottom'>Reminders</h4>
+                  <h4>Reminders</h4>
                   {reminders.map((reminder, index) => (
-                    <CalendarReminder
+                    <Reminder
                       className={styles.calendarReminder}
                       key={index}
                       reminder={reminder}
@@ -202,11 +176,8 @@ const CalendarComponent = () => {
                       setRefresh={setRefresh}
                     />
                   ))}
-                    <hr className="long-line" />
                 </ul>
               )}
-            </div>
-          </div>
         </div>
       ) : (
         <div className='flex-center margin-top'>

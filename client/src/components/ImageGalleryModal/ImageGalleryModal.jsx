@@ -45,12 +45,14 @@ const ImageGalleryModal = ({ isOpen, onClose, urls }) => {
           position: 'fixed',
           inset: '0px',
           backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          border:'none',
+          margin:'0 auto'
         
         },
         content: {
           padding: '0',
           height: 'fit-content',
-          width: '100%',
+          width:'99vw',
           position: 'absolute',
           backgroundColor: 'white',
           top: '50%',
@@ -63,7 +65,6 @@ const ImageGalleryModal = ({ isOpen, onClose, urls }) => {
         },
       }}
     >
-      {/* Close button */}
       <button
         className={styles.closeButton}
         style={{
@@ -73,9 +74,8 @@ const ImageGalleryModal = ({ isOpen, onClose, urls }) => {
           background: 'none',
           border: 'none',
           cursor: 'pointer',
-          fontSize: '1.5rem',
-          color: '#333', // Adjust color as needed
-          zIndex: '1000', // Ensure the close button is above the modal content
+          color: '#333',
+          zIndex: '1000', 
         }}
         onClick={onClose}
       >

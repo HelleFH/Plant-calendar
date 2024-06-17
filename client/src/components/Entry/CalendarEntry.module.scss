@@ -11,17 +11,17 @@
   h4 {
     display: none;
   }
-  svg {
+
+  .iconLink {
     display: none !important;
   }
 }
 
-h6 {
-  display: none !important;
-}
+h6,
 .entryChevronModal {
   display: none !important;
 }
+
 .expanded {
   @include expanded;
 }
@@ -30,7 +30,6 @@ h6 {
   overflow: hidden;
   transition: height 0.3s ease-out;
   height: 0;
-  padding:0 0.5em;
   @include flex-right;
 }
 
@@ -40,33 +39,72 @@ h6 {
   display: block;
   min-height: 300px !important;
 }
+
 .followUpContainer {
-  margin-top: 2em;
+  margin-top: 1em;
   background-color: $text-color;
   padding: 0.5em;
   width: 100%;
+  margin-bottom: 1em;
 
   .CalendarEntry {
     padding: 0;
   }
+  svg {
+    display: none !important;
+  }
 }
+.reminderButton, .followUpButton   {
+  padding: 0.3em;
+  font-size: 14px !important;
+  margin-bottom:0.5em;
+}
+
+.galleryLink {
+  float: right;
+  padding-bottom: 1em;
+}
+.reminderList {
+  @include flex-center;
+  padding: 1em;
+  gap: 1em;
+  margin-top: 1em;
+
+}
+.ReminderListContainer {
+  @include entrylist-container;
+
+  svg {
+    display: none !important;
+  }
+  h4 {
+    padding-left: 1em;
+
+  }
+  ul {width:100%;}
+
+}
+
+
 
 .addEntryLink {
   @include flex-row-right;
   padding: 0.5em 0.5em 0.5em 0;
 }
+
 .FollowUpListContainer .FollowUpEntry button:first-child {
   display: none;
 }
+
 .lineContainer {
   padding: 1em 0.5em 1em 0.5em;
 }
 
-.editFormContainer {
+.editFormContainer,
+.EntryFormContainer {
   @include form-container;
 }
 
 .EntryFormContainer {
-  @include entry-form;
-  margin-top: 1em;
+  margin-top: 1em; // Additional margin for EntryFormContainer
 }

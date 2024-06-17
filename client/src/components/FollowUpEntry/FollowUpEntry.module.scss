@@ -12,10 +12,18 @@
 }
 
 
+.textButton {
+@include text-button
+  }
+
+
 .iconLink {
     cursor: pointer;
     padding-left:0.7em;
     color:$secondary-color;
+    justify-self: flex-end;
+    margin-left: auto;
+    padding-right: 1em;
 }
 .expanded { @include expanded
  

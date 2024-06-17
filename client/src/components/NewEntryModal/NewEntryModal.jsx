@@ -62,7 +62,7 @@ const NewEntryModal = ({ isOpen, onClose, selectedDate, setRefresh, refresh }) =
   return (
     <CustomModal isOpen={isOpen} onClose={onClose} title= {moment(selectedDate).format('MMMM Do YYYY')} >
       <div className="flex-center">
-        <button className="primary-button margin-bottom" onClick={handleAddEntryClick}>
+        <button className="primary-button margin-bottom margin-top" onClick={handleAddEntryClick}>
           + Add New Plant
         </button>
         <div className="flex-center">

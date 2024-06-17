@@ -17,7 +17,7 @@ const DeleteConfirmationModal = ({ isOpen, onCancel, onConfirm }) => {
       title="Confirm Delete"
     >
      
-        <div>
+        <div className='margin-top'>
           Are you sure you want to delete this entry?
         </div>
   

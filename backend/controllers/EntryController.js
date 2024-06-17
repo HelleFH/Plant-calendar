@@ -68,21 +68,6 @@ existingEntry.userID =userID,
     res.status(500).json({ error: 'An error occurred while updating entry' });
   }
 };
-// Controller function to get entry details by ID
-const getEntryById = async (req, res) => {
-  try {
-    const entryId = req.params.id; // Adjusted to use req.params.id
-    const entry = await Entry.findById(entryId);
-    if (!entry) {
-      return res.status(404).json({ message: 'Entry not found' });
-    }
-    res.status(200).json(entry);
-  } catch (error) {
-    console.error('Error fetching entry:', error);
-    res.status(500).json({ message: 'Internal server error' });
-  }
-};
-
 
 const getEntriesByDate = async (req, res) => {
   try {
@@ -109,7 +94,26 @@ const getEntriesByDate = async (req, res) => {
       return res.status(500).json({ error: 'Internal server error.' });
   }
 };
+const getEntryById = async (req, res) => {
+  try {
+    const entryID = req.params.id;
 
+    // Validate the ID
+    if (!mongoose.Types.ObjectId.isValid(entryID)) {
+      return res.status(400).json({ message: 'Invalid entry ID' });
+    }
+
+    const entry = await Entry.findById(entryID);
+    if (!entry) {
+      return res.status(404).json({ message: 'Entry not found' });
+    }
+
+    res.status(200).json(entry);
+  } catch (error) {
+    console.error('Error fetching entry:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
 const getSortedEntriesByUserId = async (req, res) => {
   try {
       // Extract userID and sorting criteria from request parameters and query parameters

@@ -45,7 +45,6 @@
     width: 100vw;
     max-width: 500px;
     color: rgb(247, 245, 233);
-    margin-bottom: 1em;
     padding: 1em;
     align-items: center;
 
@@ -59,15 +58,16 @@
         display: none !important;
     }
 }
-.EntryListContainer {
-    padding-bottom: 1em;
-}
+
 .EntryList {
     @include entrylist-container;
+
+    h4 {
+        text-align: left;
+        width: 100%;
+    }
 }
-.ReminderListContainer {
-    @include entrylist-container;
-}
+
 .tile {
     background: white;
     color: $text-color;

@@ -6,17 +6,17 @@ import { Form } from 'react-bootstrap';
 import ImageUpload from '../imageUpload';
 import styles from './CreateFollowUpEntry.module.scss';
 
-const CreateFollowUpEntry = ({ isOpen, onClose, oldEntryID, oldEntryName, oldEntryDate, name, selectedDate, handleAddFollowUpEntry }) => {
+const NewFollowUpEntry = ({ isOpen, onClose, oldEntryID, oldEntryName, oldEntryDate, name, selectedDate, handleAddFollowUpEntry }) => {
     const [file, setFile] = useState(null);
     const [followUpDate, setFollowUpDate] = useState('');
     const [previewSrc, setPreviewSrc] = useState('');
     const [isPreviewAvailable, setIsPreviewAvailable] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
     const navigate = useNavigate();
-    const initialEntryState = {
+    const initialFollowUpState = {
         notes: '',
     };
-    const [entry, setEntry] = useState(initialEntryState);
+    const [followUpEntry, setFollowUpEntry] = useState(initialFollowUpState);
 
     // Set initial followUpDate from selectedDate prop
     useEffect(() => {
@@ -27,13 +27,13 @@ const CreateFollowUpEntry = ({ isOpen, onClose, oldEntryID, oldEntryName, oldEnt
         }
     }, [selectedDate]);
 
-    const createEntry = async () => {
+    const CreateFollowUpEntry = async () => {
         try {
             const formData = new FormData();
             if (file) formData.append('file', file);
             formData.append('name', oldEntryName);
             formData.append('entryDate', oldEntryDate); // only include it once
-            formData.append('notes', entry.notes);
+            formData.append('notes', followUpEntry.notes);
             formData.append('date', followUpDate);
             formData.append('userID', localStorage.getItem('userId'));
             formData.append('entryID', oldEntryID);
@@ -43,6 +43,7 @@ const CreateFollowUpEntry = ({ isOpen, onClose, oldEntryID, oldEntryName, oldEnt
                     'Content-Type': 'multipart/form-data',
                 },
             });
+            
 
             const newFollowUpEntry = response.data;
             handleAddFollowUpEntry(newFollowUpEntry, followUpDate);
@@ -73,18 +74,18 @@ const CreateFollowUpEntry = ({ isOpen, onClose, oldEntryID, oldEntryName, oldEnt
 
     const handleEntrySubmit = async (e) => {
         e.preventDefault();
-        await createEntry();
+        await CreateFollowUpEntry();
     };
 
     const handleInputChange = (event) => {
-        setEntry({
-            ...entry,
+        setFollowUpEntry({
+            ...followUpEntry,
             [event.target.name]: event.target.value,
         });
     };
 
     const handleClearForm = () => {
-        setEntry(initialEntryState);
+        setFollowUpEntry(initialEntryState);
         setFile(null);
         setPreviewSrc('');
         setIsPreviewAvailable(false);
@@ -122,7 +123,7 @@ const CreateFollowUpEntry = ({ isOpen, onClose, oldEntryID, oldEntryName, oldEnt
                         placeholder="Notes"
                         name="notes"
                         className="form-control width-100"
-                        value={entry.notes}
+                        value={followUpEntry.notes}
                         onChange={handleInputChange}
                         style={{ height: '150px', verticalAlign: 'top' }}
                     />
@@ -145,4 +146,4 @@ const CreateFollowUpEntry = ({ isOpen, onClose, oldEntryID, oldEntryName, oldEnt
     );
 };
 
-export default CreateFollowUpEntry;
+export default NewFollowUpEntry;

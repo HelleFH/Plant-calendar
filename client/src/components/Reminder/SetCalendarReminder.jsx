@@ -1,75 +1,70 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styles from './SetReminder.module.scss';
 import { Link } from 'react-router-dom';
+import { Form } from 'react-bootstrap';
 import CustomModal from '../CustomModal/CustomModal';
 import axiosInstance from '../axiosInstance';
 
-const SetCalendarReminder = ({ isOpen, onClose, entryID }) => {
-  const [reminderDate, setReminderDate] = useState('');
-  const [reminderTime, setReminderTime] = useState('');
-  const [reminderDescription, setReminderDescription] = useState('');
-  const [username, setUsername] = useState('');
-  const [entryDetails, setEntryDetails] = useState(null); // State to store entry details
+const NewReminder = ({ isOpen, onClose, entryID, handleAddReminder, name }) => {
+  const initialReminderState = {
+    date: '',
+    time: '',
+    description: '',
+  };
+  const [reminder, setReminder] = useState(initialReminderState);
 
-  // Retrieve username from localStorage
-  useEffect(() => {
-    const storedUsername = localStorage.getItem('username');
-    if (storedUsername) {
-      setUsername(storedUsername);
-    }
-  }, []);
-
-  // Fetch entry details when entryId changes
-  useEffect(() => {
-    const fetchEntryDetails = async () => {
-      try {
-        const response = await axiosInstance.get(`/entries/${entryID}`);
-        setEntryDetails(response.data); // Assuming the response contains entry details
-      } catch (error) {
-        console.error('Error fetching entry details:', error);
-      }
-    };
-
-    if (entryID) {
-      fetchEntryDetails();
-    }
-  }, [entryID]);
-
-  const handleAddReminder = async () => {
+  const createReminder = async () => {
     try {
-      const reminderData = {
-        date: reminderDate,
-        time: reminderTime,
-        description: reminderDescription,
+      const formData = {
+        name,
+        date: reminder.date,
+        time: reminder.time,
+        description: reminder.description,
+        userID: localStorage.getItem('userId'),
         entryID,
-        username, // Include the username
       };
 
-      await axiosInstance.post('/reminders', reminderData);
+      const response = await axiosInstance.post('/reminders', formData);
 
-      console.log('Reminder added:', reminderData);
-      onClose(); // Close the modal after setting the reminder
+      console.log('Reminder added:', response.data);
+      const newReminder = response.data;
+      handleAddReminder(newReminder, reminder.date);
+
+      onClose();
     } catch (error) {
       console.error('Error adding reminder:', error);
     }
   };
+
+  const handleEntrySubmit = async (e) => {
+    e.preventDefault();
+    await createReminder();
+  };
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setReminder({
+      ...reminder,
+      [name]: value,
+    });
+  };
+
   return (
     <CustomModal isOpen={isOpen} onClose={onClose} title="Set Reminder">
-     
-        {entryDetails && (
-          <div className={styles.entryDetails}>
-                    <h4 className='margin-bottom'>Add Reminder for {entryDetails.name}</h4>
-
-          </div>
-        )}
+      <Form onSubmit={handleEntrySubmit}>
+        <div className={styles.entryDetails}>
+          <h4 className='margin-bottom'>Add Reminder for {name}</h4>
+        </div>
         <div className={styles.ReminderForm}>
           <div>
             <label htmlFor="reminderDate">Date</label>
             <input
               type="date"
               id="reminderDate"
-              value={reminderDate}
-              onChange={(e) => setReminderDate(e.target.value)}
+              name="date"
+              value={reminder.date}
+              onChange={handleInputChange}
+              required
             />
           </div>
           <div>
@@ -77,31 +72,36 @@ const SetCalendarReminder = ({ isOpen, onClose, entryID }) => {
             <input
               type="time"
               id="reminderTime"
-              value={reminderTime}
-              onChange={(e) => setReminderTime(e.target.value)}
+              name="time"
+              value={reminder.time}
+              onChange={handleInputChange}
+              required
             />
           </div>
           <div>
             <label htmlFor="reminderDescription">Description</label>
-            <input 
+            <input
               type="text"
               id="reminderDescription"
+              name="description"
               placeholder="Enter description"
-              value={reminderDescription}
-              onChange={(e) => setReminderDescription(e.target.value)}
+              value={reminder.description}
+              onChange={handleInputChange}
+              required
             />
           </div>
         </div>
- 
-      <div className='margin-top flex-row-right'>
-        <Link className="secondary" onClick={onClose}>
-          Close
-        </Link>
-        <button  className="primary-button" onClick={handleAddReminder}>
-          Add Reminder
-        </button>
-      </div>
-      </CustomModal>  );
+        <div className='margin-top flex-row-right'>
+          <Link className="secondary" onClick={onClose}>
+            Close
+          </Link>
+          <button className="primary-button" type="submit">
+            Add Reminder
+          </button>
+        </div>
+      </Form>
+    </CustomModal>
+  );
 };
 
-export default SetCalendarReminder;
+export default NewReminder;

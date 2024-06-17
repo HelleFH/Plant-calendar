@@ -1,25 +1,26 @@
 import { useState, useEffect } from 'react';
-import getEntriesByDateAndId from '../Utils/GetEntriesByDateAndId';
+import getFollowUpEntriesByDateAndId from '../../Utils/getFollowUpEntriesByDateAndId'
 
-const useEntries = (selectedDate, refresh) => {
-  const [entries, setEntries] = useState([]);
-  const [highlightedDates, setHighlightedDates] = useState([]);
+
+const useFollowUpEntries = (selectedDate, refresh) => {
+  const [followUpEntries, setFollowUpEntries] = useState([]);
+  const [highlightedFollowUpDates, setHighlightedFollowUpDates] = useState([]);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchEntries = async (date) => {
+    const fetchFollowUpEntries = async (date) => {
       try {
         const formattedDate = date.toISOString().split('T')[0];
         const userID = localStorage.getItem('userId');
-        const entriesData = await getEntriesByDateAndId(formattedDate, userID);
-        setEntries(entriesData);
+        const followUpEntriesData = await getFollowUpEntriesByDateAndId(formattedDate, userID);
+        setFollowUpEntries(followUpEntriesData);
       } catch (error) {
         console.error('Error occurred while fetching entries:', error);
         setError('An error occurred while fetching entries.');
       }
     };
 
-    const fetchAndSaveEntryDates = async () => {
+    const fetchAndSaveFollowUpEntryDates = async () => {
       try {
         const userID = localStorage.getItem('userId');
         if (!userID) return;
@@ -34,17 +35,17 @@ const useEntries = (selectedDate, refresh) => {
           currentDate.setDate(currentDate.getDate() + 1);
         }
 
-        const highlightedDatesPromises = datesInRange.map(async (date) => {
+        const highlightedFollowUpDatesPromises = datesInRange.map(async (date) => {
           const formattedDate = date.toISOString().split('T')[0];
-          const entriesData = await getEntriesByDateAndId(formattedDate, userID);
-          if (entriesData.length > 0) {
+          const followUpEntriesData = await getFollowUpEntriesByDateAndId(formattedDate, userID);
+          if (followUpEntriesData.length > 0) {
             return date.toDateString();
           }
           return null;
         });
 
-        const highlightedDates = await Promise.all(highlightedDatesPromises);
-        setHighlightedDates(highlightedDates.filter(date => date !== null));
+        const highlightedFollowUpDates = await Promise.all(highlightedFollowUpDatesPromises);
+        setHighlightedFollowUpDates(highlightedFollowUpDates.filter(date => date !== null));
       } catch (error) {
         console.error('Error occurred while fetching entries:', error);
         setError('An error occurred while fetching entries.');
@@ -52,17 +53,17 @@ const useEntries = (selectedDate, refresh) => {
     };
 
     if (selectedDate) {
-      fetchEntries(selectedDate);
-      fetchAndSaveEntryDates();
+      fetchFollowUpEntries(selectedDate);
+      fetchAndSaveFollowUpEntryDates();
     }
   }, [selectedDate, refresh]); // Add refresh to the dependency array
 
   return {
-    entries,
-    highlightedDates,
+    followUpEntries,
+    highlightedFollowUpDates,
     error,
-    setEntries,
+    setFollowUpEntries,
   };
 };
 
-export default useEntries;
+export default useFollowUpEntries;

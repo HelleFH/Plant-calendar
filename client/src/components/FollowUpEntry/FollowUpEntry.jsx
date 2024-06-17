@@ -28,6 +28,8 @@ const FollowUpEntry = ({
   const [idToDelete, setIdToDelete] = useState(null);
   const [selectedDate] = useState(followUpEntry.date);
   const [isViewEntryModalOpen, setIsViewEntryModalOpen] = useState(false);
+  const [isTextOptionVisible, setIsTextOptionVisible] = useState(false);
+
 
 
   const contentRef = useRef(null);
@@ -64,6 +66,10 @@ const FollowUpEntry = ({
 
   const handleViewEntryClick = () => {
     setIsViewEntryModalOpen(true);
+    setIsTextOptionVisible(false)
+  };
+  const toggleVisibility = () => {
+    setIsTextOptionVisible(!isTextOptionVisible);
   };
 
   const handleCloseModal = () => {
@@ -71,18 +77,22 @@ const FollowUpEntry = ({
   };
   return (
     <li className={styles.CalendarEntry}>
-      <div className='flex-row padding'>
+      <div className='flex-row'>
         <h5 onClick={(e) => { e.preventDefault(); toggleExpand(); }}>{formatDate(followUpEntry.date)}</h5>
-        <div className='flex-row-center'>
           <h4>Update for {followUpEntry.name}</h4>         
-          <FontAwesomeIcon 
-          onClick={handleViewEntryClick} icon={faEllipsisH} className={styles.iconLink} 
-          style={{ cursor: 'pointer'}} // Apply style.iconLink if provided
-        
+          <FontAwesomeIcon
+            onClick={toggleVisibility}
+            icon={faEllipsisH}
+            className={styles.iconLink}
+            style={{ cursor: 'pointer' }}
           />
+          {isTextOptionVisible && (
+            <button onClick={handleViewEntryClick} className={styles.textButton}>
+              View main entry
+            </button>
+          )}
           <h6>{followUpEntry.entryDate}</h6>
 
-        </div>
 
 
         <i

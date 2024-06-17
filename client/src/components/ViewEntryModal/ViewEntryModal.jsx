@@ -6,8 +6,8 @@ import axiosInstance from '../axiosInstance';
 
 const ViewEntryModal = ({ isOpen, onClose, entryID }) => {
   const [entry, setEntry] = useState(null);
-  const [entries, setEntries] = useState([]);
-  const [refresh, setRefresh] = useState(false);
+  const [setEntries] = useState([]);
+  const [ setRefresh] = useState(false);
 
 
   const [isEntryExpanded, setIsEntryExpanded] = useState(true); // Initialize isExpanded as false
