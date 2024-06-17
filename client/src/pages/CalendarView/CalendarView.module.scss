@@ -34,7 +34,7 @@
 .backgroundContainer {
     background-size: cover;
     @include flex-center;
-    max-width: 500px;
+    max-width: 700px;
     width: 100vw;
 }
 
@@ -43,7 +43,7 @@
     background-color: $background-color;
     gap: 1em;
     width: 100vw;
-    max-width: 500px;
+    max-width: 700px;
     color: rgb(247, 245, 233);
     padding: 1em;
     align-items: center;
