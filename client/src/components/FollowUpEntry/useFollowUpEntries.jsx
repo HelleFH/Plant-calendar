@@ -56,7 +56,7 @@ const useFollowUpEntries = (selectedDate, refresh) => {
       fetchFollowUpEntries(selectedDate);
       fetchAndSaveFollowUpEntryDates();
     }
-  }, [selectedDate, refresh]); // Add refresh to the dependency array
+  }, [selectedDate, refresh]); 
 
   return {
     followUpEntries,

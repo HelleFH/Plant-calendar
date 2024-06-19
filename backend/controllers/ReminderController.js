@@ -30,23 +30,19 @@ const setReminder = async (req, res) => {
 
 const getRemindersByDate = async (req, res) => {
   try {
-    // Extract date and username from request parameters
     const { date } = req.params;
     const { userID } = req.query;
 
-    // Parse date string into JavaScript Date object
     const searchDate = new Date(date);
 
-    // Get entries for the specified date and username
     const entries = await Reminder.find({
       date: {
         $gte: searchDate,
         $lt: new Date(searchDate.getTime() + 24 * 60 * 60 * 1000)
       },
-      userID: userID // Add username as a condition
+      userID: userID 
     });
 
-    // Send entries as response
     res.json(entries);
   } catch (error) {
     console.error('Error in getting entries by date:', error);

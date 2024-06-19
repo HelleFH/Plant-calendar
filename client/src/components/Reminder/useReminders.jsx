@@ -55,7 +55,7 @@ const useReminders = (selectedDate, refresh) => {
       fetchReminders(selectedDate);
       fetchAndSaveReminderDates();
     }
-  }, [selectedDate, refresh]); // Add refresh to the dependency array
+  }, [selectedDate, refresh]); 
 
   return {
     reminders,

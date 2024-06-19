@@ -1,6 +1,6 @@
 import axiosInstance from '../axiosInstance';
 import React, { useEffect, useState } from 'react';
-import moment from 'moment'; // Import moment to format dates
+import moment from 'moment'; 
 import CreateEntryWithFileUpload from '../Entry/createEntry';
 import CustomModal from '../CustomModal/CustomModal';
 import CreateFollowUpEntry from '../FollowUpEntry/CreateFollowUpEntry';
@@ -29,7 +29,7 @@ const NewEntryModal = ({ isOpen, onClose, selectedDate, setRefresh, refresh }) =
     };
 
     fetchEntries();
-  }, [refresh]); // Ensure entries are fetched on refresh
+  }, [refresh]); 
 
   const handleAddEntryClick = () => {
     setIsCreateEntryModalOpen(true);
@@ -41,13 +41,13 @@ const NewEntryModal = ({ isOpen, onClose, selectedDate, setRefresh, refresh }) =
 
   const handleCloseEntryModal = () => {
     setIsCreateEntryModalOpen(false);
-    setRefresh((prev) => !prev); // Trigger refresh when modal closes
+    setRefresh((prev) => !prev); 
     onClose();
   };
 
   const handleCloseFollowUpModal = () => {
     setIsCreateFollowUpModalOpen(false);
-    setRefresh((prev) => !prev); // Trigger refresh when modal closes
+    setRefresh((prev) => !prev); 
     onClose();
   };
 
@@ -56,7 +56,7 @@ const NewEntryModal = ({ isOpen, onClose, selectedDate, setRefresh, refresh }) =
     setSelectedEntry(value);
     const entryDetails = entries.find((entry) => entry.name === value);
     setSelectedEntryDetails(entryDetails);
-    setIsCreateFollowUpModalOpen(true); // Open the follow-up modal when a name is selected
+    setIsCreateFollowUpModalOpen(true); 
   };
 
   return (

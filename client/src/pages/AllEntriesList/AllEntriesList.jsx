@@ -7,7 +7,7 @@ import styles from './AllEntriesList.module.scss';
 const AllEntriesList = () => {
   const [setRefresh] = useState(false);
   const [entries, setEntries] = useState([]);
-  const [sortBy, setSortBy] = useState('name'); // Initial sort by name
+  const [sortBy, setSortBy] = useState('name');
 
   useEffect(() => {
     const fetchEntries = async () => {
@@ -27,7 +27,7 @@ const AllEntriesList = () => {
     };
 
     fetchEntries();
-  }, [sortBy]); // Fetch entries again when sortBy changes
+  }, [sortBy]); 
 
   const onUpdateEntry = (updatedEntry) => {
     setEntries((prevEntries) =>
@@ -39,7 +39,6 @@ const AllEntriesList = () => {
     setEntries((prevEntries) => prevEntries.filter((entry) => entry._id !== entryId));
   };
 
-  // Utility function to group entries by date
   const groupEntriesByDate = (entries) => {
     return entries.reduce((acc, entry) => {
       const date = new Date(entry.date).toDateString();
@@ -51,7 +50,6 @@ const AllEntriesList = () => {
     }, {});
   };
 
-  // Group entries by date
   const groupedEntries = groupEntriesByDate(entries);
 
   return (

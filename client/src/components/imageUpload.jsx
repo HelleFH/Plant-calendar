@@ -23,7 +23,7 @@ const ImageUpload = ({ onDrop, file, previewSrc, isPreviewAvailable }) => {
     onDrop: PropTypes.func.isRequired,
     file: PropTypes.object,
     previewSrc: PropTypes.string,
-    isPreviewAvailable: PropTypes.bool,  // Change to bool
+    isPreviewAvailable: PropTypes.bool, 
   };
   return (
     <div className="upload-section">

@@ -1,4 +1,3 @@
-// handleDeleteEntry.js
 import axiosInstance from "../components/axiosInstance";
 
 const handleDeleteEntry = async (deletedEntryId, setEntries, setRefresh) => {

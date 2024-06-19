@@ -12,7 +12,7 @@ const handleSubmitUpdate = async (
     let uploadResponse;
 
     if (file) {
-      // If there's a new file, upload it first
+      
       const formData = new FormData();
       formData.append('file', file);
       formData.append('name', editedEntry.name);
@@ -29,7 +29,7 @@ const handleSubmitUpdate = async (
         },
       });
 
-      // Prepare data for updating the entry
+      
       const data = {
         name: editedEntry.name,
         notes: editedEntry.notes,
@@ -42,18 +42,16 @@ const handleSubmitUpdate = async (
 
       };
 
-      // Send PUT request to update the entry
+      
       const updateResponse = await axiosInstance.put(`/entries/${id}`, data);
 
-      // Delete the old entry
+      
       await handleDeleteEntry(id);
       onDeleteEntry(id);
 
-      // Update the parent component with the new entry data
       onUpdateEntry(updateResponse.data);
 
     } else {
-      // Prepare data for updating the entry if no new file is uploaded
       const data = {
         name: editedEntry.name,
         notes: editedEntry.notes,
@@ -65,15 +63,14 @@ const handleSubmitUpdate = async (
         userID:localStorage.getItem('userId'),
       };
 
-      // Send PUT request to update the entry
+      
       const updateResponse = await axiosInstance.put(`/entries/${id}`, data);
 
-      // Update the parent component with the new entry data
       onUpdateEntry(updateResponse.data);
     }
   } catch (error) {
     console.error('Error updating entry:', error);
-    throw error; // Throw the error for the caller to handle
+    throw error; 
   }
 };
 

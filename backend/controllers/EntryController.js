@@ -71,23 +71,19 @@ existingEntry.userID =userID,
 
 const getEntriesByDate = async (req, res) => {
   try {
-      // Extract date and username from request parameters
       const { date } = req.params;
       const { userID } = req.query;
 
-      // Parse date string into JavaScript Date object
       const searchDate = new Date(date);
 
-      // Get entries for the specified date and username
       const entries = await Entry.find({ 
           date: { 
               $gte: searchDate, 
               $lt: new Date(searchDate.getTime() + 24 * 60 * 60 * 1000) 
           },
-          userID: userID // Add username as a condition
+          userID: userID 
       });
 
-      // Send entries as response
       res.json(entries);
   } catch (error) {
       console.error('Error in getting entries by date:', error);
@@ -98,7 +94,6 @@ const getEntryById = async (req, res) => {
   try {
     const entryID = req.params.id;
 
-    // Validate the ID
     if (!mongoose.Types.ObjectId.isValid(entryID)) {
       return res.status(400).json({ message: 'Invalid entry ID' });
     }
@@ -116,7 +111,6 @@ const getEntryById = async (req, res) => {
 };
 const getSortedEntriesByUserId = async (req, res) => {
   try {
-      // Extract userID and sorting criteria from request parameters and query parameters
       const { userID } = req.params;
       console.log('requestID' , userID)
       const { sortBy } = req.query;
@@ -124,15 +118,13 @@ const getSortedEntriesByUserId = async (req, res) => {
       // Define the sort options based on the sortBy parameter
       let sortOptions = {};
       if (sortBy === 'date') {
-          sortOptions = { date: 1 }; // Sort by date in ascending order
+          sortOptions = { date: 1 };
       } else if (sortBy === 'name') {
-          sortOptions = { name: 1 }; // Sort by name in ascending order
+          sortOptions = { name: 1 }; 
       }
 
-      // Get entries for the specified userID and apply sorting
       const entries = await Entry.find({ userID }).sort(sortOptions);
 
-      // Send entries as response
       res.json(entries);
   } catch (error) {
       console.error('Error in getting entries by userID:', error);
@@ -143,13 +135,11 @@ const getSortedEntriesByUserId = async (req, res) => {
 const getEntryByEntryID = async (req, res) => {
   const { entryID } = req.params;
 
-  // Validate entryID to ensure it's a valid ObjectId
   if (!mongoose.Types.ObjectId.isValid(entryID)) {
       return res.status(400).json({ error: 'Invalid entryID.' });
   }
 
   try {
-      // Find the normal entry by _id (assuming entryID is the _id of NormalEntry)
       const entry = await Entry.findById(entryID);
 
       if (!entry) {

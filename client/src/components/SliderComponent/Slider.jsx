@@ -10,9 +10,9 @@ const Slider = () => {
     const [isPaused, setIsPaused] = useState(false);
 
     useEffect(() => {
-        // Set the quotes from the imported data
+        
         setQuotes(quotesData);
-        setCurrentQuoteIndex(Math.floor(Math.random() * quotesData.length)); // Set random initial index
+        setCurrentQuoteIndex(Math.floor(Math.random() * quotesData.length));
     }, []);
 
     useEffect(() => {

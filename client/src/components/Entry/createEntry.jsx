@@ -63,15 +63,14 @@ const CreateEntryWithFileUpload = ({ isOpen, onClose, selectedDate, setRefresh }
       onCloseAndNavigate(); 
       setRefresh((prev) => !prev);
 
-      // Navigate to the calendar page
     } catch (error) {
       console.error('Error creating entry:', error);
       setErrorMsg('Error creating entry, please try again.');
     }
   };
   const onCloseAndNavigate = () => {
-    onClose();  // Close the modal
-    navigate('/calendar');  // Navigate to the calendar page
+    onClose();  
+    navigate('/calendar');  
 };
   const onDrop = (files) => {
     const [uploadedFile] = files;
@@ -130,8 +129,8 @@ const CreateEntryWithFileUpload = ({ isOpen, onClose, selectedDate, setRefresh }
   };
 
   const handleCancel = () => {
-    onClose();  // Close the CreateEntryWithFileUpload modal
-    navigate('/calendar');  // Navigate to the calendar page
+    onClose();  
+    navigate('/calendar');  
   };
 
   return (

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import CustomModal from '../CustomModal/CustomModal';
-import CalendarEntry from '../Entry/CalendarEntry'; // Adjust the path based on your actual structure
+import CalendarEntry from '../Entry/CalendarEntry'; 
 import styles from './ViewEntryModal.module.scss';
 import axiosInstance from '../axiosInstance';
 
@@ -10,7 +10,7 @@ const ViewEntryModal = ({ isOpen, onClose, entryID }) => {
   const [ setRefresh] = useState(false);
 
 
-  const [isEntryExpanded, setIsEntryExpanded] = useState(true); // Initialize isExpanded as false
+  const [isEntryExpanded, setIsEntryExpanded] = useState(true); 
 
   console.log('entryID:', entryID);
 

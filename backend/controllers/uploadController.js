@@ -16,19 +16,17 @@ cloudinary.config({
 const uploadController = async (req, res) => {
     const { name, notes, sunlight, water, date, username, userID } = req.body;
 
-    // Check if username existss
+
     if (!username) {
         return res.status(400).json({ error: 'Username is required.' });
     }
 
-    // Check if date exists before accessing it
     if (!date) {
         return res.status(400).json({ error: 'Date is required.' });
     }
 
-    const { buffer } = req.file; // Extract file buffer
+    const { buffer } = req.file; 
 
-    // Upload file to Cloudinary directly from the buffer
     const result = await cloudinary.uploader.upload_stream({ resource_type: 'auto' }, async (error, result) => {
         if (error) {
             console.error('Error while uploading to Cloudinary:', error);
@@ -42,12 +40,12 @@ const uploadController = async (req, res) => {
             notes,
             sunlight,
             water,
-            date, // Include date when creating the new entry
+            date, 
             cloudinaryUrl: result.secure_url,
             cloudinaryPublicId: result.public_id,
             cloudinaryDeleteToken: deletionToken,
             username: username,
-            userID: userID // Include the username retrieved from the request body
+            userID: userID 
         });
 
         await entry.save();
@@ -60,24 +58,20 @@ const uploadController = async (req, res) => {
 
 const getEntriesByDate = async (req, res) => {
     try {
-        // Extract date and username from request parameters
-        const { date } = req.params;
+            const { date } = req.params;
         const { userID } = req.query;
 
-        // Parse date string into JavaScript Date object
-        const searchDate = new Date(date);
+            const searchDate = new Date(date);
 
-        // Get entries for the specified date and username
-        const entries = await Entry.find({ 
+            const entries = await Entry.find({ 
             date: { 
                 $gte: searchDate, 
                 $lt: new Date(searchDate.getTime() + 24 * 60 * 60 * 1000) 
             },
-            userID: userID // Add username as a condition
+            userID: userID 
         });
 
-        // Send entries as response
-        res.json(entries);
+            res.json(entries);
     } catch (error) {
         console.error('Error in getting entries by date:', error);
         return res.status(500).json({ error: 'Internal server error.' });

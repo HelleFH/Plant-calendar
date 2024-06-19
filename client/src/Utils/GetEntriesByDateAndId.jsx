@@ -8,7 +8,6 @@ const getEntriesByDateAndId = async (date, userID) => {
     return response.data;
   } catch (error) {
     if (error.response && error.response.status === 404) {
-      // No entries found for the date and username, return an empty array
       return [];
     } else {
       throw error;

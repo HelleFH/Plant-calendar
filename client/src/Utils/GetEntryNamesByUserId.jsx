@@ -16,9 +16,8 @@ const EntryNamesByUserId = ({ userID }) => {
       }
     };
 
-    // Fetch entry names when the component mounts
     fetchEntryNames();
-  }, [userID]); // Fetch entry names whenever the userID changes
+  }, [userID]); 
 
   return (
     <div>

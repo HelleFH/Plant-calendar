@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import Calendar from 'react-calendar';
-import moment from 'moment'; // Import moment to format dates
 import 'react-calendar/dist/Calendar.css';
 import useEntries from '../../components/Entry/useEntries';
 import useReminders from '../../components/Reminder/useReminders';
@@ -87,7 +86,7 @@ const CalendarComponent = () => {
     setCurrentMonth(activeStartDate);
     const firstDayOfMonth = new Date(activeStartDate.getFullYear(), activeStartDate.getMonth(), 1);
     setSelectedDate(firstDayOfMonth);
-    setRefresh((prev) => !prev); // Trigger refresh to fetch entries
+    setRefresh((prev) => !prev); 
   };
 
   useEffect(() => {

@@ -22,7 +22,6 @@ const login = async (req, res) => {
         }
       );
 
-      // Send username back in the response
       return res.status(200).json({ msg: "user logged in", token, username: foundUser.name });
     } else {
       return res.status(400).json({ msg: "Bad password" });

@@ -41,7 +41,7 @@ const SearchPlantAPI = ({ isOpen, onSelectPlant, closeModal }) => {
   <CustomModal
   isOpen={isOpen}
   onRequestClose={closeModal}
-  onClose={closeModal} // Ensure onClose prop is passed
+  onClose={closeModal} 
   title="Search Database"
   contentLabel="Search Plant Modal"
 >
@@ -58,7 +58,7 @@ const SearchPlantAPI = ({ isOpen, onSelectPlant, closeModal }) => {
       <CustomModal
   isOpen={showResultsModal}
   onRequestClose={handleResultsModalClose}
-  onClose={handleResultsModalClose} // Ensure onClose prop is passed
+  onClose={handleResultsModalClose} 
   title="Search Results"
   contentLabel="Search Results Modal"
 >

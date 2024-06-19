@@ -55,7 +55,7 @@ const useEntries = (selectedDate, refresh) => {
       fetchEntries(selectedDate);
       fetchAndSaveEntryDates();
     }
-  }, [selectedDate, refresh]); // Add refresh to the dependency array
+  }, [selectedDate, refresh]); 
 
   return {
     entries,

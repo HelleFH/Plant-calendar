@@ -29,10 +29,8 @@ const Reminder = ({ reminder, onDeleteReminder, setRefresh }) => {
       fetchEntryDetails();
     }
 
-    // Add event listener when component mounts
     document.addEventListener('click', handleClickOutside);
 
-    // Cleanup the event listener when component unmounts
     return () => {
       document.removeEventListener('click', handleClickOutside);
     };
@@ -60,7 +58,7 @@ const Reminder = ({ reminder, onDeleteReminder, setRefresh }) => {
   const handleConfirmDelete = async () => {
     await onDeleteReminder(idToDelete);
     setShowDeleteModal(false);
-    setRefresh((prev) => !prev); // Trigger refresh
+    setRefresh((prev) => !prev); 
   };
 
   return (
@@ -74,7 +72,7 @@ const Reminder = ({ reminder, onDeleteReminder, setRefresh }) => {
             icon={faEllipsisH}
             className={styles.iconLink}
             style={{ cursor: 'pointer' }}
-            ref={ellipsisRef} // Assign ref to the ellipsis icon
+            ref={ellipsisRef} 
           />
           {isTextOptionVisible && (
             <button onClick={handleViewEntryClick} className={styles.textButton}>

@@ -22,7 +22,6 @@ const Login = () => {
         localStorage.setItem('auth', JSON.stringify(token));
         localStorage.setItem('username', JSON.stringify(username));
 
-        // Fetch the user ID using the email provided at login
         const userIdResponse = await axiosInstance.get(`/users/${email}`);
         const { _id } = userIdResponse.data;
         localStorage.setItem('userId', JSON.stringify(_id));
