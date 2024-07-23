@@ -1,5 +1,18 @@
 import axiosInstance from '../components/axiosInstance';
 
+
+const fetchFollowUpEntriesByEntryId = async () => {
+  try {
+    const response = await axiosInstance.get(`/entries/follow-up/${entry._id}`);
+    setFollowUpEntries(response.data);
+
+    const followUpUrls = response.data.flatMap(entry => entry.images?.map(img => img.cloudinaryUrl) || []);
+    setCloudinaryUrls(prevUrls => [...prevUrls, ...followUpUrls]);
+  } catch (error) {
+    console.error('Error fetching follow-up entries by entry ID:', error);
+  }
+};
+
 const handleDeleteFollowUpById = async (followUpId, setFollowUpEntries, fetchFollowUpEntriesByEntryId) => {
   try {
     await axiosInstance.delete(`entries/follow-up/${followUpId}`);
@@ -17,32 +30,43 @@ const handleDeleteFollowUpById = async (followUpId, setFollowUpEntries, fetchFol
     console.error('Error deleting follow-up:', error);
   }
 };
-
-
  const handleDeleteFollowUpsByEntryId = async (
   entryId, 
   setFollowUpEntries, 
-  fetchFollowUpEntriesByEntryId, 
   setRefresh
 ) => {
   try {
-    // Fetch follow-up entries associated with the entry
-    const followUpEntries = await fetchFollowUpEntriesByEntryId(entryId);
+    console.log('Deleting follow-ups for entry ID:', entryId);
+    const response = await axiosInstance.get(`/entries/follow-up/${entryId}`);
+    
+    // Log the response to verify its structure
+    console.log('API Response:', response.data);
+    
+    // Ensure response.data is an array
+    const followUpEntries = Array.isArray(response.data) ? response.data : [];
+    
+    console.log('Follow-up entries:', followUpEntries);
 
-    // If there are follow-up entries, delete them
-    if (followUpEntries && followUpEntries.length > 0) {
-      await axiosInstance.delete(`/follow-ups/entry/${entryId}`);
-      setFollowUpEntries((prevFollowUpEntries) =>
-        prevFollowUpEntries.filter((followUp) => followUp.entryId !== entryId)
-      );
-      if (typeof setRefresh === 'function') {
-        setRefresh((prev) => !prev);
-      } else {
-        console.error('setRefresh is not a function');
-      }
+    await Promise.all(
+      followUpEntries.map(async (followUpEntry) => {
+        console.log('Deleting follow-up entry:', followUpEntry._id);
+        await axiosInstance.delete(`/entries/follow-up/${followUpEntry._id}`);
+      })
+    );
+
+    if (setFollowUpEntries) {
+      setFollowUpEntries([]);
+    }
+
+    if (fetchFollowUpEntriesByEntryId) {
+      fetchFollowUpEntriesByEntryId();
+    }
+
+    if (setRefresh) {
+      setRefresh((prev) => !prev);
     }
   } catch (error) {
-    console.error('Error deleting follow-ups:', error);
+    console.error('Error deleting follow-ups by entry ID:', error);
   }
 };
 

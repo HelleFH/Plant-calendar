@@ -43,6 +43,7 @@ router.get('/reminders/entry/:entryID', reminderController.getRemindersByEntryId
 
 router.delete('/entries/:id', entryController.deleteEntry);
 router.delete('/entries/follow-up/:id', followUpController.deleteFollowUp);
+router.delete('/delete-entry/follow-up/:entryID', followUpController.deleteFollowUpsByEntryId);
 router.delete('/reminders/:id', reminderController.deleteReminder);
 
 router.put('/entries/:id', entryController.updateEntry);

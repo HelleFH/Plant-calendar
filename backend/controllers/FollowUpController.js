@@ -9,20 +9,32 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
+const deleteFollowUpsByEntryId = async (req, res) => {
+  const { entryID } = req.params;  // Ensure this matches the URL parameter name
+  console.log('Received entryID for deletion:', entryID);
 
-const deleteFollowUpsByEntryId = async (entryId) => {
   try {
-    const followUps = await FollowUpEntry.find({ EntryID: entryId });
+    // Find and delete associated follow-ups
+    const followUps = await FollowUpEntry.find({ entryID: entryID });
+
+    if (followUps.length === 0) {
+      console.log('No follow-ups found for entryID:', entryID);
+      return res.status(404).json({ message: 'No follow-ups found' });
+    }
+
     for (const followUp of followUps) {
       const { cloudinaryPublicId } = followUp;
       if (cloudinaryPublicId) {
-        await cloudinary.uploader.destroy(cloudinaryPublicId);
+        const result = await cloudinary.uploader.destroy(cloudinaryPublicId);
+        console.log('Cloudinary deletion result:', result);
       }
     }
-    await FollowUpEntry.deleteMany({ EntryID: entryId });
+
+    await FollowUpEntry.deleteMany({ entryID: entryID });
+    res.json({ message: 'Follow-ups deleted successfully' });
   } catch (error) {
     console.error('Error deleting follow-ups:', error);
-    throw error; // Propagate the error to be handled by the caller
+    res.status(500).json({ error: 'Internal server error' });
   }
 };
 const uploadFollowUpController = async (req, res) => {
@@ -91,7 +103,7 @@ const deleteFollowUp = async (req, res) => {
     }
 
     const { cloudinaryPublicId } = deletedFollowUp;
-    console.log('Cloudinary public_id:', cloudinaryPublicId);
+    console.log('Follow_up_Cloudinary public_id:', cloudinaryPublicId);
 
     if (cloudinaryPublicId) {
       const result = await cloudinary.uploader.destroy(cloudinaryPublicId);
