@@ -10,6 +10,7 @@ import { handleDeleteFollowUpById } from '../../Utils/HandleDeleteFollowUp';
 import ViewEntryModal from '../ViewEntryModal/ViewEntryModal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsisH } from '@fortawesome/free-solid-svg-icons';
+import axiosInstance from '../axiosInstance';
 
 const FollowUpEntry = ({
   followUpEntry = {},
@@ -20,8 +21,8 @@ const FollowUpEntry = ({
   const [isEditing, setIsEditing] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [editedFollowUpEntry, setEditedFollowUpEntry] = useState({ ...followUpEntry });
-  const [files, setFiles] = useState([]); // Manage multiple files
-  const [previewSrcs, setPreviewSrcs] = useState(followUpEntry.cloudinaryUrl ? [followUpEntry.cloudinaryUrl] : []); // Initialize with existing URL
+  const [files, setFiles] = useState([]);
+  const [previewSrcs, setPreviewSrcs] = useState(followUpEntry.images?.map(img => img.cloudinaryUrl) || []);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [idToDelete, setIdToDelete] = useState(null);
   const [selectedDate] = useState(followUpEntry.date);
@@ -35,11 +36,9 @@ const FollowUpEntry = ({
   };
 
   const onDrop = (acceptedFiles) => {
-    // Update files and preview sources
     const updatedFiles = [...files, ...acceptedFiles];
     setFiles(updatedFiles);
 
-    // Generate previews for new files
     const filePreviews = acceptedFiles.map(file => {
       const reader = new FileReader();
       return new Promise(resolve => {
@@ -51,6 +50,19 @@ const FollowUpEntry = ({
     Promise.all(filePreviews).then(previews => {
       setPreviewSrcs([...previewSrcs, ...previews]);
     });
+  };
+
+  const handleDeleteImage = async (index) => {
+    const imageUrl = previewSrcs[index];
+    try {
+      const response = await axiosInstance.post('/delete-image', { url: imageUrl });
+      if (response.data.success) {
+        setPreviewSrcs(prevSrcs => prevSrcs.filter((_, i) => i !== index));
+        setFiles(prevFiles => prevFiles.filter((_, i) => i !== index));
+      }
+    } catch (error) {
+      console.error('Error deleting image from Cloudinary:', error);
+    }
   };
 
   const toggleExpand = () => {
@@ -135,8 +147,27 @@ const FollowUpEntry = ({
         ) : (
           <>
             <hr className="long-line"></hr>
-            {followUpEntry.cloudinaryUrl && (
-              <img className="margin-top margin-bottom" src={followUpEntry.cloudinaryUrl} alt={followUpEntry.name} />
+            {previewSrcs.length > 0 ? (
+              <div>
+                {previewSrcs.map((url, index) => (
+                  <div key={index} className="image-container">
+                    <img
+                      src={url}
+                      alt={`Image ${index}`}
+                      className="image-preview"
+                      onError={(e) => {
+                        console.error('Error loading image:', e.target.src);
+                        e.target.src = 'fallback-image-url'; // Optional: Use a fallback image URL
+                      }}
+                    />
+                    {isEditing && (
+                      <button onClick={() => handleDeleteImage(index)}>Delete</button>
+                    )}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p>No image available</p>
             )}
             <div className={styles.EntryFormContainer}>
               <hr className="long-line"></hr>
@@ -148,7 +179,7 @@ const FollowUpEntry = ({
               <Link
                 className={styles.deleteButton}
                 onClick={() => {
-                  setIdToDelete(followUpEntry._id); // Set idToDelete to entry._id
+                  setIdToDelete(followUpEntry._id);
                   setShowDeleteModal(true);
                 }}
               >
@@ -166,7 +197,7 @@ const FollowUpEntry = ({
             <ViewEntryModal
               isOpen={isViewEntryModalOpen}
               onClose={handleCloseModal}
-              entryID={followUpEntry.entryID} // Pass entryID to fetch specific details
+              entryID={followUpEntry.entryID}
             />
           </>
         )}

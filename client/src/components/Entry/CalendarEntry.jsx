@@ -56,7 +56,7 @@ const CalendarEntry = ({
 
   const fetchRemindersByEntryId = async () => {
     try {
-      const response = await axiosInstance.get(`reminders/entry/${entry._id}`);
+      const response = await axiosInstance.get(`/reminders/entry/${entry._id}`);
       setReminders(response.data);
     } catch (error) {
       console.error('Error fetching reminders by entry ID:', error);
@@ -65,12 +65,11 @@ const CalendarEntry = ({
 
   const fetchFollowUpEntriesByEntryId = async () => {
     try {
-      const response = await axiosInstance.get(`entries/follow-up/${entry._id}`);
+      const response = await axiosInstance.get(`/entries/follow-up/${entry._id}`);
       setFollowUpEntries(response.data);
 
-      // Extract image URLs from follow-up entries
       const followUpUrls = response.data.flatMap(entry => entry.images?.map(img => img.cloudinaryUrl) || []);
-      setCloudinaryUrls(prevUrls => [...prevUrls, ...followUpUrls]); // Combine with existing URLs
+      setCloudinaryUrls(prevUrls => [...prevUrls, ...followUpUrls]);
     } catch (error) {
       console.error('Error fetching follow-up entries by entry ID:', error);
     }
@@ -82,7 +81,7 @@ const CalendarEntry = ({
 
   const handleDeleteReminder = async (deletedReminderId) => {
     try {
-      await axiosInstance.delete(`reminders/${deletedReminderId}`);
+      await axiosInstance.delete(`/reminders/${deletedReminderId}`);
       setReminders(prevReminders =>
         prevReminders.filter(reminder => reminder._id !== deletedReminderId)
       );
@@ -94,7 +93,7 @@ const CalendarEntry = ({
 
   const handleDeleteFollowUpByEntryID = async (deletedFollowUpId) => {
     try {
-      await axiosInstance.delete(`entries/follow-up/${deletedFollowUpId}`);
+      await axiosInstance.delete(`/entries/follow-up/${deletedFollowUpId}`);
       setFollowUpEntries(prevFollowUpEntries =>
         prevFollowUpEntries.filter(entry => entry._id !== deletedFollowUpId)
       );
@@ -102,18 +101,6 @@ const CalendarEntry = ({
     } catch (error) {
       console.error('Error deleting follow-up:', error);
     }
-  };
-
-  const onUpdateFollowUpEntry = (updatedFollowUpEntry) => {
-    setFollowUpEntries(prevFollowUpEntries =>
-      prevFollowUpEntries.map(followUpEntry =>
-        followUpEntry._id === updatedFollowUpEntry._id
-          ? updatedFollowUpEntry
-          : followUpEntry
-      )
-    );
-    fetchFollowUpEntriesByEntryId();
-    setRefresh(prev => !prev);
   };
 
   const onDrop = (acceptedFiles) => {
@@ -126,6 +113,21 @@ const CalendarEntry = ({
     });
 
     reader.readAsDataURL(currentFile);
+  };
+
+  const handleDeleteImage = async (index) => {
+    const imageUrl = cloudinaryUrls[index];
+
+    try {
+      // Call Cloudinary API to delete the image
+      const response = await axiosInstance.post('/delete-image', { url: imageUrl });
+      if (response.data.success) {
+        setCloudinaryUrls((prevUrls) => prevUrls.filter((_, i) => i !== index));
+        setPreviewSrcs((prevSrcs) => prevSrcs.filter((_, i) => i !== index));
+      }
+    } catch (error) {
+      console.error('Error deleting image from Cloudinary:', error);
+    }
   };
 
   const toggleReminderModal = () => {
@@ -148,7 +150,17 @@ const CalendarEntry = ({
     setIsCreateModalOpen(false);
     fetchFollowUpEntriesByEntryId();
   };
-
+  const onUpdateFollowUpEntry = (updatedFollowUpEntry) => {
+    setFollowUpEntries((prevFollowUpEntries) =>
+      prevFollowUpEntries.map((followUpEntry) =>
+        followUpEntry._id === updatedFollowUpEntry._id
+          ? updatedFollowUpEntry
+          : followUpEntry
+      )
+    );
+    fetchFollowUpEntriesByEntryId();
+    setRefresh((prev) => !prev);
+  };
   const handleUpdateEntry = (updatedEntry) => {
     setEntries(prevEntries =>
       prevEntries.map(entry => (entry._id === updatedEntry._id ? updatedEntry : entry))
@@ -156,7 +168,7 @@ const CalendarEntry = ({
     setEditedEntry(updatedEntry);
     setRefresh(prev => !prev);
   };
-
+  
   const handleUpdateFollowUpEntry = (updatedFollowUpEntry) => {
     setFollowUpEntries(prevFollowUpEntries =>
       prevFollowUpEntries.map(followUpEntry =>
@@ -168,16 +180,17 @@ const CalendarEntry = ({
     setRefresh(prev => !prev);
   };
 
+
   const handleConfirmDelete = () => {
     if (idToDelete) {
       handleDeleteEntry(
-        idToDelete, // The ID to delete
-        setEntries, // Function to set entries
-        setFollowUpEntries, // Function to set follow-up entries
-        setReminders, // Function to set reminders
-        fetchFollowUpEntriesByEntryId, // Function to fetch follow-up entries by entry ID
-        fetchRemindersByEntryId, // Function to fetch reminders by entry ID
-        setRefresh // Function to refresh the state
+        idToDelete,
+        setEntries,
+        setFollowUpEntries,
+        setReminders,
+        fetchFollowUpEntriesByEntryId,
+        fetchRemindersByEntryId,
+        setRefresh
       );
       setShowDeleteModal(false);
     } else {
@@ -202,7 +215,6 @@ const CalendarEntry = ({
     setSelectedDate(date);
   };
 
-  // Aggregate all image URLs
   const allUrls = [entry.cloudinaryUrl, ...cloudinaryUrls].filter(Boolean);
 
   return (
@@ -230,8 +242,8 @@ const CalendarEntry = ({
           <div className={styles.editFormContainer}>
             <ImageUpload
               onDrop={onDrop}
-              file={files[0]}
-              previewSrc={previewSrcs[0]}
+              previewSrcs={previewSrcs}
+              onDelete={handleDeleteImage}
               isPreviewAvailable={!!previewSrcs.length}
             />
             <button
@@ -256,16 +268,20 @@ const CalendarEntry = ({
               {allUrls.length > 0 && (
                 <div>
                   {allUrls.map((url, index) => (
-                    <img
-                      key={index}
-                      src={url}
-                      alt={`Image ${index}`}
-                      className="image-preview"
-                      onError={(e) => {
-                        console.error('Error loading image:', e.target.src);
-                        e.target.src = 'fallback-image-url'; // Optional: Use a fallback image URL
-                      }}
-                    />
+                    <div key={index} className="image-container">
+                      <img
+                        src={url}
+                        alt={`Image ${index}`}
+                        className="image-preview"
+                        onError={(e) => {
+                          console.error('Error loading image:', e.target.src);
+                          e.target.src = 'fallback-image-url'; // Optional: Use a fallback image URL
+                        }}
+                      />
+                      {isEditing && (
+                        <button onClick={() => handleDeleteImage(index)}>Delete</button>
+                      )}
+                    </div>
                   ))}
                 </div>
               )}

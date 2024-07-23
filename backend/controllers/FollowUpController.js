@@ -3,6 +3,13 @@ const cloudinary = require('cloudinary').v2;
 const { generateDeletionToken } = require('../utils/tokenUtils');
 const mongoose = require('mongoose');
 
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+
 const deleteFollowUpsByEntryId = async (entryId) => {
   try {
     const followUps = await FollowUpEntry.find({ EntryID: entryId });
@@ -18,71 +25,59 @@ const deleteFollowUpsByEntryId = async (entryId) => {
     throw error; // Propagate the error to be handled by the caller
   }
 };
-
-
 const uploadFollowUpController = async (req, res) => {
+  const { notes, userID, entryID, date, name, entryDate } = req.body;
+  const files = req.files; // Expecting multiple files in req.files
+
+  if (!userID || !date) {
+    return res.status(400).json({ error: 'UserID and Date are required.' });
+  }
+
+  if (!files || files.length === 0) {
+    return res.status(400).json({ error: 'At least one image is required.' });
+  }
+
   try {
-    const { notes, userID, entryID, date, name, entryDate } = req.body;
-
-    if (!userID) {
-      return res.status(400).json({ error: 'userID is required.' });
-    }
-
-    if (!date) {
-      return res.status(400).json({ error: 'Date is required.' });
-    }
-
-    if (!req.files || req.files.length === 0) {
-      return res.status(400).json({ error: 'No files uploaded.' });
-    }
-
-    // Array to hold Cloudinary upload results
-    const uploadPromises = req.files.map(file => {
+    // Handle image uploads to Cloudinary
+    const imagePromises = files.map(file => {
       return new Promise((resolve, reject) => {
-        cloudinary.uploader.upload_stream({ resource_type: 'auto' }, (error, result) => {
+        const stream = cloudinary.uploader.upload_stream({ resource_type: 'auto' }, (error, result) => {
           if (error) {
-            console.error('Error while uploading to Cloudinary:', error);
-            reject(new Error('Error while uploading entry data. Try again later.'));
+            reject(error);
           } else {
-            resolve(result);
+            resolve({
+              cloudinaryUrl: result.secure_url,
+              cloudinaryPublicId: result.public_id,
+              cloudinaryDeleteToken: generateDeletionToken()
+            });
           }
-        }).end(file.buffer);
+        });
+
+        stream.end(file.buffer);
       });
     });
 
-    // Wait for all uploads to complete
-    const uploadResults = await Promise.all(uploadPromises);
+    const images = await Promise.all(imagePromises);
 
-    // Generate deletion tokens for each uploaded file
-    const followUpEntries = uploadResults.map(result => {
-      const deletionToken = generateDeletionToken(); // Function to generate a unique deletion token
-
-      return new FollowUpEntry({
-        name,
-        notes,
-        date,
-        entryDate,
-        cloudinaryUrl: result.secure_url,
-        cloudinaryPublicId: result.public_id,
-        cloudinaryDeleteToken: deletionToken,
-        userID,
-        entryID,
-        entryDate,
-      });
+    // Create a new FollowUpEntry
+    const followUpEntry = new FollowUpEntry({
+      name,
+      notes,
+      date,
+      entryDate,
+      images, // Save multiple images
+      userID,
+      entryID
     });
 
-    // Save all follow-up entries to the database
-    await FollowUpEntry.insertMany(followUpEntries);
+    await followUpEntry.save();
 
-    res.json({ msg: 'Entry data uploaded successfully.' });
+    res.json({ msg: 'Follow-up entry data uploaded successfully.', followUpEntry });
   } catch (error) {
-    console.error('Error in FollowUpController:', error);
-    return res.status(500).json({ error: 'Internal server error.' });
+    console.error('Error while processing the follow-up upload:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 };
-
-module.exports = { uploadFollowUpController };
-
 
 
 const deleteFollowUp = async (req, res) => {
@@ -195,6 +190,7 @@ const getFollowUpEntriesByDate = async (req, res) => {
     return res.status(500).json({ error: 'Internal server error.' });
   }
 };
+
 module.exports = {
   uploadFollowUpController,
   getFollowUpEntriesByEntryId,

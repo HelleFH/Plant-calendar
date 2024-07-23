@@ -76,10 +76,14 @@ const CalendarComponent = () => {
   };
 
   const handleUpdateFollowUpEntry = (updatedFollowUpEntry) => {
-    setFollowUpEntries((prevFollowUpEntries) =>
-      prevFollowUpEntries.map((followUpEntry) => (followUpEntry._id === updatedFollowUpEntry._id ? updatedFollowUpEntry : followUpEntry))
+    setFollowUpEntries(prevFollowUpEntries =>
+      prevFollowUpEntries.map(followUpEntry =>
+        followUpEntry.entryID === updatedFollowUpEntry.entryID
+          ? updatedFollowUpEntry
+          : followUpEntry
+      )
     );
-    setRefresh((prev) => !prev);
+    setRefresh(prev => !prev);
   };
 
   const handleMonthChange = ({ activeStartDate }) => {
