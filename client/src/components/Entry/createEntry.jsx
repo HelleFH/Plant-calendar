@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Form } from 'react-bootstrap';
 import { useNavigate, Link } from 'react-router-dom';
-import ImageUpload from '../imageUpload';
+import ImageUpload from '../imageUpload'; // Adjust to handle multiple images
 import SearchPlantAPI from '../SearchAPI/SearchPlantAPI';
 import styles from './CreateEntry.module.scss';
 import CustomModal from '../CustomModal/CustomModal';
 import axiosInstance from '../axiosInstance';
 
 const CreateEntryWithFileUpload = ({ isOpen, onClose, selectedDate, setRefresh }) => {
-  const [file, setFile] = useState(null);
-  const [previewSrc, setPreviewSrc] = useState('');
-  const [isPreviewAvailable, setIsPreviewAvailable] = useState(false);
+  const [files, setFiles] = useState([]); // Array to handle multiple files
+  const [previewSrcs, setPreviewSrcs] = useState([]); // Array of previews
   const [errorMsg, setErrorMsg] = useState('');
   const navigate = useNavigate();
   const [showSearchPlantModal, setShowSearchPlantModal] = useState(false);
@@ -37,17 +36,16 @@ const CreateEntryWithFileUpload = ({ isOpen, onClose, selectedDate, setRefresh }
   const createEntry = async () => {
     try {
       const formData = new FormData();
-      if (file) formData.append('file', file);
+      files.forEach((file) => formData.append('images', file)); // Append each file to FormData
       formData.append('name', entry.name);
       formData.append('notes', entry.notes);
       formData.append('sunlight', entry.sunlight);
       formData.append('water', entry.water);
-      
+  
       const selectedDateMidnight = new Date(entry.date);
       selectedDateMidnight.setHours(0, 0, 0, 0);
-      
-      formData.append('date', selectedDateMidnight.toISOString());
   
+      formData.append('date', selectedDateMidnight.toISOString());
       formData.append('username', localStorage.getItem('username'));
       formData.append('userID', localStorage.getItem('userId'));
   
@@ -57,32 +55,38 @@ const CreateEntryWithFileUpload = ({ isOpen, onClose, selectedDate, setRefresh }
         },
       });
   
-      setFile(null);
-      setPreviewSrc('');
-      setIsPreviewAvailable(false)
-      onCloseAndNavigate(); 
+      // Clear state
+      setFiles([]);
+      setPreviewSrcs([]);
+      onCloseAndNavigate();
       setRefresh((prev) => !prev);
-
+  
     } catch (error) {
       console.error('Error creating entry:', error);
       setErrorMsg('Error creating entry, please try again.');
     }
   };
+
   const onCloseAndNavigate = () => {
-    onClose();  
-    navigate('/calendar');  
-};
-  const onDrop = (files) => {
-    const [uploadedFile] = files;
-    setFile(uploadedFile);
+    onClose();
+    navigate('/calendar');
+  };
 
-    const fileReader = new FileReader();
-    fileReader.onload = () => {
-      setPreviewSrc(fileReader.result);
-    };
-    fileReader.readAsDataURL(uploadedFile);
+  const onDrop = (droppedFiles) => {
+    const newFiles = Array.from(droppedFiles);
+    setFiles((prevFiles) => [...prevFiles, ...newFiles]);
 
-    setIsPreviewAvailable(Boolean(uploadedFile.name.match(/\.(jpeg|jpg|png)$/)));
+    const newPreviews = newFiles.map(file => {
+      const fileReader = new FileReader();
+      return new Promise(resolve => {
+        fileReader.onload = () => resolve(fileReader.result);
+        fileReader.readAsDataURL(file);
+      });
+    });
+
+    Promise.all(newPreviews).then(previews => {
+      setPreviewSrcs((prevSrcs) => [...prevSrcs, ...previews]);
+    });
   };
 
   const handleEntrySubmit = async (e) => {
@@ -122,15 +126,14 @@ const CreateEntryWithFileUpload = ({ isOpen, onClose, selectedDate, setRefresh }
 
   const handleClearForm = () => {
     setEntry(initialEntryState);
-    setFile(null);
-    setPreviewSrc('');
-    setIsPreviewAvailable(false);
+    setFiles([]);
+    setPreviewSrcs([]);
     setErrorMsg('');
   };
 
   const handleCancel = () => {
-    onClose();  
-    navigate('/calendar');  
+    onClose();
+    navigate('/calendar');
   };
 
   return (
@@ -139,9 +142,8 @@ const CreateEntryWithFileUpload = ({ isOpen, onClose, selectedDate, setRefresh }
         {errorMsg && <p className="errorMsg">{errorMsg}</p>}
         <ImageUpload
           onDrop={onDrop}
-          file={file}
-          previewSrc={previewSrc}
-          isPreviewAvailable={isPreviewAvailable}
+          files={files}
+          previewSrcs={previewSrcs} // Pass the array of previews
         />
         <div className={styles.formContainer}>
           <div className='flex-row'>
@@ -182,8 +184,6 @@ const CreateEntryWithFileUpload = ({ isOpen, onClose, selectedDate, setRefresh }
               value={entry.water}
               onChange={handleInputChange}
             />
-          </div>
-          <div className='form-group'>
           </div>
           <div className="form-group margin-bottom">
             <textarea

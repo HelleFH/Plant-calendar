@@ -12,8 +12,8 @@ import FollowUpEntry from '../../components/FollowUpEntry/FollowUpEntry';
 import NewEntryModal from '../../components/NewEntryModal/NewEntryModal';
 import Slider from '../../components/SliderComponent/Slider';
 import handleDeleteEntry from '../../Utils/HandleDeleteEntry';
-import handleDeleteFollowUp from '../../Utils/HandleDeleteFollowUp';
-import handleDeleteReminder from '../../Utils/HandleDeleteReminder';
+import { handleDeleteFollowUpById } from '../../Utils/HandleDeleteFollowUp';
+import { handleDeleteReminderById } from '../../Utils/HandleDeleteReminder';
 const CalendarComponent = () => {
   const [loggedIn, setLoggedIn] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -148,7 +148,7 @@ const CalendarComponent = () => {
                     <FollowUpEntry
                       key={followUpEntry._id}
                       followUpEntry={followUpEntry}
-                      onDeleteFollowUp={handleDeleteFollowUp}
+                      onDeleteFollowUp={handleDeleteFollowUpById}
                       setRefresh={setRefresh}
                       onUpdateFollowUpEntry={onUpdateFollowUpEntry}
                       userID={userID}
@@ -171,7 +171,7 @@ const CalendarComponent = () => {
                       selectedDate={selectedDate}
                       setReminders={setReminders}
                       onSelectDate={handleSelectDate}
-                      onDeleteReminder={handleDeleteReminder}
+                      onDeleteReminder={handleDeleteReminderById}
                       setRefresh={setRefresh}
                     />
                   ))}

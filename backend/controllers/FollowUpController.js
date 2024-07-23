@@ -3,6 +3,22 @@ const cloudinary = require('cloudinary').v2;
 const { generateDeletionToken } = require('../utils/tokenUtils');
 const mongoose = require('mongoose');
 
+const deleteFollowUpsByEntryId = async (entryId) => {
+  try {
+    const followUps = await FollowUpEntry.find({ EntryID: entryId });
+    for (const followUp of followUps) {
+      const { cloudinaryPublicId } = followUp;
+      if (cloudinaryPublicId) {
+        await cloudinary.uploader.destroy(cloudinaryPublicId);
+      }
+    }
+    await FollowUpEntry.deleteMany({ EntryID: entryId });
+  } catch (error) {
+    console.error('Error deleting follow-ups:', error);
+    throw error; // Propagate the error to be handled by the caller
+  }
+};
+
 
 const uploadFollowUpController = async (req, res) => {
   try {
@@ -16,38 +32,56 @@ const uploadFollowUpController = async (req, res) => {
       return res.status(400).json({ error: 'Date is required.' });
     }
 
-    const { buffer } = req.file; 
+    if (!req.files || req.files.length === 0) {
+      return res.status(400).json({ error: 'No files uploaded.' });
+    }
 
-    cloudinary.uploader.upload_stream({ resource_type: 'auto' }, async (error, result) => {
-      if (error) {
-        console.error('Error while uploading to Cloudinary:', error);
-        return res.status(400).json({ error: 'Error while uploading entry data. Try again later.' });
-      }
+    // Array to hold Cloudinary upload results
+    const uploadPromises = req.files.map(file => {
+      return new Promise((resolve, reject) => {
+        cloudinary.uploader.upload_stream({ resource_type: 'auto' }, (error, result) => {
+          if (error) {
+            console.error('Error while uploading to Cloudinary:', error);
+            reject(new Error('Error while uploading entry data. Try again later.'));
+          } else {
+            resolve(result);
+          }
+        }).end(file.buffer);
+      });
+    });
 
-      const deletionToken = generateDeletionToken(); 
+    // Wait for all uploads to complete
+    const uploadResults = await Promise.all(uploadPromises);
 
-      const followUpEntry = new FollowUpEntry({
+    // Generate deletion tokens for each uploaded file
+    const followUpEntries = uploadResults.map(result => {
+      const deletionToken = generateDeletionToken(); // Function to generate a unique deletion token
+
+      return new FollowUpEntry({
         name,
         notes,
         date,
-        entryDate, 
+        entryDate,
         cloudinaryUrl: result.secure_url,
         cloudinaryPublicId: result.public_id,
         cloudinaryDeleteToken: deletionToken,
-        userID: userID,
-        entryID: entryID,
-        entryDate: entryDate,
+        userID,
+        entryID,
+        entryDate,
       });
+    });
 
-      await followUpEntry.save();
+    // Save all follow-up entries to the database
+    await FollowUpEntry.insertMany(followUpEntries);
 
-      res.json({ msg: 'Entry data uploaded successfully.' });
-    }).end(buffer);
+    res.json({ msg: 'Entry data uploaded successfully.' });
   } catch (error) {
     console.error('Error in FollowUpController:', error);
     return res.status(500).json({ error: 'Internal server error.' });
   }
 };
+
+module.exports = { uploadFollowUpController };
 
 
 
@@ -166,5 +200,6 @@ module.exports = {
   getFollowUpEntriesByEntryId,
   updateFollowUp,
   deleteFollowUp,
-  getFollowUpEntriesByDate
+  getFollowUpEntriesByDate,
+  deleteFollowUpsByEntryId 
 };

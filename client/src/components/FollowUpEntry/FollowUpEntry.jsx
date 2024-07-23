@@ -6,31 +6,27 @@ import DeleteConfirmationModal from '../DeleteConfirmationModal/DeleteConfirmati
 import styles from './FollowUpEntry.module.scss';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import handleSubmitUpdateFollowUp from '../../Utils/HandleSubmitUpdateFollowUp';
-import handleDeleteFollowUp from '../../Utils/HandleDeleteFollowUp';
+import { handleDeleteFollowUpById } from '../../Utils/HandleDeleteFollowUp';
 import ViewEntryModal from '../ViewEntryModal/ViewEntryModal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsisH } from '@fortawesome/free-solid-svg-icons';
 
 const FollowUpEntry = ({
-  followUpEntry,
+  followUpEntry = {},
   onDeleteFollowUp,
   setRefresh,
   handleUpdateFollowUpEntry,
-
-
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [editedFollowUpEntry, setEditedFollowUpEntry] = useState({ ...followUpEntry });
-  const [file, setFile] = useState(null);
-  const [previewSrc, setPreviewSrc] = useState(followUpEntry.cloudinaryUrl);
+  const [files, setFiles] = useState([]); // Manage multiple files
+  const [previewSrcs, setPreviewSrcs] = useState(followUpEntry.cloudinaryUrl ? [followUpEntry.cloudinaryUrl] : []); // Initialize with existing URL
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [idToDelete, setIdToDelete] = useState(null);
   const [selectedDate] = useState(followUpEntry.date);
   const [isViewEntryModalOpen, setIsViewEntryModalOpen] = useState(false);
   const [isTextOptionVisible, setIsTextOptionVisible] = useState(false);
-
-
 
   const contentRef = useRef(null);
 
@@ -39,15 +35,22 @@ const FollowUpEntry = ({
   };
 
   const onDrop = (acceptedFiles) => {
-    const currentFile = acceptedFiles[0];
-    setFile(currentFile);
+    // Update files and preview sources
+    const updatedFiles = [...files, ...acceptedFiles];
+    setFiles(updatedFiles);
 
-    const reader = new FileReader();
-    reader.addEventListener('load', () => {
-      setPreviewSrc(reader.result);
+    // Generate previews for new files
+    const filePreviews = acceptedFiles.map(file => {
+      const reader = new FileReader();
+      return new Promise(resolve => {
+        reader.onload = () => resolve(reader.result);
+        reader.readAsDataURL(file);
+      });
     });
 
-    reader.readAsDataURL(currentFile);
+    Promise.all(filePreviews).then(previews => {
+      setPreviewSrcs([...previewSrcs, ...previews]);
+    });
   };
 
   const toggleExpand = () => {
@@ -61,13 +64,14 @@ const FollowUpEntry = ({
   const handleConfirmDelete = async () => {
     await onDeleteFollowUp(idToDelete);
     setShowDeleteModal(false);
-    setRefresh((prev) => !prev); // Trigger refresh
+    setRefresh(prev => !prev); // Trigger refresh
   };
 
   const handleViewEntryClick = () => {
     setIsViewEntryModalOpen(true);
-    setIsTextOptionVisible(false)
+    setIsTextOptionVisible(false);
   };
+
   const toggleVisibility = () => {
     setIsTextOptionVisible(!isTextOptionVisible);
   };
@@ -75,25 +79,24 @@ const FollowUpEntry = ({
   const handleCloseModal = () => {
     setIsViewEntryModalOpen(false);
   };
+
   return (
     <li className={styles.CalendarEntry}>
       <div className='flex-row'>
         <h5 onClick={(e) => { e.preventDefault(); toggleExpand(); }}>{formatDate(followUpEntry.date)}</h5>
-          <h4>Update for {followUpEntry.name}</h4>         
-          <FontAwesomeIcon
-            onClick={toggleVisibility}
-            icon={faEllipsisH}
-            className={styles.iconLink}
-            style={{ cursor: 'pointer' }}
-          />
-          {isTextOptionVisible && (
-            <button onClick={handleViewEntryClick} className={styles.textButton}>
-              View main entry
-            </button>
-          )}
-          <h6>{followUpEntry.entryDate}</h6>
-
-
+        <h4>Update for {followUpEntry.name}</h4>
+        <FontAwesomeIcon
+          onClick={toggleVisibility}
+          icon={faEllipsisH}
+          className={styles.iconLink}
+          style={{ cursor: 'pointer' }}
+        />
+        {isTextOptionVisible && (
+          <button onClick={handleViewEntryClick} className={styles.textButton}>
+            View main entry
+          </button>
+        )}
+        <h6>{followUpEntry.entryDate}</h6>
 
         <i
           onClick={toggleExpand}
@@ -114,8 +117,8 @@ const FollowUpEntry = ({
           <div className={styles.editFormContainer}>
             <ImageUpload
               onDrop={onDrop}
-              file={file}
-              previewSrc={previewSrc}
+              files={files} // Pass multiple files
+              previewSrcs={previewSrcs} // Pass multiple previews
               isPreviewAvailable={true}
             />
             <label>Notes:</label>
@@ -124,18 +127,17 @@ const FollowUpEntry = ({
               <Link onClick={() => setIsEditing(false)}>Cancel</Link>
               <button className="secondary-button"
                 onClick={() => {
-                  handleSubmitUpdateFollowUp(followUpEntry._id, followUpEntry.entryID, followUpEntry.name, followUpEntry.entryDate, editedFollowUpEntry, file, selectedDate, handleUpdateFollowUpEntry, handleDeleteFollowUp);
+                  handleSubmitUpdateFollowUp(followUpEntry._id, followUpEntry.entryID, followUpEntry.name, followUpEntry.entryDate, editedFollowUpEntry, files, selectedDate, handleUpdateFollowUpEntry, handleDeleteFollowUpById, setRefresh);
                   setIsEditing(false);
                 }}>Save</button>
             </div>
           </div>
         ) : (
           <>
-
-
-              <hr className="long-line"></hr>
-
-            {followUpEntry.cloudinaryUrl && <img className="margin-top margin-bottom" src={followUpEntry.cloudinaryUrl} alt={followUpEntry.name} />}
+            <hr className="long-line"></hr>
+            {followUpEntry.cloudinaryUrl && (
+              <img className="margin-top margin-bottom" src={followUpEntry.cloudinaryUrl} alt={followUpEntry.name} />
+            )}
             <div className={styles.EntryFormContainer}>
               <hr className="long-line"></hr>
               <label>Notes:</label>

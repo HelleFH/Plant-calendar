@@ -1,13 +1,19 @@
 const { Entry } = require('../models/EntryModel');
 const cloudinary = require('cloudinary').v2;
 const mongoose = require('mongoose');
-
-
+const { deleteFollowUpsByEntryId } = require('./FollowUpController');
+const { deleteRemindersByEntryId } = require('./ReminderController');
 
 const deleteEntry = async (req, res) => {
-const { id } = req.params;
+  const { id } = req.params;
+
+  // Validate ID
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ error: 'Invalid ID format' });
+  }
 
   try {
+    // Delete the main entry
     const deletedEntry = await Entry.findByIdAndDelete(id);
 
     if (!deletedEntry) {
@@ -17,12 +23,17 @@ const { id } = req.params;
     const { cloudinaryPublicId } = deletedEntry;
     console.log('Cloudinary public_id:', cloudinaryPublicId);
 
+    // Delete image from Cloudinary if it exists
     if (cloudinaryPublicId) {
       const result = await cloudinary.uploader.destroy(cloudinaryPublicId);
       console.log('Cloudinary deletion result:', result);
     }
 
-    res.json({ message: 'Entry deleted successfully', deletedEntry });
+    // Delete associated follow-ups and reminders by EntryID
+    await deleteFollowUpsByEntryId(id);
+    await deleteRemindersByEntryId(id);
+
+    res.json({ message: 'Entry and related data deleted successfully', deletedEntry });
   } catch (error) {
     console.error('Error deleting entry:', error);
     res.status(500).json({ error: 'Internal server error' });
@@ -31,41 +42,63 @@ const { id } = req.params;
 
 const updateEntry = async (req, res) => {
   const { id } = req.params;
-  const { name, notes, sunlight, water, cloudinaryUrl, userID } = req.body;
-console.log(userID)
+  const { name, notes, sunlight, water, date, username, userID, imagesToAdd } = req.body;
+  const files = req.files; // Expecting new files for update
+
+  // Validate ID
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ error: 'Invalid ID format' });
+  }
+
   try {
-    let existingEntry = await Entry.findById(id);
+    const existingEntry = await Entry.findById(id);
+
     if (!existingEntry) {
-      return res.status(404).json({ error: 'Entry not found' });
+      return res.status(404).json({ error: 'Entry not found.' });
     }
 
-    if (cloudinaryUrl && existingEntry.cloudinaryUrl !== cloudinaryUrl) {
-      await Entry.findByIdAndDelete(id);
-      existingEntry = await Entry.create({
-        name,
-        notes,
-        sunlight,
-        water,
-        cloudinaryUrl,
-        date: existingEntry.date,
-        username: existingEntry.username,
-        userID:existingEntry.userID,
+    // Handle existing images
+    if (existingEntry.images.length > 0) {
+      const deletePromises = existingEntry.images.map(image => {
+        return cloudinary.uploader.destroy(image.cloudinaryPublicId);
       });
-      return res.json({ message: 'Entry updated successfully', updatedEntry: existingEntry });
+      await Promise.all(deletePromises);
     }
 
-    existingEntry.name = name;
-    existingEntry.notes = notes;
-    existingEntry.sunlight = sunlight;
-    existingEntry.water = water;
-    existingEntry.cloudinaryUrl = cloudinaryUrl;
-existingEntry.userID =userID,
-    existingEntry = await existingEntry.save();
-    
-    res.json({ message: 'Entry updated successfully', updatedEntry: existingEntry });
+    // Handle new images
+    const newImages = files ? await Promise.all(
+      files.map(file => {
+        return new Promise((resolve, reject) => {
+          cloudinary.uploader.upload_stream({ resource_type: 'auto' }, (error, result) => {
+            if (error) {
+              reject(error);
+            } else {
+              resolve({
+                cloudinaryUrl: result.secure_url,
+                cloudinaryPublicId: result.public_id,
+                cloudinaryDeleteToken: generateDeletionToken()
+              });
+            }
+          }).end(file.buffer);
+        });
+      })
+    ) : [];
+
+    const updatedEntry = await Entry.findByIdAndUpdate(id, {
+      name,
+      notes,
+      sunlight,
+      water,
+      date,
+      images: newImages, 
+      username,
+      userID
+    }, { new: true });
+
+    res.json(updatedEntry);
   } catch (error) {
     console.error('Error updating entry:', error);
-    res.status(500).json({ error: 'An error occurred while updating entry' });
+    res.status(500).json({ error: 'Internal server error' });
   }
 };
 

@@ -1,11 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-
-const ImageUpload = ({ onDrop, file, previewSrc, isPreviewAvailable }) => {
+const ImageUpload = ({ onDrop, previewSrcs }) => {
   const handleFileChange = (event) => {
-    const selectedFile = event.target.files[0];
-    onDrop([selectedFile]);
+    const selectedFiles = Array.from(event.target.files);
+    onDrop(selectedFiles);
   };
 
   const handleDragOver = (event) => {
@@ -16,15 +15,10 @@ const ImageUpload = ({ onDrop, file, previewSrc, isPreviewAvailable }) => {
   const handleDrop = (event) => {
     event.preventDefault();
     event.stopPropagation();
-    const droppedFile = event.dataTransfer.files[0];
-    onDrop([droppedFile]);
+    const droppedFiles = Array.from(event.dataTransfer.files);
+    onDrop(droppedFiles);
   };
-  ImageUpload.propTypes = {
-    onDrop: PropTypes.func.isRequired,
-    file: PropTypes.object,
-    previewSrc: PropTypes.string,
-    isPreviewAvailable: PropTypes.bool, 
-  };
+
   return (
     <div className="upload-section">
       <div
@@ -33,32 +27,35 @@ const ImageUpload = ({ onDrop, file, previewSrc, isPreviewAvailable }) => {
         onDragOver={handleDragOver}
         onDrop={handleDrop}
       >
-        <div>
-          <input
-            type="file"
-            className='margin-top'
-            onChange={handleFileChange}
-            accept="image/*"
-          />
-        </div>
+        <input
+          type="file"
+          className='margin-top'
+          onChange={handleFileChange}
+          accept="image/*"
+          multiple
+        />
       </div>
 
-      {previewSrc ? (
-        isPreviewAvailable ? (
-          <div className="image-preview margin-top">
-            <img className="preview-image" style={{maxHeight:'250px', margin:'0 auto'}} src={previewSrc} alt="Preview" />
-          </div>
-        ) : (
-          <div className="preview-message">
-            <p>No preview available for this file</p>
-          </div>
-        )
+      {previewSrcs.length > 0 ? (
+        <div className="image-preview-container margin-top">
+          {previewSrcs.map((src, index) => (
+            <div key={index} className="image-preview">
+              <img className="preview-image" style={{maxHeight:'250px', margin:'0 auto'}} src={src} alt={`Preview ${index}`} />
+            </div>
+          ))}
+        </div>
       ) : (
         <div className="preview-message">
+          <p>No previews available</p>
         </div>
       )}
     </div>
   );
+};
+
+ImageUpload.propTypes = {
+  onDrop: PropTypes.func.isRequired,
+  previewSrcs: PropTypes.arrayOf(PropTypes.string),
 };
 
 export default ImageUpload;

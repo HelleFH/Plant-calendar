@@ -1,14 +1,39 @@
-import axiosInstance from '../components/axiosInstance'; 
+import axiosInstance from '../components/axiosInstance';
 
-
-const handleDeleteReminder = async (deletedReminderId) => {
+// Function to delete a single reminder by its ID
+const handleDeleteReminderById = async (reminderId, setReminders, fetchRemindersByEntryId) => {
   try {
-    await axiosInstance.delete(`reminders/${deletedReminderId}`);
-    setReminders((prevReminders) => prevReminders.filter((reminder) => reminder._id !== deletedReminderId));
-fetchRemindersByEntryId()    
-} catch (error) {
+    await axiosInstance.delete(`/reminders/${reminderId}`);
+    setReminders((prevReminders) => prevReminders.filter((reminder) => reminder._id !== reminderId));
+    
+    // Fetch updated reminders if needed
+    if (fetchRemindersByEntryId) {
+      fetchRemindersByEntryId();
+    }
+  } catch (error) {
     console.error('Error deleting reminder:', error);
   }
 };
 
-export default handleDeleteReminder;
+ const handleDeleteRemindersByEntryId = async (
+  entryId, 
+  setReminders, 
+  fetchRemindersByEntryId
+) => {
+  try {
+    // Fetch reminders associated with the entry
+    const reminders = await fetchRemindersByEntryId(entryId);
+
+    // If there are reminders, delete them
+    if (reminders && reminders.length > 0) {
+      await axiosInstance.delete(`/reminders/entry/${entryId}`);
+      setReminders((prevReminders) =>
+        prevReminders.filter((reminder) => reminder.entryId !== entryId)
+      );
+    }
+  } catch (error) {
+    console.error('Error deleting reminders:', error);
+  }
+};
+
+export { handleDeleteReminderById, handleDeleteRemindersByEntryId };

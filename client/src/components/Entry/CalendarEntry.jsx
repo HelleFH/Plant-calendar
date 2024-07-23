@@ -13,6 +13,7 @@ import handleSubmitUpdate from '../../Utils/HandleSubmitUpdate';
 import ImageGalleryModal from '../ImageGalleryModal/ImageGalleryModal';
 import handleDeleteEntry from '../../Utils/HandleDeleteEntry';
 import Reminder from '../Reminder/Reminder';
+
 const CalendarEntry = ({
   entry,
   setEntries,
@@ -23,18 +24,17 @@ const CalendarEntry = ({
   const [isEditing, setIsEditing] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [editedEntry, setEditedEntry] = useState({ ...entry });
-  const [file, setFile] = useState(null);
-  const [previewSrc, setPreviewSrc] = useState(entry.cloudinaryUrl);
-  const [cloudinaryUrls, setCloudinaryUrls] = useState([]);
+  const [files, setFiles] = useState([]);
+  const [previewSrcs, setPreviewSrcs] = useState([]);
+  const [cloudinaryUrls, setCloudinaryUrls] = useState(entry.images?.map(img => img.cloudinaryUrl) || []);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [IdToDelete, setIdToDelete] = useState(null);
+  const [idToDelete, setIdToDelete] = useState(null);
   const [isReminderModalOpen, setIsReminderModalOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isImageGalleryModalOpen, setIsImageGalleryModalOpen] = useState(false);
 
   const [followUpEntries, setFollowUpEntries] = useState([]);
   const [reminders, setReminders] = useState([]);
-
   const [username, setUsername] = useState('');
   const [selectedDate, setSelectedDate] = useState(entry.date);
 
@@ -59,7 +59,7 @@ const CalendarEntry = ({
       const response = await axiosInstance.get(`reminders/entry/${entry._id}`);
       setReminders(response.data);
     } catch (error) {
-      console.error('Error fetching follow-up entries by entry ID:', error);
+      console.error('Error fetching reminders by entry ID:', error);
     }
   };
 
@@ -67,8 +67,10 @@ const CalendarEntry = ({
     try {
       const response = await axiosInstance.get(`entries/follow-up/${entry._id}`);
       setFollowUpEntries(response.data);
-      const followUpUrls = response.data.map((entry) => entry.cloudinaryUrl);
-      setCloudinaryUrls(followUpUrls);
+
+      // Extract image URLs from follow-up entries
+      const followUpUrls = response.data.flatMap(entry => entry.images?.map(img => img.cloudinaryUrl) || []);
+      setCloudinaryUrls(prevUrls => [...prevUrls, ...followUpUrls]); // Combine with existing URLs
     } catch (error) {
       console.error('Error fetching follow-up entries by entry ID:', error);
     }
@@ -81,8 +83,8 @@ const CalendarEntry = ({
   const handleDeleteReminder = async (deletedReminderId) => {
     try {
       await axiosInstance.delete(`reminders/${deletedReminderId}`);
-      setReminders((prevReminders) =>
-        prevReminders.filter((reminder) => reminder._id !== deletedReminderId)
+      setReminders(prevReminders =>
+        prevReminders.filter(reminder => reminder._id !== deletedReminderId)
       );
       fetchRemindersByEntryId();
     } catch (error) {
@@ -90,11 +92,11 @@ const CalendarEntry = ({
     }
   };
 
-  const handleDeleteFollowUp = async (deletedFollowUpId) => {
+  const handleDeleteFollowUpByEntryID = async (deletedFollowUpId) => {
     try {
-      await axiosInstance.delete(`/entries/follow-up/${deletedFollowUpId}`);
-      setFollowUpEntries((prevFollowUpEntries) =>
-        prevFollowUpEntries.filter((entry) => entry._id !== deletedFollowUpId)
+      await axiosInstance.delete(`entries/follow-up/${deletedFollowUpId}`);
+      setFollowUpEntries(prevFollowUpEntries =>
+        prevFollowUpEntries.filter(entry => entry._id !== deletedFollowUpId)
       );
       fetchFollowUpEntriesByEntryId();
     } catch (error) {
@@ -103,44 +105,43 @@ const CalendarEntry = ({
   };
 
   const onUpdateFollowUpEntry = (updatedFollowUpEntry) => {
-    setFollowUpEntries((prevFollowUpEntries) =>
-      prevFollowUpEntries.map((followUpEntry) =>
+    setFollowUpEntries(prevFollowUpEntries =>
+      prevFollowUpEntries.map(followUpEntry =>
         followUpEntry._id === updatedFollowUpEntry._id
           ? updatedFollowUpEntry
           : followUpEntry
       )
     );
     fetchFollowUpEntriesByEntryId();
-    setRefresh((prev) => !prev);
+    setRefresh(prev => !prev);
   };
-
 
   const onDrop = (acceptedFiles) => {
     const currentFile = acceptedFiles[0];
-    setFile(currentFile);
+    setFiles([currentFile]);
 
     const reader = new FileReader();
     reader.addEventListener('load', () => {
-      setPreviewSrc(reader.result);
+      setPreviewSrcs([reader.result]);
     });
 
     reader.readAsDataURL(currentFile);
   };
 
   const toggleReminderModal = () => {
-    setIsReminderModalOpen(!isReminderModalOpen);
+    setIsReminderModalOpen(prev => !prev);
   };
 
   const toggleImageGalleryModal = () => {
-    setIsImageGalleryModalOpen(!isImageGalleryModalOpen);
+    setIsImageGalleryModalOpen(prev => !prev);
   };
 
   const toggleCreateModal = () => {
-    setIsCreateModalOpen(!isCreateModalOpen);
+    setIsCreateModalOpen(prev => !prev);
   };
 
   const toggleExpand = () => {
-    setIsExpanded(!isExpanded);
+    setIsExpanded(prev => !prev);
   };
 
   const handleCloseModal = () => {
@@ -148,24 +149,44 @@ const CalendarEntry = ({
     fetchFollowUpEntriesByEntryId();
   };
 
+  const handleUpdateEntry = (updatedEntry) => {
+    setEntries(prevEntries =>
+      prevEntries.map(entry => (entry._id === updatedEntry._id ? updatedEntry : entry))
+    );
+    setEditedEntry(updatedEntry);
+    setRefresh(prev => !prev);
+  };
+
   const handleUpdateFollowUpEntry = (updatedFollowUpEntry) => {
-    setFollowUpEntries((prevFollowUpEntries) =>
-      prevFollowUpEntries.map((followUpEntry) =>
+    setFollowUpEntries(prevFollowUpEntries =>
+      prevFollowUpEntries.map(followUpEntry =>
         followUpEntry.entryID === updatedFollowUpEntry.entryID
           ? updatedFollowUpEntry
           : followUpEntry
       )
     );
-    setRefresh((prev) => !prev);
+    setRefresh(prev => !prev);
   };
 
   const handleConfirmDelete = () => {
-    handleDeleteEntry(entry._id, setEntries, setRefresh);
-    setShowDeleteModal(false);
+    if (idToDelete) {
+      handleDeleteEntry(
+        idToDelete, // The ID to delete
+        setEntries, // Function to set entries
+        setFollowUpEntries, // Function to set follow-up entries
+        setReminders, // Function to set reminders
+        fetchFollowUpEntriesByEntryId, // Function to fetch follow-up entries by entry ID
+        fetchRemindersByEntryId, // Function to fetch reminders by entry ID
+        setRefresh // Function to refresh the state
+      );
+      setShowDeleteModal(false);
+    } else {
+      console.error('No ID provided for deletion.');
+    }
   };
 
   const handleAddFollowUpEntry = (newFollowUpEntry) => {
-    setFollowUpEntries((prevFollowUpEntries) => [
+    setFollowUpEntries(prevFollowUpEntries => [
       ...prevFollowUpEntries,
       newFollowUpEntry,
     ]);
@@ -173,7 +194,7 @@ const CalendarEntry = ({
   };
 
   const handleAddReminder = (newReminder) => {
-    setReminders((prevReminders) => [...prevReminders, newReminder]);
+    setReminders(prevReminders => [...prevReminders, newReminder]);
     fetchRemindersByEntryId();
   };
 
@@ -181,7 +202,8 @@ const CalendarEntry = ({
     setSelectedDate(date);
   };
 
-  const urls = [entry.cloudinaryUrl, ...cloudinaryUrls];
+  // Aggregate all image URLs
+  const allUrls = [entry.cloudinaryUrl, ...cloudinaryUrls].filter(Boolean);
 
   return (
     <li className={styles.CalendarEntry}>
@@ -205,56 +227,63 @@ const CalendarEntry = ({
         }
       >
         {isEditing ? (
-          <>
-            <div className={styles.editFormContainer}>
-              <ImageUpload
-                onDrop={onDrop}
-                file={file}
-                previewSrc={previewSrc}
-                isPreviewAvailable={true}
-              />
-              <label>Name:</label>
-              <input type="text" name="name" value={editedEntry.name} onChange={handleChange} />
-              <label>Notes:</label>
-              <textarea name="notes" value={editedEntry.notes} onChange={handleChange} />
-              <label>Sunlight:</label>
-              <input type="text" name="sunlight" value={editedEntry.sunlight} onChange={handleChange} />
-              <label>Water:</label>
-              <input type="text" name="water" value={editedEntry.water} onChange={handleChange} />
-              <button
-                className="primary-button"
-                onClick={() => {
-                  handleSubmitUpdate(entry._id, editedEntry, file, selectedDate, handleUpdateEntry, handleDeleteEntry);
-                  setIsEditing(false);
-                }}
-              >
-                Save
-              </button>
-              <button className="secondary-button" onClick={() => setIsEditing(false)}>
-                Cancel
-              </button>
-            </div>
-          </>
+          <div className={styles.editFormContainer}>
+            <ImageUpload
+              onDrop={onDrop}
+              file={files[0]}
+              previewSrc={previewSrcs[0]}
+              isPreviewAvailable={!!previewSrcs.length}
+            />
+            <button
+              className="primary-button"
+              onClick={() => {
+                handleSubmitUpdate(entry._id, editedEntry, files[0], selectedDate, handleUpdateEntry, handleDeleteEntry);
+                setIsEditing(false);
+              }}
+            >
+              Save
+            </button>
+            <button className="secondary-button" onClick={() => setIsEditing(false)}>
+              Cancel
+            </button>
+          </div>
         ) : (
           <>
             <div className="margin-top">
-              <h5 className="margin-bottom padding-bottom">Added on {moment(entry.date).format('MMMM Do YYYY')}</h5>
-              <img src={entry.cloudinaryUrl} alt={entry.name} />
+              <h5 className="margin-bottom padding-bottom">
+                Added on {moment(entry.date).format('MMMM Do YYYY')}
+              </h5>
+              {allUrls.length > 0 && (
+                <div>
+                  {allUrls.map((url, index) => (
+                    <img
+                      key={index}
+                      src={url}
+                      alt={`Image ${index}`}
+                      className="image-preview"
+                      onError={(e) => {
+                        console.error('Error loading image:', e.target.src);
+                        e.target.src = 'fallback-image-url'; // Optional: Use a fallback image URL
+                      }}
+                    />
+                  ))}
+                </div>
+              )}
               <Link onClick={toggleImageGalleryModal} className={styles.galleryLink}>
                 <h5>View All Images for {entry.name}</h5>
               </Link>
 
               <div className={styles.EntryFormContainer}>
-                <hr className="long-line"></hr>
+                <hr className="long-line" />
                 <label>Notes:</label>
                 <p>{entry.notes}</p>
-                <hr className="long-line"></hr>
+                <hr className="long-line" />
                 <label>Sunlight:</label>
                 <p>{entry.sunlight}</p>
-                <hr className="long-line"></hr>
+                <hr className="long-line" />
                 <label>Water:</label>
                 <p>{entry.water}</p>
-                <hr className="long-line margin-bottom"></hr>
+                <hr className="long-line margin-bottom" />
               </div>
             </div>
             {isCreateModalOpen && (
@@ -292,11 +321,10 @@ const CalendarEntry = ({
                 entryID={entry._id}
                 onClose={toggleImageGalleryModal}
                 isOpen={isImageGalleryModalOpen}
-                urls={urls}
+                urls={allUrls}
               />
             </div>
             <div className={styles.followUpContainer}>
-
               <div className={styles.FollowUpListContainer}>
                 <div className="flex-row">
                   <h4>Updates for {entry.name}</h4>
@@ -312,7 +340,7 @@ const CalendarEntry = ({
                         followUpEntry={followUpEntry}
                         selectedDate={followUpDate}
                         onUpdateFollowUpEntry={onUpdateFollowUpEntry}
-                        onDeleteFollowUp={handleDeleteFollowUp}
+                        onDeleteFollowUp={handleDeleteFollowUpByEntryID}
                         setFollowUpEntries={setFollowUpEntries}
                         setRefresh={setRefresh}
                         handleUpdateFollowUpEntry={handleUpdateFollowUpEntry}
@@ -321,7 +349,6 @@ const CalendarEntry = ({
                     ))}
                   </ul>
                 )}
-
               </div>
             </div>
             <NewCalendarReminder
@@ -330,47 +357,17 @@ const CalendarEntry = ({
               date={selectedDate}
               entryID={entry._id}
               handleAddReminder={handleAddReminder}
-              name={entry.name}
             />
-
-
-            <div className={styles.followUpContainer}>
-              <div className='flex-row'>
-                <h4>Reminders</h4>
-                <button className={`secondary-button ${styles.reminderButton}`} onClick={toggleReminderModal}>
-                  <i className="fas fa-bell"></i> Set Reminder
-                </button>
-
-              </div>
-              <div className={styles.ReminderListContainer}>
-                {reminders.length > 0 && (
-                  <ul className={styles.EntryList}>
-                    {reminders.map((reminder, index) => (
-                      <Reminder
-                        className={styles.calendarReminder}
-                        key={index}
-                        reminder={reminder}
-                        selectedDate={selectedDate}
-                        setReminders={setReminders}
-                        onDeleteReminder={handleDeleteReminder}
-                        setRefresh={setRefresh}
-                      />
-                    ))}
-                  </ul>
-                )}
-              </div>
-            </div>
-
+            {showDeleteModal && (
+              <DeleteConfirmationModal
+                isOpen={showDeleteModal}
+                onClose={() => setShowDeleteModal(false)}
+                onConfirm={handleConfirmDelete}
+              />
+            )}
           </>
         )}
       </div>
-      {showDeleteModal && (
-        <DeleteConfirmationModal
-          isOpen={showDeleteModal}
-          onConfirm={handleConfirmDelete}
-          onCancel={() => setShowDeleteModal(false)}
-        />
-      )}
     </li>
   );
 };

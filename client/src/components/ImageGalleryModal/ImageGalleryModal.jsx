@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { FaChevronLeft, FaChevronRight, FaTimes } from 'react-icons/fa'; // Import FaTimes for close icon
+import { FaChevronLeft, FaChevronRight, FaTimes } from 'react-icons/fa';
 import { useSwipeable } from 'react-swipeable';
 import Modal from 'react-modal';
-import * as styles from './ImageGalleryModal.module.scss'; // Import all styles
+import styles from './ImageGalleryModal.module.scss';
 
 const ImageGalleryModal = ({ isOpen, onClose, urls }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -45,38 +45,18 @@ const ImageGalleryModal = ({ isOpen, onClose, urls }) => {
           position: 'fixed',
           inset: '0px',
           backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          border:'none',
-          margin:'0 auto'
-        
         },
         content: {
           padding: '0',
-          height: 'fit-content',
-          width:'99vw',
-          position: 'absolute',
-          backgroundColor: 'white',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          maxWidth: '500px',
+          width: '90vw',
+          maxWidth: '800px',
           margin: '0 auto',
-          borderRadius:'0px'
-           // Center horizontally
+          borderRadius: '10px',
         },
       }}
     >
       <button
         className={styles.closeButton}
-        style={{
-          position: 'absolute',
-          top: '10px',
-          right: '10px',
-          background: 'none',
-          border: 'none',
-          cursor: 'pointer',
-          color: '#333',
-          zIndex: '1000', 
-        }}
         onClick={onClose}
       >
         <FaTimes />

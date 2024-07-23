@@ -7,32 +7,31 @@ import ImageUpload from '../imageUpload';
 import styles from './CreateFollowUpEntry.module.scss';
 
 const NewFollowUpEntry = ({ isOpen, onClose, oldEntryID, oldEntryName, oldEntryDate, name, selectedDate, handleAddFollowUpEntry }) => {
-    const [file, setFile] = useState(null);
+    const [files, setFiles] = useState([]); // Manage multiple files
     const [followUpDate, setFollowUpDate] = useState('');
-    const [previewSrc, setPreviewSrc] = useState('');
-    const [isPreviewAvailable, setIsPreviewAvailable] = useState(false);
+    const [previewSrcs, setPreviewSrcs] = useState([]); // Manage multiple previews
     const [errorMsg, setErrorMsg] = useState('');
     const navigate = useNavigate();
-    const initialFollowUpState = {
-        notes: '',
-    };
-    const [followUpEntry, setFollowUpEntry] = useState(initialFollowUpState);
 
-    // Set initial followUpDate from selectedDate prop
+    const [followUpEntry, setFollowUpEntry] = useState({
+        notes: '',
+    });
+
     useEffect(() => {
         if (selectedDate) {
-            // Convert selectedDate to YYYY-MM-DD format
             const formattedDate = new Date(selectedDate).toISOString().split('T')[0];
             setFollowUpDate(formattedDate);
         }
     }, [selectedDate]);
 
-    const CreateFollowUpEntry = async () => {
+    const createFollowUpEntry = async () => {
         try {
             const formData = new FormData();
-            if (file) formData.append('file', file);
+            files.forEach((file) => {
+                formData.append('images', file); // 'images' matches the Multer field name
+            });
             formData.append('name', oldEntryName);
-            formData.append('entryDate', oldEntryDate); // only include it once
+            formData.append('entryDate', oldEntryDate);
             formData.append('notes', followUpEntry.notes);
             formData.append('date', followUpDate);
             formData.append('userID', localStorage.getItem('userId'));
@@ -43,14 +42,11 @@ const NewFollowUpEntry = ({ isOpen, onClose, oldEntryID, oldEntryName, oldEntryD
                     'Content-Type': 'multipart/form-data',
                 },
             });
-            
 
             const newFollowUpEntry = response.data;
             handleAddFollowUpEntry(newFollowUpEntry, followUpDate);
 
-            setFile(null);
-            setPreviewSrc('');
-            setIsPreviewAvailable(false);
+            resetForm();
             onClose();
             navigate('/calendar');
         } catch (error) {
@@ -59,22 +55,26 @@ const NewFollowUpEntry = ({ isOpen, onClose, oldEntryID, oldEntryName, oldEntryD
         }
     };
 
-    const onDrop = (files) => {
-        const [uploadedFile] = files;
-        setFile(uploadedFile);
+    const onDrop = (droppedFiles) => {
+        setFiles(droppedFiles);
 
-        const fileReader = new FileReader();
-        fileReader.onload = () => {
-            setPreviewSrc(fileReader.result);
-        };
-        fileReader.readAsDataURL(uploadedFile);
+        // Update preview sources
+        const filePreviews = droppedFiles.map(file => {
+            const reader = new FileReader();
+            return new Promise(resolve => {
+                reader.onload = () => resolve(reader.result);
+                reader.readAsDataURL(file);
+            });
+        });
 
-        setIsPreviewAvailable(Boolean(uploadedFile.name.match(/\.(jpeg|jpg|png)$/)));
+        Promise.all(filePreviews).then(previews => {
+            setPreviewSrcs(previews);
+        });
     };
 
     const handleEntrySubmit = async (e) => {
         e.preventDefault();
-        await CreateFollowUpEntry();
+        await createFollowUpEntry();
     };
 
     const handleInputChange = (event) => {
@@ -84,11 +84,12 @@ const NewFollowUpEntry = ({ isOpen, onClose, oldEntryID, oldEntryName, oldEntryD
         });
     };
 
-    const handleClearForm = () => {
-        setFollowUpEntry(initialEntryState);
-        setFile(null);
-        setPreviewSrc('');
-        setIsPreviewAvailable(false);
+    const resetForm = () => {
+        setFollowUpEntry({
+            notes: '',
+        });
+        setFiles([]);
+        setPreviewSrcs([]);
         setErrorMsg('');
         setFollowUpDate('');
     };
@@ -104,9 +105,7 @@ const NewFollowUpEntry = ({ isOpen, onClose, oldEntryID, oldEntryName, oldEntryD
                 {errorMsg && <p className="errorMsg">{errorMsg}</p>}
                 <ImageUpload
                     onDrop={onDrop}
-                    file={file}
-                    previewSrc={previewSrc}
-                    isPreviewAvailable={isPreviewAvailable}
+                    previewSrcs={previewSrcs} // Pass multiple previews
                 />
                 <div>
                     <label htmlFor="followUpDate">Date</label>
@@ -115,6 +114,7 @@ const NewFollowUpEntry = ({ isOpen, onClose, oldEntryID, oldEntryName, oldEntryD
                         id="followUpDate"
                         value={followUpDate}
                         onChange={(e) => setFollowUpDate(e.target.value)}
+                        required // Ensure date is provided
                     />
                 </div>
                 <div className='form-group margin-bottom'>
@@ -133,7 +133,7 @@ const NewFollowUpEntry = ({ isOpen, onClose, oldEntryID, oldEntryName, oldEntryD
                         Cancel
                     </Link>
                     <div className='flex-row-right'>
-                        <button type="button" className="primary-button" onClick={handleClearForm}>
+                        <button type="button" className="primary-button" onClick={resetForm}>
                             Clear Form
                         </button>
                         <button className="secondary-button" type="submit">

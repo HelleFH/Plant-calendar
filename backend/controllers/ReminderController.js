@@ -70,7 +70,15 @@ const getRemindersByEntryId = async (req, res) => {
   }
 };
 
-
+// Function to delete reminders by EntryID
+const deleteRemindersByEntryId = async (entryId) => {
+  try {
+    await Reminder.deleteMany({ EntryID: entryId });
+  } catch (error) {
+    console.error('Error deleting reminders:', error);
+    throw error; // Propagate the error to be handled by the caller
+  }
+};
 const deleteReminder = async (req, res) => {
   const { id } = req.params;
   
@@ -93,5 +101,6 @@ module.exports = {
   setReminder,
   deleteReminder,
   getRemindersByEntryId,
-  getRemindersByDate
+  getRemindersByDate,
+  deleteRemindersByEntryId 
 };
