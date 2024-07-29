@@ -6,6 +6,7 @@ import SearchPlantAPI from '../SearchAPI/SearchPlantAPI';
 import styles from './CreateEntry.module.scss';
 import CustomModal from '../CustomModal/CustomModal';
 import axiosInstance from '../axiosInstance';
+import handleDeleteImage from '../../Utils/HandleDeleteImage';
 
 const CreateEntryWithFileUpload = ({ isOpen, onClose, selectedDate, setRefresh }) => {
   const [files, setFiles] = useState([]); // Array to handle multiple files
@@ -135,12 +136,18 @@ const CreateEntryWithFileUpload = ({ isOpen, onClose, selectedDate, setRefresh }
     onClose();
     navigate('/calendar');
   };
-
+  const handleDelete = (index) => {
+    setPreviewSrcs(prevPreviews =>
+      prevPreviews.filter((_, i) => i !== index)
+    );
+  };
   return (
     <CustomModal isOpen={isOpen} onClose={onClose} title="Create Entry">
       <Form onSubmit={handleEntrySubmit} encType="multipart/form-data">
         {errorMsg && <p className="errorMsg">{errorMsg}</p>}
         <ImageUpload
+                onDelete={handleDelete}
+
           onDrop={onDrop}
           files={files}
           previewSrcs={previewSrcs} // Pass the array of previews

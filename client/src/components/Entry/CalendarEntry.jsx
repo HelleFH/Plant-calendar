@@ -35,10 +35,10 @@ const CalendarEntry = ({
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isImageGalleryModalOpen, setIsImageGalleryModalOpen] = useState(false);
 
-  const { followUpEntries, setFollowUpEntries } = useFollowUpEntries(selectedDate, refresh);
+  const [selectedDate, setSelectedDate] = useState(entry.date);
+  const { followUpEntries, setFollowUpEntries } = useFollowUpEntries(selectedDate, setRefresh);
   const [reminders, setReminders] = useState([]);
   const [username, setUsername] = useState('');
-  const [selectedDate, setSelectedDate] = useState(entry.date);
 
   const contentRef = useRef(null);
 
@@ -184,6 +184,7 @@ const CalendarEntry = ({
     setRefresh(prev => !prev);
   };
 
+
   const handleConfirmDelete = () => {
     if (idToDelete) {
       handleDeleteEntry(
@@ -201,13 +202,11 @@ const CalendarEntry = ({
     }
   };
 
-
   const handleAddFollowUpEntry = (newFollowUpEntry) => {
     setFollowUpEntries(prevEntries => [...prevEntries, newFollowUpEntry]);
     const followUpUrls = newFollowUpEntry.images?.map(img => img.cloudinaryUrl) || [];
     setFollowUpCloudinaryUrls(prevUrls => [...prevUrls, ...followUpUrls]);
   };
-
 
   const handleAddReminder = (newReminder) => {
     setReminders(prevReminders => [...prevReminders, newReminder]);
@@ -218,6 +217,11 @@ const CalendarEntry = ({
     setSelectedDate(date);
   };
 
+  const handleDelete = (index) => {
+    setPreviewSrcs(prevPreviews =>
+      prevPreviews.filter((_, i) => i !== index)
+    );
+  };
   // Combine entry and follow-up URLs for the modal
   const allUrls = [...cloudinaryUrls, ...followUpCloudinaryUrls].filter(Boolean);
 
@@ -247,7 +251,7 @@ const CalendarEntry = ({
             <ImageUpload
               onDrop={onDrop}
               previewSrcs={previewSrcs}
-              onDelete={handleDeleteImage}
+              onDelete={handleDelete}
               isPreviewAvailable={!!previewSrcs.length}
             />
             <button
@@ -308,20 +312,20 @@ const CalendarEntry = ({
             </div>
             {isCreateModalOpen && (
               <CreateFollowUpEntry
-              isOpen={isCreateModalOpen}
-              onClose={handleCloseModal}
-              followUpDate={selectedDate}
-              oldEntryID={entry._id}
-              oldEntryName={entry.name}
-              oldEntryDate={entry.date}
-              sunlight={entry.sunlight}
-              water={entry.water}
-              name={entry.name}
-              handleAddFollowUpEntry={handleAddFollowUpEntry}
-              selectedDate={selectedDate}
-              handleSelectedDateChange={handleSelectedDateChange}
-            />
-          )}
+                isOpen={isCreateModalOpen}
+                onClose={handleCloseModal}
+                followUpDate={selectedDate}
+                oldEntryID={entry._id}
+                oldEntryName={entry.name}
+                oldEntryDate={entry.date}
+                sunlight={entry.sunlight}
+                water={entry.water}
+                name={entry.name}
+                handleAddFollowUpEntry={handleAddFollowUpEntry}
+                selectedDate={selectedDate}
+                handleSelectedDateChange={handleSelectedDateChange}
+              />
+            )}
 
             <div className="flex-row-right margin-top margin-bottom">
               <Link

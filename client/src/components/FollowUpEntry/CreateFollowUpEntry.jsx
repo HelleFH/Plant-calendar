@@ -103,12 +103,19 @@ const NewFollowUpEntry = ({ isOpen, onClose, oldEntryID, oldEntryName, oldEntryD
     onClose();
     navigate('/calendar');
   };
+  const handleDelete = (index) => {
+    setPreviewSrcs(prevPreviews =>
+      prevPreviews.filter((_, i) => i !== index)
+    );
+  };
+
 
   return (
     <CustomModal isOpen={isOpen} onClose={onClose} title="Create Follow-Up Entry">
       <Form onSubmit={handleEntrySubmit} encType="multipart/form-data">
         {errorMsg && <p className="errorMsg">{errorMsg}</p>}
         <ImageUpload
+          onDelete={handleDelete}
           onDrop={onDrop}
           files={files}
           previewSrcs={previewSrcs}
