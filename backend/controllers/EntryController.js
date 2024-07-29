@@ -3,7 +3,6 @@ const cloudinary = require('cloudinary').v2;
 const mongoose = require('mongoose');
 const { deleteFollowUpsByEntryId } = require('./FollowUpController');
 const { deleteRemindersByEntryId } = require('./ReminderController');
-
 const deleteEntry = async (req, res) => {
   const { id } = req.params;
 
@@ -39,6 +38,7 @@ const deleteEntry = async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 };
+
 
 const updateEntry = async (req, res) => {
   const { id } = req.params;

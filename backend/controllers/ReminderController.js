@@ -70,15 +70,26 @@ const getRemindersByEntryId = async (req, res) => {
   }
 };
 
-// Function to delete reminders by EntryID
+
 const deleteRemindersByEntryId = async (entryId) => {
   try {
-    await Reminder.deleteMany({ EntryID: entryId });
+    const reminders = await Reminder.find({ entryId });
+
+    if (reminders.length > 0) {
+      await Promise.all(
+        reminders.map(async (reminder) => {
+          await Reminder.findByIdAndDelete(reminder._id);
+        })
+      );
+    } else {
+      console.log('No reminders found for this entry ID');
+    }
   } catch (error) {
-    console.error('Error deleting reminders:', error);
-    throw error; // Propagate the error to be handled by the caller
+    console.error('Error deleting reminders by entry ID:', error);
+    throw error;
   }
 };
+
 const deleteReminder = async (req, res) => {
   const { id } = req.params;
   

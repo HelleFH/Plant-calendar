@@ -1,6 +1,5 @@
 import axiosInstance from '../components/axiosInstance';
 
-
 const fetchFollowUpEntriesByEntryId = async () => {
   try {
     const response = await axiosInstance.get(`/entries/follow-up/${entry._id}`);
@@ -30,7 +29,8 @@ const handleDeleteFollowUpById = async (followUpId, setFollowUpEntries, fetchFol
     console.error('Error deleting follow-up:', error);
   }
 };
- const handleDeleteFollowUpsByEntryId = async (
+
+const handleDeleteFollowUpsByEntryId = async (
   entryId, 
   setFollowUpEntries, 
   setRefresh
@@ -47,23 +47,28 @@ const handleDeleteFollowUpById = async (followUpId, setFollowUpEntries, fetchFol
     
     console.log('Follow-up entries:', followUpEntries);
 
-    await Promise.all(
-      followUpEntries.map(async (followUpEntry) => {
-        console.log('Deleting follow-up entry:', followUpEntry._id);
-        await axiosInstance.delete(`/entries/follow-up/${followUpEntry._id}`);
-      })
-    );
+    if (followUpEntries.length > 0) {
+      await Promise.all(
+        followUpEntries.map(async (followUpEntry) => {
+          console.log('Deleting follow-up entry:', followUpEntry._id);
+          await axiosInstance.delete(`/entries/follow-up/${followUpEntry._id}`);
+        })
+      );
 
-    if (setFollowUpEntries) {
-      setFollowUpEntries([]);
-    }
+      if (setFollowUpEntries) {
+        setFollowUpEntries([]);
+      }
 
-    if (fetchFollowUpEntriesByEntryId) {
-      fetchFollowUpEntriesByEntryId();
-    }
+      // Fetch updated follow-ups if any follow-ups were fetched
+      if (fetchFollowUpEntriesByEntryId) {
+        fetchFollowUpEntriesByEntryId();
+      }
 
-    if (setRefresh) {
-      setRefresh((prev) => !prev);
+      if (setRefresh) {
+        setRefresh((prev) => !prev);
+      }
+    } else {
+      console.log('No follow-up entries found for this entry ID');
     }
   } catch (error) {
     console.error('Error deleting follow-ups by entry ID:', error);
