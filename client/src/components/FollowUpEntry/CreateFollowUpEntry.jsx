@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Form } from 'react-bootstrap';
 import { useNavigate, Link } from 'react-router-dom';
-import ImageUpload from '../imageUpload'; // Adjust to handle multiple images
+import ImageUpload from '../imageUpload';
 import CustomModal from '../CustomModal/CustomModal';
 import axiosInstance from '../axiosInstance';
 import styles from './CreateFollowUpEntry.module.scss';
 
-const NewFollowUpEntry = ({ isOpen, onClose, oldEntryID, oldEntryName, oldEntryDate, name, selectedDate, handleAddFollowUpEntry }) => {
-  const [files, setFiles] = useState([]); // Array to handle multiple files
-  const [previewSrcs, setPreviewSrcs] = useState([]); // Array of previews
+const NewFollowUpEntry = ({ isOpen, onClose, oldEntryID, oldEntryName, oldEntryDate, name, selectedDate, handleAddFollowUpEntry, setRefresh }) => {
+  const [files, setFiles] = useState([]);
+  const [previewSrcs, setPreviewSrcs] = useState([]);
   const [errorMsg, setErrorMsg] = useState('');
   const navigate = useNavigate();
 
@@ -31,7 +31,7 @@ const NewFollowUpEntry = ({ isOpen, onClose, oldEntryID, oldEntryName, oldEntryD
   const createFollowUpEntry = async () => {
     try {
       const formData = new FormData();
-      files.forEach((file) => formData.append('images', file)); // Append each file to FormData
+      files.forEach((file) => formData.append('images', file));
       formData.append('name', oldEntryName);
       formData.append('entryDate', oldEntryDate);
       formData.append('notes', followUpEntry.notes);
@@ -45,11 +45,13 @@ const NewFollowUpEntry = ({ isOpen, onClose, oldEntryID, oldEntryName, oldEntryD
         },
       });
 
+      // Clear state and refresh
       setFiles([]);
       setPreviewSrcs([]);
-      handleAddFollowUpEntry(followUpEntry, followUpEntry.date);
+      handleAddFollowUpEntry(followUpEntry); // Optionally add the new entry
       resetForm();
       onClose();
+      setRefresh((prev) => !prev); // Trigger refresh in parent component
       navigate('/calendar');
     } catch (error) {
       console.error('Error creating entry:', error);
@@ -109,7 +111,7 @@ const NewFollowUpEntry = ({ isOpen, onClose, oldEntryID, oldEntryName, oldEntryD
         <ImageUpload
           onDrop={onDrop}
           files={files}
-          previewSrcs={previewSrcs} // Pass the array of previews
+          previewSrcs={previewSrcs}
         />
         <div className={styles.formContainer}>
           <div>

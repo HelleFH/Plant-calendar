@@ -13,6 +13,7 @@ import handleSubmitUpdate from '../../Utils/HandleSubmitUpdate';
 import ImageGalleryModal from '../ImageGalleryModal/ImageGalleryModal';
 import handleDeleteEntry from '../../Utils/HandleDeleteEntry';
 import Reminder from '../Reminder/Reminder';
+import useFollowUpEntries from '../FollowUpEntry/useFollowUpEntries';
 
 const CalendarEntry = ({
   entry,
@@ -27,13 +28,14 @@ const CalendarEntry = ({
   const [files, setFiles] = useState([]);
   const [previewSrcs, setPreviewSrcs] = useState([]);
   const [cloudinaryUrls, setCloudinaryUrls] = useState(entry.images?.map(img => img.cloudinaryUrl) || []);
+  const [followUpCloudinaryUrls, setFollowUpCloudinaryUrls] = useState([]);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [idToDelete, setIdToDelete] = useState(null);
   const [isReminderModalOpen, setIsReminderModalOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isImageGalleryModalOpen, setIsImageGalleryModalOpen] = useState(false);
 
-  const [followUpEntries, setFollowUpEntries] = useState([]);
+  const { followUpEntries, setFollowUpEntries } = useFollowUpEntries(selectedDate, refresh);
   const [reminders, setReminders] = useState([]);
   const [username, setUsername] = useState('');
   const [selectedDate, setSelectedDate] = useState(entry.date);
@@ -69,7 +71,7 @@ const CalendarEntry = ({
       setFollowUpEntries(response.data);
 
       const followUpUrls = response.data.flatMap(entry => entry.images?.map(img => img.cloudinaryUrl) || []);
-      setCloudinaryUrls(prevUrls => [...prevUrls, ...followUpUrls]);
+      setFollowUpCloudinaryUrls(followUpUrls);
     } catch (error) {
       console.error('Error fetching follow-up entries by entry ID:', error);
     }
@@ -150,6 +152,7 @@ const CalendarEntry = ({
     setIsCreateModalOpen(false);
     fetchFollowUpEntriesByEntryId();
   };
+
   const onUpdateFollowUpEntry = (updatedFollowUpEntry) => {
     setFollowUpEntries((prevFollowUpEntries) =>
       prevFollowUpEntries.map((followUpEntry) =>
@@ -161,6 +164,7 @@ const CalendarEntry = ({
     fetchFollowUpEntriesByEntryId();
     setRefresh((prev) => !prev);
   };
+
   const handleUpdateEntry = (updatedEntry) => {
     setEntries(prevEntries =>
       prevEntries.map(entry => (entry._id === updatedEntry._id ? updatedEntry : entry))
@@ -168,7 +172,7 @@ const CalendarEntry = ({
     setEditedEntry(updatedEntry);
     setRefresh(prev => !prev);
   };
-  
+
   const handleUpdateFollowUpEntry = (updatedFollowUpEntry) => {
     setFollowUpEntries(prevFollowUpEntries =>
       prevFollowUpEntries.map(followUpEntry =>
@@ -179,7 +183,6 @@ const CalendarEntry = ({
     );
     setRefresh(prev => !prev);
   };
-
 
   const handleConfirmDelete = () => {
     if (idToDelete) {
@@ -198,13 +201,13 @@ const CalendarEntry = ({
     }
   };
 
+
   const handleAddFollowUpEntry = (newFollowUpEntry) => {
-    setFollowUpEntries(prevFollowUpEntries => [
-      ...prevFollowUpEntries,
-      newFollowUpEntry,
-    ]);
-    fetchFollowUpEntriesByEntryId();
+    setFollowUpEntries(prevEntries => [...prevEntries, newFollowUpEntry]);
+    const followUpUrls = newFollowUpEntry.images?.map(img => img.cloudinaryUrl) || [];
+    setFollowUpCloudinaryUrls(prevUrls => [...prevUrls, ...followUpUrls]);
   };
+
 
   const handleAddReminder = (newReminder) => {
     setReminders(prevReminders => [...prevReminders, newReminder]);
@@ -215,7 +218,8 @@ const CalendarEntry = ({
     setSelectedDate(date);
   };
 
-  const allUrls = [entry.cloudinaryUrl, ...cloudinaryUrls].filter(Boolean);
+  // Combine entry and follow-up URLs for the modal
+  const allUrls = [...cloudinaryUrls, ...followUpCloudinaryUrls].filter(Boolean);
 
   return (
     <li className={styles.CalendarEntry}>
@@ -265,9 +269,9 @@ const CalendarEntry = ({
               <h5 className="margin-bottom padding-bottom">
                 Added on {moment(entry.date).format('MMMM Do YYYY')}
               </h5>
-              {allUrls.length > 0 && (
+              {cloudinaryUrls.length > 0 && (
                 <div>
-                  {allUrls.map((url, index) => (
+                  {cloudinaryUrls.map((url, index) => (
                     <div key={index} className="image-container">
                       <img
                         src={url}
@@ -304,20 +308,20 @@ const CalendarEntry = ({
             </div>
             {isCreateModalOpen && (
               <CreateFollowUpEntry
-                isOpen={isCreateModalOpen}
-                onClose={handleCloseModal}
-                followUpDate={selectedDate}
-                oldEntryID={entry._id}
-                oldEntryName={entry.name}
-                oldEntryDate={entry.date}
-                sunlight={entry.sunlight}
-                water={entry.water}
-                name={entry.name}
-                handleAddFollowUpEntry={handleAddFollowUpEntry}
-                selectedDate={selectedDate}
-                handleSelectedDateChange={handleSelectedDateChange}
-              />
-            )}
+              isOpen={isCreateModalOpen}
+              onClose={handleCloseModal}
+              followUpDate={selectedDate}
+              oldEntryID={entry._id}
+              oldEntryName={entry.name}
+              oldEntryDate={entry.date}
+              sunlight={entry.sunlight}
+              water={entry.water}
+              name={entry.name}
+              handleAddFollowUpEntry={handleAddFollowUpEntry}
+              selectedDate={selectedDate}
+              handleSelectedDateChange={handleSelectedDateChange}
+            />
+          )}
 
             <div className="flex-row-right margin-top margin-bottom">
               <Link

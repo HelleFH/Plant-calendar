@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
-import getFollowUpEntriesByDateAndId from '../../Utils/getFollowUpEntriesByDateAndId'
-
+import getFollowUpEntriesByDateAndId from '../../Utils/getFollowUpEntriesByDateAndId';
 
 const useFollowUpEntries = (selectedDate, refresh) => {
   const [followUpEntries, setFollowUpEntries] = useState([]);
@@ -56,7 +55,7 @@ const useFollowUpEntries = (selectedDate, refresh) => {
       fetchFollowUpEntries(selectedDate);
       fetchAndSaveFollowUpEntryDates();
     }
-  }, [selectedDate, refresh]); 
+  }, [selectedDate, refresh]);
 
   return {
     followUpEntries,
