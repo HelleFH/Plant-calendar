@@ -45,13 +45,15 @@ const uploadController = async (req, res) => {
 
     const images = await Promise.all(imagePromises);
 
+    const entryDate = new Date(date); // Ensure date is a Date object
+
     const entry = new Entry({
       name,
       notes,
       sunlight,
       water,
       images, // Save multiple images
-      date,
+      date: entryDate, // Ensure the date is correctly formatted
       username,
       userID
     });

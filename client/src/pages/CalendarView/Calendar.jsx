@@ -14,6 +14,7 @@ import Slider from '../../components/SliderComponent/Slider';
 import handleDeleteEntry from '../../Utils/HandleDeleteEntry';
 import { handleDeleteFollowUpById } from '../../Utils/HandleDeleteFollowUp';
 import { handleDeleteReminderById } from '../../Utils/HandleDeleteReminder';
+
 const CalendarComponent = () => {
   const [loggedIn, setLoggedIn] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -29,10 +30,32 @@ const CalendarComponent = () => {
   useEffect(() => {
     const token = localStorage.getItem('auth');
     setLoggedIn(!!token);
+
+    const storedDate = localStorage.getItem('selectedDate');
+    if (storedDate) {
+      setSelectedDate(new Date(storedDate));
+    }
   }, []);
 
+  useEffect(() => {
+    const formatDateToLocal = (date) => {
+      const offset = date.getTimezoneOffset();
+      const newDate = new Date(date.getTime() - (offset * 60 * 1000));
+      return newDate.toISOString().split('T')[0];
+    };
+
+    const formattedDate = formatDateToLocal(selectedDate); // 'YYYY-MM-DD' format
+    localStorage.setItem('selectedDate', formattedDate);
+  }, [selectedDate]);
+
   const tileClassName = ({ date }) => {
-    const formattedDate = date.toDateString();
+    const formatDateToLocal = (date) => {
+      const offset = date.getTimezoneOffset();
+      const newDate = new Date(date.getTime() - (offset * 60 * 1000));
+      return newDate.toISOString().split('T')[0];
+    };
+
+    const formattedDate = formatDateToLocal(date); // 'YYYY-MM-DD' format
     let className = '';
 
     if (highlightedDates && highlightedDates.includes(formattedDate)) {
@@ -46,7 +69,6 @@ const CalendarComponent = () => {
     }
     return className;
   };
-
 
   const handleSelectDate = (date) => {
     setSelectedDate(date);
@@ -90,12 +112,16 @@ const CalendarComponent = () => {
     setCurrentMonth(activeStartDate);
     const firstDayOfMonth = new Date(activeStartDate.getFullYear(), activeStartDate.getMonth(), 1);
     setSelectedDate(firstDayOfMonth);
-    setRefresh((prev) => !prev); 
+    setRefresh((prev) => !prev);
   };
 
-  useEffect(() => {
-    localStorage.setItem('selectedDate', selectedDate.toISOString());
-  }, [selectedDate]);
+  const formatDateToLocal = (date) => {
+    const offset = date.getTimezoneOffset();
+    const newDate = new Date(date.getTime() - (offset * 60 * 1000));
+    return newDate.toISOString().split('T')[0];
+  };
+
+  const formattedSelectedDate = formatDateToLocal(selectedDate);
 
   return (
     <div>
@@ -106,7 +132,7 @@ const CalendarComponent = () => {
             <Slider />
             <Calendar
               value={selectedDate}
-              onChange={setSelectedDate}
+              onChange={handleSelectDate}
               onActiveStartDateChange={handleMonthChange}
               tileClassName={tileClassName}
             />
@@ -130,57 +156,63 @@ const CalendarComponent = () => {
           {selectedDate && (entries.length > 0 || followUpEntries.length > 0 || reminders.length > 0) && (
             <h4>Entries for {selectedDate.toDateString()}</h4>
           )}
-              {entries.length > 0 && (
-                <ul className={styles.EntryList}>
-                  {entries.map((entry) => (
-                    <CalendarEntry
-                      key={entry._id}
-                      entry={entry}
-                      setEntries={setEntries}
-                      onUpdateEntry={onUpdateEntry}
-                      onDeleteEntry={handleDeleteEntry}
-                      selectedDate={selectedDate}
-                      setRefresh={setRefresh}
-                      userID={userID}
-                    />
-                  ))}
-                </ul>
-              )}
-              {followUpEntries.length > 0 && (
-                <ul className={styles.calendarFollowUpList}>
-                  {followUpEntries.map((followUpEntry) => (
-                    <FollowUpEntry
-                      key={followUpEntry._id}
-                      followUpEntry={followUpEntry}
-                      onDeleteFollowUp={handleDeleteFollowUpById}
-                      setRefresh={setRefresh}
-                      onUpdateFollowUpEntry={onUpdateFollowUpEntry}
-                      userID={userID}
-                      setFollowUpEntries={setFollowUpEntries}
-                      selectedDate={selectedDate}
-                      handleUpdateFollowUpEntry={handleUpdateFollowUpEntry}
-                      onSelectDate={handleSelectDate}
-                    />
-                  ))}
-                </ul>
-              )}
-              {reminders.length > 0 && (
-                <ul className={styles.EntryList}>
-                  <h4>Reminders</h4>
-                  {reminders.map((reminder, index) => (
-                    <Reminder
-                      className={styles.calendarReminder}
-                      key={index}
-                      reminder={reminder}
-                      selectedDate={selectedDate}
-                      setReminders={setReminders}
-                      onSelectDate={handleSelectDate}
-                      onDeleteReminder={handleDeleteReminderById}
-                      setRefresh={setRefresh}
-                    />
-                  ))}
-                </ul>
-              )}
+          {entries.length > 0 && (
+            <ul className={styles.EntryList}>
+              {entries
+                .filter((entry) => formatDateToLocal(new Date(entry.date)) === formattedSelectedDate)
+                .map((entry) => (
+                  <CalendarEntry
+                    key={entry._id}
+                    entry={entry}
+                    setEntries={setEntries}
+                    onUpdateEntry={onUpdateEntry}
+                    onDeleteEntry={handleDeleteEntry}
+                    selectedDate={selectedDate}
+                    setRefresh={setRefresh}
+                    userID={userID}
+                  />
+                ))}
+            </ul>
+          )}
+          {followUpEntries.length > 0 && (
+            <ul className={styles.calendarFollowUpList}>
+              {followUpEntries
+                .filter((followUpEntry) => formatDateToLocal(new Date(followUpEntry.date)) === formattedSelectedDate)
+                .map((followUpEntry) => (
+                  <FollowUpEntry
+                    key={followUpEntry._id}
+                    followUpEntry={followUpEntry}
+                    onDeleteFollowUp={handleDeleteFollowUpById}
+                    setRefresh={setRefresh}
+                    onUpdateFollowUpEntry={onUpdateFollowUpEntry}
+                    userID={userID}
+                    setFollowUpEntries={setFollowUpEntries}
+                    selectedDate={selectedDate}
+                    handleUpdateFollowUpEntry={handleUpdateFollowUpEntry}
+                    onSelectDate={handleSelectDate}
+                  />
+                ))}
+            </ul>
+          )}
+          {reminders.length > 0 && (
+            <ul className={styles.EntryList}>
+              <h4>Reminders</h4>
+              {reminders
+                .filter((reminder) => formatDateToLocal(new Date(reminder.date)) === formattedSelectedDate)
+                .map((reminder, index) => (
+                  <Reminder
+                    className={styles.calendarReminder}
+                    key={index}
+                    reminder={reminder}
+                    selectedDate={selectedDate}
+                    setReminders={setReminders}
+                    onSelectDate={handleSelectDate}
+                    onDeleteReminder={handleDeleteReminderById}
+                    setRefresh={setRefresh}
+                  />
+                ))}
+            </ul>
+          )}
         </div>
       ) : (
         <div className='flex-center margin-top'>

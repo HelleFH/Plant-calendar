@@ -43,7 +43,6 @@ const uploadFollowUpController = async (req, res) => {
   }
 
   try {
-    // Handle image uploads to Cloudinary
     const imagePromises = files.map(file => {
       return new Promise((resolve, reject) => {
         const stream = cloudinary.uploader.upload_stream({ resource_type: 'auto' }, (error, result) => {
@@ -64,12 +63,14 @@ const uploadFollowUpController = async (req, res) => {
 
     const images = await Promise.all(imagePromises);
 
-    // Create a new FollowUpEntry
+    const followUpEntryDate = new Date(date); // Ensure date is a Date object
+    const followUpEntryEntryDate = new Date(entryDate); // Ensure entryDate is a Date object
+
     const followUpEntry = new FollowUpEntry({
       name,
       notes,
-      date,
-      entryDate,
+      date: followUpEntryDate, // Ensure the date is correctly formatted
+      entryDate: followUpEntryEntryDate, // Ensure entryDate is correctly formatted
       images, // Save multiple images
       userID,
       entryID

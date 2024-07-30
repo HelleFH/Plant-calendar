@@ -6,10 +6,16 @@ const useEntries = (selectedDate, refresh) => {
   const [highlightedDates, setHighlightedDates] = useState([]);
   const [error, setError] = useState(null);
 
+  const formatDateToLocal = (date) => {
+    const offset = date.getTimezoneOffset();
+    const newDate = new Date(date.getTime() - (offset * 60 * 1000));
+    return newDate.toISOString().split('T')[0];
+  };
+
   useEffect(() => {
     const fetchEntries = async (date) => {
       try {
-        const formattedDate = date.toISOString().split('T')[0];
+        const formattedDate = formatDateToLocal(date);
         const userID = localStorage.getItem('userId');
         const entriesData = await getEntriesByDateAndId(formattedDate, userID);
         setEntries(entriesData);
@@ -35,15 +41,16 @@ const useEntries = (selectedDate, refresh) => {
         }
 
         const highlightedDatesPromises = datesInRange.map(async (date) => {
-          const formattedDate = date.toISOString().split('T')[0];
+          const formattedDate = formatDateToLocal(date);
           const entriesData = await getEntriesByDateAndId(formattedDate, userID);
           if (entriesData.length > 0) {
-            return date.toDateString();
+            return formattedDate;
           }
           return null;
         });
 
         const highlightedDates = await Promise.all(highlightedDatesPromises);
+        console.log('Highlighted Dates:', highlightedDates); // Debugging line
         setHighlightedDates(highlightedDates.filter(date => date !== null));
       } catch (error) {
         console.error('Error occurred while fetching entries:', error);
@@ -55,7 +62,7 @@ const useEntries = (selectedDate, refresh) => {
       fetchEntries(selectedDate);
       fetchAndSaveEntryDates();
     }
-  }, [selectedDate, refresh]); 
+  }, [selectedDate, refresh]);
 
   return {
     entries,

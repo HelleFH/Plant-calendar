@@ -1,72 +1,74 @@
 import React, { useState, useEffect } from 'react';
 import { Form } from 'react-bootstrap';
 import { useNavigate, Link } from 'react-router-dom';
-import ImageUpload from '../imageUpload'; // Adjust to handle multiple images
-import SearchPlantAPI from '../SearchAPI/SearchPlantAPI';
+import ImageUpload from '../imageUpload';
 import styles from './CreateEntry.module.scss';
 import CustomModal from '../CustomModal/CustomModal';
 import axiosInstance from '../axiosInstance';
-import handleDeleteImage from '../../Utils/HandleDeleteImage';
 
 const CreateEntryWithFileUpload = ({ isOpen, onClose, selectedDate, setRefresh }) => {
-  const [files, setFiles] = useState([]); // Array to handle multiple files
-  const [previewSrcs, setPreviewSrcs] = useState([]); // Array of previews
+  const [files, setFiles] = useState([]);
+  const [previewSrcs, setPreviewSrcs] = useState([]);
   const [errorMsg, setErrorMsg] = useState('');
   const navigate = useNavigate();
   const [showSearchPlantModal, setShowSearchPlantModal] = useState(false);
 
-  const initialEntryState = {
-    name: '',
-    notes: '',
-    date: selectedDate ? selectedDate.toISOString().split('T')[0] : '',
-    sunlight: '',
-    water: '',
+  // Function to format date to YYYY-MM-DD
+  const formatDate = (date) => {
+    const d = new Date(date);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   };
 
-  const [entry, setEntry] = useState(initialEntryState);
+  // Initialize entry state with selectedDate if provided
+  const [entry, setEntry] = useState({
+    name: '',
+    notes: '',
+    date: selectedDate ? formatDate(selectedDate) : '',
+    sunlight: '',
+    water: '',
+  });
 
   useEffect(() => {
+    // Update entry.date if selectedDate changes
     if (selectedDate) {
       setEntry((prevEntry) => ({
         ...prevEntry,
-        date: selectedDate.toISOString().split('T')[0],
+        date: formatDate(selectedDate),
       }));
     }
   }, [selectedDate]);
 
   const createEntry = async () => {
-    try {
-      const formData = new FormData();
-      files.forEach((file) => formData.append('images', file)); // Append each file to FormData
-      formData.append('name', entry.name);
-      formData.append('notes', entry.notes);
-      formData.append('sunlight', entry.sunlight);
-      formData.append('water', entry.water);
-  
-      const selectedDateMidnight = new Date(entry.date);
-      selectedDateMidnight.setHours(0, 0, 0, 0);
-  
-      formData.append('date', selectedDateMidnight.toISOString());
-      formData.append('username', localStorage.getItem('username'));
-      formData.append('userID', localStorage.getItem('userId'));
-  
-      await axiosInstance.post('/upload', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-  
-      // Clear state
-      setFiles([]);
-      setPreviewSrcs([]);
-      onCloseAndNavigate();
-      setRefresh((prev) => !prev);
-  
-    } catch (error) {
-      console.error('Error creating entry:', error);
-      setErrorMsg('Error creating entry, please try again.');
-    }
-  };
+  try {
+    const formData = new FormData();
+    files.forEach(file => formData.append('images', file));
+    formData.append('name', entry.name);
+    formData.append('notes', entry.notes);
+    formData.append('sunlight', entry.sunlight);
+    formData.append('water', entry.water);
+    formData.append('date', entry.date); // Ensure the date is correctly formatted
+    formData.append('username', localStorage.getItem('username'));
+    formData.append('userID', localStorage.getItem('userId'));
+
+    await axiosInstance.post('/upload', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+
+    setFiles([]);
+    setPreviewSrcs([]);
+    onCloseAndNavigate();
+    setRefresh(prev => !prev);
+
+  } catch (error) {
+    console.error('Error creating entry:', error);
+    setErrorMsg('Error creating entry, please try again.');
+  }
+};
 
   const onCloseAndNavigate = () => {
     onClose();
@@ -75,7 +77,7 @@ const CreateEntryWithFileUpload = ({ isOpen, onClose, selectedDate, setRefresh }
 
   const onDrop = (droppedFiles) => {
     const newFiles = Array.from(droppedFiles);
-    setFiles((prevFiles) => [...prevFiles, ...newFiles]);
+    setFiles(prevFiles => [...prevFiles, ...newFiles]);
 
     const newPreviews = newFiles.map(file => {
       const fileReader = new FileReader();
@@ -86,7 +88,7 @@ const CreateEntryWithFileUpload = ({ isOpen, onClose, selectedDate, setRefresh }
     });
 
     Promise.all(newPreviews).then(previews => {
-      setPreviewSrcs((prevSrcs) => [...prevSrcs, ...previews]);
+      setPreviewSrcs(prevSrcs => [...prevSrcs, ...previews]);
     });
   };
 
@@ -96,27 +98,24 @@ const CreateEntryWithFileUpload = ({ isOpen, onClose, selectedDate, setRefresh }
       setErrorMsg('Name is required');
       return;
     }
-    try {
-      await createEntry();
-    } catch (error) {
-      console.error('Error creating entry:', error);
-    }
+    await createEntry();
   };
 
   const handleInputChange = (event) => {
-    setEntry({
-      ...entry,
-      [event.target.name]: event.target.value,
-    });
+    const { name, value } = event.target;
+    setEntry(prevEntry => ({
+      ...prevEntry,
+      [name]: value,
+    }));
   };
 
   const handleSavePlantName = (name, sunlight, water) => {
-    setEntry({
-      ...entry,
+    setEntry(prevEntry => ({
+      ...prevEntry,
       name: name,
       sunlight,
       water,
-    });
+    }));
     setShowSearchPlantModal(false);
   };
 
@@ -126,7 +125,13 @@ const CreateEntryWithFileUpload = ({ isOpen, onClose, selectedDate, setRefresh }
   };
 
   const handleClearForm = () => {
-    setEntry(initialEntryState);
+    setEntry({
+      name: '',
+      notes: '',
+      date: selectedDate ? formatDate(selectedDate) : '',
+      sunlight: '',
+      water: '',
+    });
     setFiles([]);
     setPreviewSrcs([]);
     setErrorMsg('');
@@ -136,21 +141,20 @@ const CreateEntryWithFileUpload = ({ isOpen, onClose, selectedDate, setRefresh }
     onClose();
     navigate('/calendar');
   };
+
   const handleDelete = (index) => {
-    setPreviewSrcs(prevPreviews =>
-      prevPreviews.filter((_, i) => i !== index)
-    );
+    setPreviewSrcs(prevPreviews => prevPreviews.filter((_, i) => i !== index));
   };
+
   return (
     <CustomModal isOpen={isOpen} onClose={onClose} title="Create Entry">
       <Form onSubmit={handleEntrySubmit} encType="multipart/form-data">
         {errorMsg && <p className="errorMsg">{errorMsg}</p>}
         <ImageUpload
-                onDelete={handleDelete}
-
+          onDelete={handleDelete}
           onDrop={onDrop}
           files={files}
-          previewSrcs={previewSrcs} // Pass the array of previews
+          previewSrcs={previewSrcs}
         />
         <div className={styles.formContainer}>
           <div className='flex-row'>
@@ -192,19 +196,18 @@ const CreateEntryWithFileUpload = ({ isOpen, onClose, selectedDate, setRefresh }
               onChange={handleInputChange}
             />
           </div>
-          <div className="form-group margin-bottom">
-            <textarea
-              type="text"
-              placeholder="Notes"
-              name="notes"
-              className="form-control width-100"
-              value={entry.notes}
+          <div>
+            <label htmlFor="entryDate">Date</label>
+            <input
+              type="date"
+              id="entryDate"
+              name="date"
+              value={entry.date}
               onChange={handleInputChange}
-              style={{ height: '150px', verticalAlign: 'top' }}
+              required
             />
           </div>
-        </div>
-        <div className='margin-top flex-row'>
+          <div className='margin-top flex-row'>
           <Link type="button" onClick={handleCancel}>
             Cancel
           </Link>
@@ -217,12 +220,8 @@ const CreateEntryWithFileUpload = ({ isOpen, onClose, selectedDate, setRefresh }
             </button>
           </div>
         </div>
+        </div>
       </Form>
-      <SearchPlantAPI
-        isOpen={showSearchPlantModal}
-        onSelectPlant={handleSavePlantName}
-        closeModal={() => setShowSearchPlantModal(false)}
-      />
     </CustomModal>
   );
 };
