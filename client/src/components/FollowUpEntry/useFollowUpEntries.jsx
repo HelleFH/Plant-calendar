@@ -6,10 +6,16 @@ const useFollowUpEntries = (selectedDate, refresh) => {
   const [highlightedFollowUpDates, setHighlightedFollowUpDates] = useState([]);
   const [error, setError] = useState(null);
 
+  const formatDateToLocal = (date) => {
+    const offset = date.getTimezoneOffset();
+    const newDate = new Date(date.getTime() - (offset * 60 * 1000));
+    return newDate.toISOString().split('T')[0];
+  };
+
   useEffect(() => {
     const fetchFollowUpEntries = async (date) => {
       try {
-        const formattedDate = date.toISOString().split('T')[0];
+        const formattedDate = formatDateToLocal(date);
         const userID = localStorage.getItem('userId');
         const followUpEntriesData = await getFollowUpEntriesByDateAndId(formattedDate, userID);
         setFollowUpEntries(followUpEntriesData);
@@ -35,10 +41,10 @@ const useFollowUpEntries = (selectedDate, refresh) => {
         }
 
         const highlightedFollowUpDatesPromises = datesInRange.map(async (date) => {
-          const formattedDate = date.toISOString().split('T')[0];
+          const formattedDate = formatDateToLocal(date);
           const followUpEntriesData = await getFollowUpEntriesByDateAndId(formattedDate, userID);
           if (followUpEntriesData.length > 0) {
-            return date.toDateString();
+            return formattedDate;
           }
           return null;
         });

@@ -12,9 +12,18 @@ const NewFollowUpEntry = ({ isOpen, onClose, oldEntryID, oldEntryName, oldEntryD
   const [errorMsg, setErrorMsg] = useState('');
   const navigate = useNavigate();
 
+  // Function to format date to YYYY-MM-DD
+  const formatDate = (date) => {
+    const d = new Date(date);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
   const initialFollowUpState = {
     notes: '',
-    date: selectedDate ? new Date(selectedDate).toISOString().split('T')[0] : ''
+    date: selectedDate ? formatDate(selectedDate) : '',
   };
 
   const [followUpEntry, setFollowUpEntry] = useState(initialFollowUpState);
@@ -23,7 +32,7 @@ const NewFollowUpEntry = ({ isOpen, onClose, oldEntryID, oldEntryName, oldEntryD
     if (selectedDate) {
       setFollowUpEntry((prevEntry) => ({
         ...prevEntry,
-        date: new Date(selectedDate).toISOString().split('T')[0],
+        date: formatDate(selectedDate),
       }));
     }
   }, [selectedDate]);
@@ -103,12 +112,12 @@ const NewFollowUpEntry = ({ isOpen, onClose, oldEntryID, oldEntryName, oldEntryD
     onClose();
     navigate('/calendar');
   };
+
   const handleDelete = (index) => {
     setPreviewSrcs(prevPreviews =>
       prevPreviews.filter((_, i) => i !== index)
     );
   };
-
 
   return (
     <CustomModal isOpen={isOpen} onClose={onClose} title="Create Follow-Up Entry">
