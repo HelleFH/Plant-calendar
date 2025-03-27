@@ -66,22 +66,47 @@ const uploadController = async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 };
-
 const deleteImage = async (req, res) => {
-  const { public_id } = req.body;
+  const { publicId } = req.body; // publicId is coming from the request body
 
-  if (!public_id) {
-    return res.status(400).json({ error: 'Public ID is required.' });
+  if (!publicId) {
+    console.log('No Public ID provided');
+    return res.status(400).json({ success: false, message: 'Public ID is required' });
   }
 
   try {
-    const result = await cloudinary.uploader.destroy(public_id);
-    res.json({ message: 'Image deleted successfully', result });
+    console.log('Deleting image from Cloudinary with Public ID:', publicId);
+    // Delete the image from Cloudinary
+    const result = await cloudinary.uploader.destroy(publicId);
+    console.log('Cloudinary delete result:', result);
+
+    if (result.result === 'ok') {
+      console.log('Image deleted from Cloudinary successfully');
+      // Remove the image from MongoDB based on cloudinaryPublicId
+      const entry = await Entry.findOne({ "images.cloudinaryPublicId": publicId });  // Use cloudinaryPublicId here
+      console.log('Found entry in MongoDB:', entry);
+
+      if (entry) {
+        // Remove the image from the "images" array
+        entry.images = entry.images.filter(image => image.cloudinaryPublicId !== publicId); // Ensure the correct field name
+        await entry.save();
+        console.log('Image removed from MongoDB entry:', entry);
+
+        return res.json({ success: true, message: 'Image deleted successfully' });
+      } else {
+        console.log('Image not found in MongoDB');
+        return res.status(404).json({ success: false, message: 'Image not found in database' });
+      }
+    } else {
+      console.log('Failed to delete image from Cloudinary:', result);
+      return res.status(400).json({ success: false, message: 'Failed to delete image from Cloudinary' });
+    }
   } catch (error) {
     console.error('Error deleting image:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    return res.status(500).json({ success: false, message: 'Internal server error' });
   }
 };
+
 
 const updateEntry = async (req, res) => {
   const { id } = req.params;

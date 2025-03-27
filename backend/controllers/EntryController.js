@@ -145,7 +145,6 @@ const getEntryById = async (req, res) => {
 const getSortedEntriesByUserId = async (req, res) => {
   try {
       const { userID } = req.params;
-      console.log('requestID' , userID)
       const { sortBy } = req.query;
 
       // Define the sort options based on the sortBy parameter

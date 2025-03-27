@@ -28,6 +28,13 @@ const CalendarEntry = ({
   const [files, setFiles] = useState([]);
   const [previewSrcs, setPreviewSrcs] = useState([]);
   const [cloudinaryUrls, setCloudinaryUrls] = useState(entry.images?.map(img => img.cloudinaryUrl) || []);
+  const [cloudinaryImages, setCloudinaryImages] = useState(
+    entry.images?.map(img => ({
+      url: img.cloudinaryUrl,
+      public_id: img.cloudinaryPublicId // Assuming this is already available in your data
+    })) || []
+  );
+  
   const [followUpCloudinaryUrls, setFollowUpCloudinaryUrls] = useState([]);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [idToDelete, setIdToDelete] = useState(null);
@@ -116,22 +123,25 @@ const CalendarEntry = ({
 
     reader.readAsDataURL(currentFile);
   };
-
+  
   const handleDeleteImage = async (index) => {
-    const imageUrl = cloudinaryUrls[index];
-
+    const image = cloudinaryImages[index];
+    const publicId = image.public_id; // Correctly access cloudinaryPublicId
+  
+    console.log("Public ID to delete:", publicId); // Log the publicId to ensure it's correct
+  
     try {
-      // Call Cloudinary API to delete the image
-      const response = await axiosInstance.post('/delete-image', { url: imageUrl });
+      const response = await axiosInstance.post('/delete-image', { publicId });
+      console.log("Delete response:", response);
+     
       if (response.data.success) {
-        setCloudinaryUrls((prevUrls) => prevUrls.filter((_, i) => i !== index));
-        setPreviewSrcs((prevSrcs) => prevSrcs.filter((_, i) => i !== index));
+        setCloudinaryImages((prevImages) => prevImages.filter((_, i) => i !== index));
       }
     } catch (error) {
       console.error('Error deleting image from Cloudinary:', error);
     }
   };
-
+  
   const toggleReminderModal = () => {
     setIsReminderModalOpen(prev => !prev);
   };
@@ -246,53 +256,105 @@ const CalendarEntry = ({
             : { height: 0 }
         }
       >
-        {isEditing ? (
-          <div className={styles.editFormContainer}>
-            <ImageUpload
-              onDrop={onDrop}
-              previewSrcs={previewSrcs}
-              onDelete={handleDelete}
-              isPreviewAvailable={!!previewSrcs.length}
-            />
-            <button
-              className="primary-button"
-              onClick={() => {
-                handleSubmitUpdate(entry._id, editedEntry, files[0], selectedDate, handleUpdateEntry, handleDeleteEntry);
-                setIsEditing(false);
-              }}
-            >
-              Save
-            </button>
-            <button className="secondary-button" onClick={() => setIsEditing(false)}>
-              Cancel
-            </button>
-          </div>
-        ) : (
+{isEditing ? (
+  <div className={styles.editFormContainer}>
+    <label>Name:</label>
+    <input
+      type="text"
+      name="name"
+      value={editedEntry.name}
+      onChange={handleChange}
+    />
+
+    <label>Notes:</label>
+    <textarea
+      name="notes"
+      value={editedEntry.notes}
+      onChange={handleChange}
+    />
+
+    <label>Sunlight:</label>
+    <input
+      type="text"
+      name="sunlight"
+      value={editedEntry.sunlight}
+      onChange={handleChange}
+    />
+
+    <label>Water:</label>
+    <input
+      type="text"
+      name="water"
+      value={editedEntry.water}
+      onChange={handleChange}
+    />
+
+    {/* Show existing images */}
+    <div>
+    <div>
+    {cloudinaryImages.map((image, index) => (
+  <div key={index} className="image-container">
+    <img
+      src={image.url}
+      alt={`Image ${index}`}
+      className="image-preview"
+      onError={(e) => {
+        console.error('Error loading image:', e.target.src);
+        e.target.src = 'https://res.cloudinary.com/dvagswjsf/image/upload/v1743028512/fall-back_od4alj.png'; 
+      }}
+    />
+    {isEditing && (
+      <button onClick={() => handleDeleteImage(index)}>Delete</button>
+    )}
+  </div>
+))}
+
+</div>
+    </div>
+
+    {/* Image Upload */}
+    <ImageUpload onDrop={onDrop} previewSrcs={previewSrcs} onDelete={handleDelete} />
+
+    <button
+      className="primary-button"
+      onClick={() => {
+        handleSubmitUpdate(entry._id, editedEntry, files[0], selectedDate, handleUpdateEntry, handleDeleteEntry);
+        setIsEditing(false);
+      }}
+    >
+      Save
+    </button>
+    <button className="secondary-button" onClick={() => setIsEditing(false)}>Cancel</button>
+  </div>
+) : ( 
+
           <>
             <div className="margin-top">
               <h5 className="margin-bottom padding-bottom">
                 Added on {moment(entry.date).format('MMMM Do YYYY')}
               </h5>
+
               {cloudinaryUrls.length > 0 && (
-                <div>
-                  {cloudinaryUrls.map((url, index) => (
-                    <div key={index} className="image-container">
-                      <img
-                        src={url}
-                        alt={`Image ${index}`}
-                        className="image-preview"
-                        onError={(e) => {
-                          console.error('Error loading image:', e.target.src);
-                          e.target.src = 'fallback-image-url'; // Optional: Use a fallback image URL
-                        }}
-                      />
-                      {isEditing && (
-                        <button onClick={() => handleDeleteImage(index)}>Delete</button>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              )}
+  <div>
+    {cloudinaryUrls.map((url, index) => (
+      <div key={index} className="image-container">
+        <img
+          src={url}
+          alt={`Image ${index}`}
+          className="image-preview"
+          onError={(e) => {
+            console.error('Error loading image:', e.target.src);
+            e.target.src = 'https://res.cloudinary.com/dvagswjsf/image/upload/v1743028512/fall-back_od4alj.png'; // Optional: Use a fallback image URL
+          }}
+        />
+        {isEditing && ( // Only show delete button in editing mode
+          <button onClick={() => handleDeleteImage(index)}>Delete</button> // Delete specific image
+        )}
+      </div>
+    ))}
+  </div>
+)}
+
               <Link onClick={toggleImageGalleryModal} className={styles.galleryLink}>
                 <h5>View All Images for {entry.name}</h5>
               </Link>

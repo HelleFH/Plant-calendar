@@ -1,6 +1,6 @@
 require('dotenv').config();
 require('express-async-errors');
-const connectDB = require("./db/connect");
+const connectDB = require("./db/connect").default;
 const express = require("express");
 const cors = require('cors');
 const path = require('path');
